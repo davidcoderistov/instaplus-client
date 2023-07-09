@@ -1,25 +1,20 @@
-import { useMemo } from 'react'
+import { useChatMembers } from '../../hooks'
 import Box from '@mui/material/Box'
 import Button from '../Button'
 import ChatAvatar from '../ChatAvatar'
-import { getChatMembers } from '../../utils'
 
 
 interface Props {
-    photoUrls: string[]
-    usernames: string[]
+    chatMembers: { id: string | number, username: string, photoUrl: string | null }[]
+    authUserId: string | number
     creator: string
-    membersCount?: number
 
     onView(): void
 }
 
 export default function ChatDescription(props: Props) {
 
-    const usernames = useMemo(
-        () => getChatMembers(props.usernames, props.membersCount),
-        [props.usernames, props.membersCount,
-        ])
+    const [usernames, photoUrls] = useChatMembers(props.chatMembers, props.authUserId, 5)
 
     return (
         <Box
@@ -56,10 +51,9 @@ export default function ChatDescription(props: Props) {
                         display='block'
                     >
                         <ChatAvatar
-                            multiple={props.usernames.length > 1}
-                            photoUrls={props.photoUrls}
+                            photoUrls={photoUrls}
                             containerSize={96}
-                            avatarSize={props.usernames.length > 1 ? 72 : 96} />
+                            avatarSize={photoUrls.length > 1 ? 72 : 96} />
                     </Box>
                     <Box
                         component='div'
@@ -151,7 +145,7 @@ export default function ChatDescription(props: Props) {
                                 wordBreak: 'break-word',
                             }}
                         >
-                            {props.membersCount > 2 ? (
+                            {props.chatMembers.length > 2 ? (
                                 <Box
                                     component='span'
                                 >
@@ -161,7 +155,7 @@ export default function ChatDescription(props: Props) {
                                 <Box
                                     component='span'
                                 >
-                                    {props.creator} &middot; Socialley
+                                    {props.creator} &middot; InstaPlus
                                 </Box>
                             )}
                         </Box>
@@ -174,7 +168,7 @@ export default function ChatDescription(props: Props) {
                     >
                         <Button
                             variant='secondary'
-                            text={props.membersCount > 2 ? 'View chat details' : 'View profile'}
+                            text={props.chatMembers.length > 2 ? 'View chat details' : 'View profile'}
                             contained
                             onClick={props.onView} />
                     </Box>

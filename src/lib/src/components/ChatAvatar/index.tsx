@@ -6,8 +6,7 @@ import Skeleton from '@mui/material/Skeleton'
 
 interface StaticProps {
     loading?: never
-    multiple?: boolean
-    photoUrls: string[]
+    photoUrls: (string | null)[]
     containerSize: number
     avatarSize: number
     dense?: boolean
@@ -15,7 +14,6 @@ interface StaticProps {
 
 interface LoadingProps {
     loading: true
-    multiple?: never
     photoUrls?: never
     containerSize: number
     avatarSize?: never
@@ -61,7 +59,7 @@ export default function ChatAvatar(props: Props) {
                             overflowY: 'hidden',
                         }}
                     >
-                        {props.photoUrls.length > 0 ? (
+                        {props.photoUrls.length > 0 ? props.photoUrls[0] ? (
                             <img alt='User avatar'
                                  style={{
                                      height: '100%',
@@ -75,9 +73,9 @@ export default function ChatAvatar(props: Props) {
                                  width={`${props.avatarSize}`} />
                         ) : (
                             <Avatar sx={{ height: props.avatarSize, width: props.avatarSize }} />
-                        )}
+                        ) : null}
                     </Box>
-                    {props.multiple && (
+                    {props.photoUrls.length > 1 && (
                         <Box
                             component='div'
                             bgcolor='#000000'
@@ -112,7 +110,7 @@ export default function ChatAvatar(props: Props) {
                                     overflowY: 'hidden',
                                 }}
                             >
-                                {props.photoUrls.length > 1 ? (
+                                {props.photoUrls[1] ? (
                                     <img alt='User avatar'
                                          style={{
                                              height: '100%',
