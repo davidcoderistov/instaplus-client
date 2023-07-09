@@ -28,9 +28,7 @@ interface Props {
         username: string
     }
 
-    memberPhotoUrls: string[]
-    memberUsernames: string[]
-    membersCount: number
+    chatMembers: { id: string | number, username: string, photoUrl: string | null }[]
 
     onClickChatMembers(): void
 
@@ -283,9 +281,8 @@ const Chat = React.memo((props: Props) => {
                                 }}
                             >
                                 <ChatHeader
-                                    photoUrls={props.memberPhotoUrls}
-                                    usernames={props.memberUsernames}
-                                    membersCount={props.membersCount}
+                                    chatMembers={props.chatMembers}
+                                    authUserId={props.authUserId}
                                     onClickChatMembers={props.onClickChatMembers}
                                     onClickChatDetails={props.onClickChatDetails}
                                 />
@@ -448,9 +445,8 @@ const Chat = React.memo((props: Props) => {
                                                                                 {!props.hasMoreMessages && (
                                                                                     <>
                                                                                         <ChatDescription
-                                                                                            photoUrls={props.memberPhotoUrls}
-                                                                                            usernames={props.memberUsernames}
-                                                                                            membersCount={props.membersCount}
+                                                                                            chatMembers={props.chatMembers}
+                                                                                            authUserId={props.authUserId}
                                                                                             creator={props.creator.username}
                                                                                             onView={props.onViewChatDescription}
                                                                                         />
