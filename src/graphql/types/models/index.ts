@@ -10,3 +10,23 @@ export interface AuthUser {
     user: User
     accessToken: string
 }
+
+export interface Message {
+    _id: string
+    creator: User
+    text: string | null
+    photoUrl: string | null
+    videoUrl: string | null
+    createdAt: number
+}
+
+export interface Chat {
+    _id: string
+    creator: Pick<User, '_id'>
+    chatMembers: User[]
+}
+
+export interface ChatWithLatestMessage {
+    chat: Chat
+    message: Message
+}
