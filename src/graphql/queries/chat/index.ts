@@ -18,6 +18,7 @@ export const FIND_CHATS_FOR_USER = gql`
                         username
                         photoUrl
                     }
+                    selected @client
                 }
                 message {
                     _id
