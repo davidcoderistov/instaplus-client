@@ -56,7 +56,26 @@ const splitLink = split(
     ),
 )
 
-const cache = new InMemoryCache({})
+const cache = new InMemoryCache({
+    typePolicies: {
+        Query: {
+            fields: {
+                findChatsForUser: {
+                    keyArgs: false,
+                },
+            },
+        },
+        Chat: {
+            fields: {
+                selected: {
+                    read(selected = false) {
+                        return selected
+                    },
+                },
+            },
+        },
+    },
+})
 
 const client = new ApolloClient({
     link: splitLink,
