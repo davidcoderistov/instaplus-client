@@ -48,7 +48,7 @@ const ChatMessageListItem = React.memo((props: Props) => {
 
     const mw900 = useMediaQuery('(min-width:900px)')
 
-    const [usernames, photoUrls] = useChatMembers(props.loading ? [] : props.chatMembers, props.authUserId, 2)
+    const [usernames, photoUrls] = useChatMembers(props.loading ? [] : props.chatMembers, props.loading ? '' : props.authUserId, 2)
 
     const getMessageText = () => {
         if (!props.loading) {

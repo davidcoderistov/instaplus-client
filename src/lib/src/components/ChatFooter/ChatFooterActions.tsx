@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import React, { useRef, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import Button from '../Button'
 import { useSnackbar } from 'notistack'
@@ -21,16 +21,18 @@ export default function ChatFooterAction(props: Props) {
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
 
-    const handleChangeFile = useCallback((event) => {
-        const file: File | null = event.target.files[0]
-        if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
-            props.onUploadFile(file)
-        } else {
-            enqueueSnackbar('You can upload photos and videos only', {
-                variant: 'error', anchorOrigin: { horizontal: 'right', vertical: 'bottom' }, autoHideDuration: 3000,
-            })
+    const handleChangeFile = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            const file: File | null = event.target.files[0]
+            if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
+                props.onUploadFile(file)
+            } else {
+                enqueueSnackbar('You can upload photos and videos only', {
+                    variant: 'error', anchorOrigin: { horizontal: 'right', vertical: 'bottom' }, autoHideDuration: 3000,
+                })
+            }
+            event.target.value = ''
         }
-        event.target.value = null
     }, [props.onUploadFile, enqueueSnackbar])
 
     const handleClickUploadFile = () => {

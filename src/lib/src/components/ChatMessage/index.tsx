@@ -21,7 +21,7 @@ interface Props {
     onReply(message: Message): void
 }
 
-const ForwardedChatMessageBubble = forwardRef((props, ref) => (
+const ForwardedChatMessageBubble = forwardRef<any, any>((props, ref) => (
     <ChatMessageBubble {...props} emojiRef={ref} />
 ))
 

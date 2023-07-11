@@ -523,7 +523,7 @@ export default function ChatMessageBubble(props: Props) {
                                                             </Box>
                                                         </Box>
                                                     ))}
-                                                    {props.message.reactions?.count > 1 && (
+                                                    {props.message.reactions && props.message.reactions.count > 1 && (
                                                         <Box
                                                             component='div'
                                                             marginRight='2px'

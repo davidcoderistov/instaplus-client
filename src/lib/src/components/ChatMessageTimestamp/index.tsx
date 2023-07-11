@@ -64,7 +64,7 @@ export default function ChatMessageTimestamp(props: Props) {
                                 fontSize='inherit'
                                 fontWeight='inherit'
                                 color='inherit'
-                                outline='none'
+                                sx={{ outline: 'none' }}
                             >
                                 <Box
                                     component='div'

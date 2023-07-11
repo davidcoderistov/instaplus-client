@@ -3,8 +3,8 @@ import ChatMessagePhoto from '../ChatMessagePhoto'
 
 
 interface TextReplyProps {
-    lhs?: true
-    rhs?: true
+    lhs?: boolean
+    rhs?: boolean
     message: string
     photoUrl?: never
     orientation?: never
@@ -13,8 +13,8 @@ interface TextReplyProps {
 }
 
 interface MediaReplyProps {
-    lhs?: true
-    rhs?: true
+    lhs?: boolean
+    rhs?: boolean
     message?: never
     photoUrl: string
     orientation: 'portrait' | 'landscape'
@@ -180,7 +180,7 @@ export default function ChatMessageReply(props: Props) {
                                     </Box>
                                 </Box>
                             </Box>
-                        ) : (
+                        ) : (props.photoUrl && props.orientation && props.onClick) ? (
                             <ChatMessagePhoto
                                 photoUrl={props.photoUrl}
                                 orientation={props.orientation}
@@ -188,7 +188,7 @@ export default function ChatMessageReply(props: Props) {
                                 onClick={props.onClick}
                                 reply
                             />
-                        )}
+                        ) : null}
                     </Box>
                     {props.rhs && (
                         <Box
