@@ -7,7 +7,7 @@ import ChatFooter from '../ChatFooter'
 import ChatDescription from '../ChatDescription'
 import ChatMessage from '../ChatMessage'
 import ChatMessageTimestamp from '../ChatMessageTimestamp'
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
+import EmojiPicker, { EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Message, ReplyMessage } from '../../types/Message'
 import moment from 'moment'
@@ -49,7 +49,7 @@ interface Props {
     onUploadFile(file: File): void
 }
 
-const ForwardedChatMessage = React.memo(forwardRef((props, ref) => (
+const ForwardedChatMessage = React.memo(forwardRef<any, any>((props, ref) => (
     <ChatMessage {...props} emojiRef={ref} />
 )))
 
@@ -128,7 +128,7 @@ const Chat = React.memo((props: Props) => {
     }, [])
 
     const handlePickEmoji = useCallback(({ emoji }: EmojiClickData) => {
-        props.onReact(emoji, emojiMessage)
+        props.onReact(emoji, emojiMessage as Message)
         setEmojiPickerOpen(false)
     }, [props.onReact, emojiMessage])
 
@@ -502,8 +502,8 @@ const Chat = React.memo((props: Props) => {
                     zIndex='100'
                 >
                     <EmojiPicker
-                        theme='dark'
-                        emojiStyle='native'
+                        theme={Theme.DARK}
+                        emojiStyle={EmojiStyle.NATIVE}
                         skinTonesDisabled
                         searchDisabled
                         previewConfig={{ showPreview: false }}

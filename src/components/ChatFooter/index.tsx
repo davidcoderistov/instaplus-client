@@ -4,7 +4,7 @@ import { Message } from '../../types/Message'
 
 
 interface Props {
-    authUserId: string
+    authUserId: string | number
     replyingMessage: Message | null
 
     onSendMessage(message: string): void

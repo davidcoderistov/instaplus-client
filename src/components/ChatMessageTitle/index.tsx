@@ -4,9 +4,9 @@ import Box from '@mui/material/Box'
 
 interface Props {
     type: 'single' | 'group'
-    empty?: true
-    lhs?: true
-    rhs?: true
+    empty?: boolean
+    lhs?: boolean
+    rhs?: boolean
     creator?: {
         id: string | number
         username: string | number

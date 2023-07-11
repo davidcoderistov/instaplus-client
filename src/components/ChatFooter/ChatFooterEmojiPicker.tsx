@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react'
 import Box from '@mui/material/Box'
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
+import EmojiPicker, { EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react'
 import { useClickOutside } from '../../hooks'
 
 
@@ -42,8 +42,8 @@ const ChatFooterEmojiPicker = React.memo(({ onPickEmoji }: Props) => {
                     bottom='70px'
                 >
                     <EmojiPicker
-                        theme='dark'
-                        emojiStyle='native'
+                        theme={Theme.DARK}
+                        emojiStyle={EmojiStyle.NATIVE}
                         skinTonesDisabled
                         searchDisabled
                         previewConfig={{ showPreview: false }}
