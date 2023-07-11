@@ -22,7 +22,7 @@ export interface Message {
 
 export interface Chat {
     _id: string
-    creator: Pick<User, '_id'>
+    creator: Pick<User, '_id' | 'username'>
     chatMembers: User[]
     selected: boolean
 }

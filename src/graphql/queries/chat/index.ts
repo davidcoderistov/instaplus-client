@@ -10,6 +10,7 @@ export const FIND_CHATS_FOR_USER = gql`
                     _id
                     creator {
                         _id
+                        username
                     }
                     chatMembers {
                         _id
