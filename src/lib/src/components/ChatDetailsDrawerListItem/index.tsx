@@ -39,7 +39,7 @@ export default function ChatDetailsDrawerListItem(props: Props) {
                 usernames={[props.user.username]}
                 onClick={handleClickUser}
             />
-            <ListItemContent>
+            <ListItemContent gutters={false}>
                 <ListItemTitle
                     loading={false}
                     loader={null}
