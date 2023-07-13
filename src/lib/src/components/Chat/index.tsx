@@ -17,6 +17,7 @@ interface Props {
     type: 'single' | 'group'
     authUserId: number | string
     loading: boolean
+    isViewingChatDetails: boolean
 
     messages: Message[]
     messagesCount: number
@@ -284,6 +285,7 @@ const Chat = React.memo((props: Props) => {
                                 <ChatHeader
                                     chatMembers={props.chatMembers}
                                     authUserId={props.authUserId}
+                                    isViewingChatDetails={props.isViewingChatDetails}
                                     onClickChatMembers={props.onClickChatMembers}
                                     onClickChatDetails={props.onClickChatDetails}
                                 />

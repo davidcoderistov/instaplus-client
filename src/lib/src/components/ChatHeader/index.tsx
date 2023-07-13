@@ -6,6 +6,7 @@ import ChatAvatar from '../ChatAvatar'
 interface Props {
     chatMembers: { id: string | number, username: string, photoUrl: string | null }[]
     authUserId: string | number
+    isViewingChatDetails: boolean
 
     onClickChatMembers(): void
 
@@ -316,46 +317,61 @@ export default function ChatHeader(props: Props) {
                                 display='flex'
                                 alignItems='center'
                             >
-                                <svg aria-label='Conversation information'
-                                     style={{ position: 'relative', display: 'block' }}
-                                     color='rgb(245, 245, 245)'
-                                     fill='rgb(245, 245, 245)'
-                                     height='24'
-                                     role='img'
-                                     viewBox='0 0 24 24'
-                                     width='24'>
-                                    <title>Conversation information</title>
-                                    <circle
-                                        cx='12.001'
-                                        cy='12.005'
-                                        fill='none'
-                                        r='10.5'
-                                        stroke='currentColor'
-                                        strokeLinecap='round'
-                                        strokeLinejoin='round'
-                                        strokeWidth='2' />
-                                    <circle
-                                        cx='11.819'
-                                        cy='7.709'
-                                        r='1.25' />
-                                    <line
-                                        fill='none'
-                                        stroke='currentColor'
-                                        strokeLinecap='round'
-                                        strokeLinejoin='round'
-                                        strokeWidth='2'
-                                        x1='10.569'
-                                        x2='13.432'
-                                        y1='16.777'
-                                        y2='16.777' />
-                                    <polyline
-                                        fill='none'
-                                        points='10.569 11.05 12 11.05 12 16.777'
-                                        stroke='currentColor'
-                                        strokeLinecap='round'
-                                        strokeLinejoin='round'
-                                        strokeWidth='2' />
-                                </svg>
+                                {props.isViewingChatDetails ? (
+                                    <svg aria-label='Conversation information'
+                                         style={{ position: 'relative', display: 'block' }}
+                                         color='rgb(245, 245, 245)'
+                                         fill='rgb(245, 245, 245)'
+                                         height='24'
+                                         role='img'
+                                         viewBox='0 0 24 24'
+                                         width='24'>
+                                        <title>Conversation information</title>
+                                        <path
+                                            d='M12.001.504a11.5 11.5 0 1 0 11.5 11.5 11.513 11.513 0 0 0-11.5-11.5Zm-.182 5.955a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25Zm1.614 11.318h-2.865a1 1 0 0 1 0-2H11V12.05h-.432a1 1 0 0 1 0-2H12a1 1 0 0 1 1 1v4.727h.433a1 1 0 1 1 0 2Z' />
+                                    </svg>
+                                ) : (
+                                    <svg aria-label='Conversation information'
+                                         style={{ position: 'relative', display: 'block' }}
+                                         color='rgb(245, 245, 245)'
+                                         fill='rgb(245, 245, 245)'
+                                         height='24'
+                                         role='img'
+                                         viewBox='0 0 24 24'
+                                         width='24'>
+                                        <title>Conversation information</title>
+                                        <circle
+                                            cx='12.001'
+                                            cy='12.005'
+                                            fill='none'
+                                            r='10.5'
+                                            stroke='currentColor'
+                                            strokeLinecap='round'
+                                            strokeLinejoin='round'
+                                            strokeWidth='2' />
+                                        <circle
+                                            cx='11.819'
+                                            cy='7.709'
+                                            r='1.25' />
+                                        <line
+                                            fill='none'
+                                            stroke='currentColor'
+                                            strokeLinecap='round'
+                                            strokeLinejoin='round'
+                                            strokeWidth='2'
+                                            x1='10.569'
+                                            x2='13.432'
+                                            y1='16.777'
+                                            y2='16.777' />
+                                        <polyline
+                                            fill='none'
+                                            points='10.569 11.05 12 11.05 12 16.777'
+                                            stroke='currentColor'
+                                            strokeLinecap='round'
+                                            strokeLinejoin='round'
+                                            strokeWidth='2' />
+                                    </svg>
+                                )}
                             </Box>
                         </Box>
                     </Box>
