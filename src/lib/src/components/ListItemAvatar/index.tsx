@@ -5,8 +5,9 @@ import Avatar from '@mui/material/Avatar'
 
 interface Props {
     loading: boolean
+    large?: boolean
     hashtag?: boolean
-    loader: React.ReactNode
+    loader: React.ReactNode | null
     photoUrls: string[]
     usernames: string[]
 
@@ -83,16 +84,16 @@ export default function ListItemAvatar(props: Props) {
                 >
                     <Box
                         component='div'
-                        height='44px'
-                        width='44px'
+                        height={props.large ? '56px' : '44px'}
+                        width={props.large ? '56px' : '44px'}
                         position='relative'
                         display='block'
                     >
                         {(props.loading || props.hashtag || props.usernames.length > 0) && (
                             <Box
                                 component='div'
-                                width={multiple ? '30px' : '44px'}
-                                height={multiple ? '30px' : '44px'}
+                                width={multiple ? '30px' : props.large ? '56px' : '44px'}
+                                height={multiple ? '30px' : props.large ? '56px' : '44px'}
                                 borderRadius='50%'
                                 paddingLeft='0'
                                 paddingTop='0'
@@ -161,7 +162,10 @@ export default function ListItemAvatar(props: Props) {
                                         }}
                                         src={props.photoUrls[0]} />
                                 ) : (
-                                    <Avatar sx={{ height: multiple ? 30 : 44, width: multiple ? 30 : 44 }} />
+                                    <Avatar sx={{
+                                        height: multiple ? 30 : props.large ? 56 : 44,
+                                        width: multiple ? 30 : props.large ? 56 : 44,
+                                    }} />
                                 )}
                             </Box>
                         )}

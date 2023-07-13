@@ -4,9 +4,10 @@ import Box from '@mui/material/Box'
 
 interface Props {
     loading: boolean
-    loader: React.ReactNode
-    subtitle: string | null
+    loader: React.ReactNode | null
+    subtitle: React.ReactNode | string | null
     dense?: boolean
+    large?: boolean
 }
 
 export default function ListItemSubtitle(props: Props) {
@@ -32,6 +33,7 @@ export default function ListItemSubtitle(props: Props) {
                 overflowX: 'visible',
                 whiteSpace: 'pre-line',
                 wordBreak: 'break-word',
+                ...props.large && { paddingTop: '3px' },
             }}
         >
             <Box

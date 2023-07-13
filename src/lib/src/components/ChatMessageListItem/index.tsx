@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import ChatAvatar from '../ChatAvatar'
 import { getTimeElapsed } from '../../utils'
+import _isEqual from 'lodash/isEqual'
 
 
 interface StaticProps {
@@ -368,6 +369,16 @@ const ChatMessageListItem = React.memo((props: Props) => {
             )}
         </Box>
     )
+}, (prevProps, nextProps) => {
+
+    const { chatMembers: prevChatMembers, ...prevRest } = prevProps
+    const { chatMembers: nextChatMembers, ...nextRest } = nextProps
+
+    const chatMembersEqual = _isEqual(prevChatMembers, nextChatMembers)
+
+    const restPropsEqual = _isEqual(prevRest, nextRest)
+
+    return chatMembersEqual && restPropsEqual
 })
 
 export default ChatMessageListItem

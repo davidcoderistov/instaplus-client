@@ -4,7 +4,7 @@ import Box from '@mui/material/Box'
 
 interface Props {
     loading: boolean
-    loader: React.ReactNode
+    loader: React.ReactNode | null
     title: string | React.ReactNode | null
 
     onClick?(): void

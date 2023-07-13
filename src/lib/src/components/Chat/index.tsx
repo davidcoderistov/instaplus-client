@@ -16,6 +16,7 @@ import moment from 'moment'
 interface Props {
     type: 'single' | 'group'
     authUserId: number | string
+    loading: boolean
 
     messages: Message[]
     messagesCount: number
@@ -24,7 +25,7 @@ interface Props {
     onFetchMoreMessages(): void
 
     creator: {
-        id: string
+        id: string | number
         username: string
     }
 
@@ -394,82 +395,101 @@ const Chat = React.memo((props: Props) => {
                                                                         overflowY: 'hidden',
                                                                     }}
                                                                 >
-                                                                    <Box
-                                                                        id='scrollableChat'
-                                                                        component='div'
-                                                                        flexShrink='1'
-                                                                        width='100%'
-                                                                        flexDirection='column-reverse'
-                                                                        display='flex'
-                                                                        position='relative'
-                                                                        flexGrow='1'
-                                                                        sx={{
-                                                                            overflowX: 'hidden',
-                                                                            overflowAnchor: 'none',
-                                                                            overflowY: 'scroll',
-                                                                        }}
-                                                                    >
-                                                                        <InfiniteScroll
-                                                                            next={props.onFetchMoreMessages}
-                                                                            hasMore={props.hasMoreMessages}
-                                                                            loader={
-                                                                                <Box
-                                                                                    component='div'
-                                                                                    display='flex'
-                                                                                    flexDirection='row'
-                                                                                    justifyContent='center'
-                                                                                    alignItems='flex-start'
-                                                                                    height='50px'
-                                                                                >
-                                                                                    <CircularProgress
-                                                                                        size={25}
-                                                                                        thickness={5}
-                                                                                        sx={{
-                                                                                            color: 'grey',
-                                                                                            mt: 1,
-                                                                                        }} />
-                                                                                </Box>
-                                                                            }
-                                                                            dataLength={props.messages.length}
-                                                                            scrollableTarget='scrollableChat'
-                                                                            inverse={true}
-                                                                            style={{
-                                                                                display: 'flex',
-                                                                                flexDirection: 'column-reverse',
+                                                                    {props.loading ? (
+                                                                        <Box
+                                                                            component='div'
+                                                                            display='flex'
+                                                                            flexDirection='row'
+                                                                            justifyContent='center'
+                                                                            alignItems='flex-start'
+                                                                            height='50px'
+                                                                        >
+                                                                            <CircularProgress
+                                                                                size={25}
+                                                                                thickness={5}
+                                                                                sx={{
+                                                                                    color: 'grey',
+                                                                                    mt: 1,
+                                                                                }} />
+                                                                        </Box>
+                                                                    ) : (
+                                                                        <Box
+                                                                            id='scrollableChat'
+                                                                            component='div'
+                                                                            flexShrink='1'
+                                                                            width='100%'
+                                                                            flexDirection='column-reverse'
+                                                                            display='flex'
+                                                                            position='relative'
+                                                                            flexGrow='1'
+                                                                            sx={{
+                                                                                overflowX: 'hidden',
+                                                                                overflowAnchor: 'none',
+                                                                                overflowY: 'scroll',
                                                                             }}
                                                                         >
-                                                                            <Box
-                                                                                component='div'
-                                                                                display='block'
+                                                                            <InfiniteScroll
+                                                                                next={props.onFetchMoreMessages}
+                                                                                hasMore={props.hasMoreMessages}
+                                                                                loader={
+                                                                                    <Box
+                                                                                        component='div'
+                                                                                        display='flex'
+                                                                                        flexDirection='row'
+                                                                                        justifyContent='center'
+                                                                                        alignItems='flex-start'
+                                                                                        height='50px'
+                                                                                    >
+                                                                                        <CircularProgress
+                                                                                            size={25}
+                                                                                            thickness={5}
+                                                                                            sx={{
+                                                                                                color: 'grey',
+                                                                                                mt: 1,
+                                                                                            }} />
+                                                                                    </Box>
+                                                                                }
+                                                                                dataLength={props.messages.length}
+                                                                                scrollableTarget='scrollableChat'
+                                                                                inverse={true}
+                                                                                style={{
+                                                                                    display: 'flex',
+                                                                                    flexDirection: 'column-reverse',
+                                                                                }}
                                                                             >
-                                                                                {!props.hasMoreMessages && (
-                                                                                    <>
-                                                                                        <ChatDescription
-                                                                                            chatMembers={props.chatMembers}
-                                                                                            authUserId={props.authUserId}
-                                                                                            creator={props.creator.username}
-                                                                                            onView={props.onViewChatDescription}
-                                                                                        />
-                                                                                        <Box
-                                                                                            component='div'
-                                                                                            minWidth='0'
-                                                                                            position='relative'
-                                                                                            zIndex='0'
-                                                                                            flexGrow='1'
-                                                                                            flexBasis='auto'
-                                                                                            flexShrink='0'
-                                                                                            display='flex'
-                                                                                            flexDirection='column'
-                                                                                            minHeight='0'
-                                                                                            alignItems='stretch'
-                                                                                            height='calc(100vh - 572px)'
-                                                                                        />
-                                                                                    </>
-                                                                                )}
-                                                                                {messages}
-                                                                            </Box>
-                                                                        </InfiniteScroll>
-                                                                    </Box>
+                                                                                <Box
+                                                                                    component='div'
+                                                                                    display='block'
+                                                                                >
+                                                                                    {!props.hasMoreMessages && (
+                                                                                        <>
+                                                                                            <ChatDescription
+                                                                                                chatMembers={props.chatMembers}
+                                                                                                authUserId={props.authUserId}
+                                                                                                creator={props.creator.username}
+                                                                                                onView={props.onViewChatDescription}
+                                                                                            />
+                                                                                            <Box
+                                                                                                component='div'
+                                                                                                minWidth='0'
+                                                                                                position='relative'
+                                                                                                zIndex='0'
+                                                                                                flexGrow='1'
+                                                                                                flexBasis='auto'
+                                                                                                flexShrink='0'
+                                                                                                display='flex'
+                                                                                                flexDirection='column'
+                                                                                                minHeight='0'
+                                                                                                alignItems='stretch'
+                                                                                                height='calc(100vh - 572px)'
+                                                                                            />
+                                                                                        </>
+                                                                                    )}
+                                                                                    {messages}
+                                                                                </Box>
+                                                                            </InfiniteScroll>
+                                                                        </Box>
+                                                                    )}
                                                                 </Box>
                                                             </Box>
                                                         </Box>
