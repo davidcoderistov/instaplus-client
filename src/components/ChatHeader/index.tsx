@@ -148,6 +148,8 @@ export default function ChatHeader(props: Props) {
                             marginTop='0'
                             marginBottom='0'
                             boxSizing='border-box'
+                            display='inline-flex'
+                            maxWidth='100%'
                             paddingRight='0'
                             minHeight='0'
                             flexShrink='0'
@@ -193,6 +195,7 @@ export default function ChatHeader(props: Props) {
                                 alignSelf='auto'
                                 justifyContent='flex-start'
                                 flexGrow='0'
+                                maxWidth='100%'
                                 sx={{
                                     overflowY: 'visible',
                                     borderBottomLeftRadius: '0',
