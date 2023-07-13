@@ -8,7 +8,7 @@ import _range from 'lodash/range'
 
 export interface ChatMessage {
     id: string | number
-    chatMembers: { id: string | number, username: string, photoUrl: string | null }[]
+    chatMembers: { id: string | number, firstName: string, lastName: string, username: string, photoUrl: string | null }[]
     text: string | null
     photoUrl: string | null
     videoUrl: string | null
