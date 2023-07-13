@@ -28,9 +28,9 @@ interface Props {
 
     onDeleteChat(chatId: string | number): void
 
-    onAddPeople?(): void
+    onAddPeople(): void
 
-    onLeaveChat?(chatId: string | number): void
+    onLeaveChat(chatId: string | number): void
 }
 
 export default function ChatDetailsDrawer(props: Props) {
@@ -310,12 +310,12 @@ export default function ChatDetailsDrawer(props: Props) {
                 </Box>
                 <LeaveChatModal
                     open={isLeaveChatModalOpen}
-                    isLeavingChat={props.isLeavingChat}
+                    isLeavingChat={Boolean(props.isLeavingChat)}
                     onLeaveChat={handleLeaveChat}
                     onCloseModal={handleCloseLeaveChatModal} />
                 <DeleteChatModal
                     open={isDeleteChatModalOpen}
-                    isDeletingChat={props.isDeletingChat}
+                    isDeletingChat={Boolean(props.isDeletingChat)}
                     onDeleteChat={handleDeleteChat}
                     onCloseModal={handleCloseDeleteChatModal} />
             </Box>

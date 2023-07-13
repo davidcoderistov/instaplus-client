@@ -147,7 +147,7 @@ export default function ListItemTitle(props: Props) {
                                     display='flex'
                                     alignItems='center'
                                     flexShrink='0'
-                                    posiiton='static'
+                                    position='static'
                                     flexDirection='row'
                                     alignSelf='auto'
                                     justifyContent='flex-start'
