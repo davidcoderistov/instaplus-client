@@ -4,18 +4,31 @@ import ChatAvatar from '../ChatAvatar'
 
 
 interface Props {
+    chatId: string | number
     chatMembers: { id: string | number, username: string, photoUrl: string | null }[]
     authUserId: string | number
     isViewingChatDetails: boolean
 
-    onClickChatMembers(): void
+    onViewUser(userId: string | number): void
 
-    onClickChatDetails(): void
+    onViewChatDetails(chatId: string | number): void
 }
 
 export default function ChatHeader(props: Props) {
 
     const [usernames, photoUrls] = useChatMembers(props.chatMembers, props.authUserId, 5)
+
+    const handleClickChatMembers = () => {
+        if (props.chatMembers.length > 2) {
+            props.onViewChatDetails(props.chatId)
+        } else {
+            props.onViewUser(props.chatMembers.filter(chatMember => chatMember.id !== props.authUserId)[0].id)
+        }
+    }
+
+    const handleViewChatDetails = () => {
+        props.onViewChatDetails(props.chatId)
+    }
 
     return (
         <Box
@@ -112,7 +125,7 @@ export default function ChatHeader(props: Props) {
                                 borderBottomLeftRadius: 'inherit',
                                 borderTopStyle: 'solid',
                             }}
-                            onClick={props.onClickChatMembers}
+                            onClick={handleClickChatMembers}
                         >
                             <ChatAvatar
                                 photoUrls={photoUrls}
@@ -181,7 +194,7 @@ export default function ChatHeader(props: Props) {
                                 borderBottomLeftRadius: 'inherit',
                                 borderTopStyle: 'solid',
                             }}
-                            onClick={props.onClickChatMembers}
+                            onClick={handleClickChatMembers}
                         >
                             <Box
                                 component='div'
@@ -308,7 +321,7 @@ export default function ChatHeader(props: Props) {
                                 borderBottom: '0',
                                 borderTop: '0',
                             }}
-                            onClick={props.onClickChatDetails}
+                            onClick={handleViewChatDetails}
                         >
                             <Box
                                 component='div'

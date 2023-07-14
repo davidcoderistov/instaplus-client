@@ -25,18 +25,16 @@ interface Props {
 
     onFetchMoreMessages(): void
 
+    chatId: string | number
     creator: {
         id: string | number
         username: string
     }
-
     chatMembers: { id: string | number, username: string, photoUrl: string | null }[]
 
-    onClickChatMembers(): void
+    onViewChatDetails(chatId: string | number): void
 
-    onClickChatDetails(): void
-
-    onViewChatDescription(): void
+    onViewUser(userId: string | number): void
 
     onClickPhoto(message: Message): void
 
@@ -283,11 +281,12 @@ const Chat = React.memo((props: Props) => {
                                 }}
                             >
                                 <ChatHeader
+                                    chatId={props.chatId}
                                     chatMembers={props.chatMembers}
                                     authUserId={props.authUserId}
                                     isViewingChatDetails={props.isViewingChatDetails}
-                                    onClickChatMembers={props.onClickChatMembers}
-                                    onClickChatDetails={props.onClickChatDetails}
+                                    onViewChatDetails={props.onViewChatDetails}
+                                    onViewUser={props.onViewUser}
                                 />
                                 <Box
                                     component='div'
@@ -466,10 +465,12 @@ const Chat = React.memo((props: Props) => {
                                                                                     {!props.hasMoreMessages && (
                                                                                         <>
                                                                                             <ChatDescription
+                                                                                                chatId={props.chatId}
                                                                                                 chatMembers={props.chatMembers}
                                                                                                 authUserId={props.authUserId}
                                                                                                 creator={props.creator.username}
-                                                                                                onView={props.onViewChatDescription}
+                                                                                                onViewChatDetails={props.onViewChatDetails}
+                                                                                                onViewUser={props.onViewUser}
                                                                                             />
                                                                                             <Box
                                                                                                 component='div'

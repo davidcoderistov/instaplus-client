@@ -5,16 +5,27 @@ import ChatAvatar from '../ChatAvatar'
 
 
 interface Props {
+    chatId: string | number
     chatMembers: { id: string | number, username: string, photoUrl: string | null }[]
     authUserId: string | number
     creator: string
 
-    onView(): void
+    onViewUser(userId: string | number): void
+
+    onViewChatDetails(chatId: string | number): void
 }
 
 export default function ChatDescription(props: Props) {
 
     const [usernames, photoUrls] = useChatMembers(props.chatMembers, props.authUserId, 5)
+
+    const handleClickView = () => {
+        if (props.chatMembers.length > 2) {
+            props.onViewChatDetails(props.chatId)
+        } else {
+            props.onViewUser(props.chatMembers.filter(chatMember => chatMember.id !== props.authUserId)[0].id)
+        }
+    }
 
     return (
         <Box
@@ -170,7 +181,7 @@ export default function ChatDescription(props: Props) {
                             variant='secondary'
                             text={props.chatMembers.length > 2 ? 'View chat details' : 'View profile'}
                             contained
-                            onClick={props.onView} />
+                            onClick={handleClickView} />
                     </Box>
                 </Box>
                 <Box
