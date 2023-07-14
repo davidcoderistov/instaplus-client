@@ -4,34 +4,34 @@ import Avatar from '@mui/material/Avatar'
 
 
 interface User {
-    id: string | number
+    _id: string | number
     firstName: string
     lastName: string
     username: string
-    photoUrl: string
+    photoUrl: string | null
 }
 
 interface Props {
     user: User
 
-    onRemoveUser(id: string | number): void
+    onRemoveUser(_id: string | number): void
 }
 
 const UserChip = React.memo((props: Props) => {
 
     const handleRemoveUser = () => {
-        props.onRemoveUser(props.user.id)
+        props.onRemoveUser(props.user._id)
     }
 
     return (
         <Chip
-            key={props.user.id}
+            key={props.user._id}
             color='primary'
             label={props.user.username}
             avatar={
                 <Avatar
                     alt={`${props.user.username} profile picture`}
-                    src={props.user.photoUrl}
+                    src={props.user.photoUrl ? props.user.photoUrl : undefined}
                 />
             }
             onDelete={handleRemoveUser}

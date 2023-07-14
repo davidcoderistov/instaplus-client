@@ -7,30 +7,33 @@ import InputBase from '@mui/material/InputBase'
 import { Close } from '@mui/icons-material'
 import UserChip from './UserChip'
 import SearchableUser from './SearchableUser'
+import _range from 'lodash/range'
 
 
 interface User {
-    id: string | number
+    _id: string | number
     firstName: string
     lastName: string
     username: string
-    photoUrl: string
+    photoUrl: string | null
 }
 
 interface Props {
     open: boolean
+    title: string
+    actionTitle: string
     users: User[]
     usersLoading: boolean
-    isCreatingChat: boolean
+    isTakingAction: boolean
 
     onSearch(searchQuery: string): void
 
-    onCreateChat(userIds: string[]): void
+    onTakeAction(userIds: (string | number)[]): void
 
     onCloseModal(): void
 }
 
-export default function CreateChatModal(props: Props) {
+export default function SearchUsersModal(props: Props) {
 
     const [searchQuery, setSearchQuery] = useState('')
 
@@ -45,24 +48,24 @@ export default function CreateChatModal(props: Props) {
 
     const [selectedUsers, setSelectedUsers] = useState<User[]>([])
 
-    const selectedUsersById = useMemo(() => selectedUsers.reduce((accumulator, user) => ({
+    const selectedUsersById: { [key: string]: boolean } = useMemo(() => selectedUsers.reduce((accumulator, user) => ({
         ...accumulator,
-        [user.id]: true,
+        [user._id]: true,
     }), {}), [selectedUsers])
 
     const users = useMemo(() => props.users.map(user => ({
         ...user,
-        selected: Boolean(selectedUsersById[user.id]),
+        selected: Boolean(selectedUsersById[user._id]),
     })), [props.users, selectedUsersById])
 
-    const handleRemoveUser = useCallback((id: string | number) => {
-        setSelectedUsers(users => users.filter(user => user.id !== id))
+    const handleRemoveUser = useCallback((_id: string | number) => {
+        setSelectedUsers(users => users.filter(user => user._id !== _id))
     }, [])
 
     const handleAddUser = useCallback((user: User & { selected: boolean }) => {
         if (user) {
             if (user.selected) {
-                handleRemoveUser(user.id)
+                handleRemoveUser(user._id)
             } else {
                 setSelectedUsers(users => [...users, user])
                 updateSearchQuery('')
@@ -71,7 +74,7 @@ export default function CreateChatModal(props: Props) {
     }, [handleRemoveUser])
 
     const handleCreateChat = () => {
-        props.onCreateChat(selectedUsers.map(user => user.id))
+        props.onTakeAction(selectedUsers.map(user => user._id))
     }
 
     return (
@@ -125,7 +128,7 @@ export default function CreateChatModal(props: Props) {
                             wordBreak: 'break-word',
                         }}
                     >
-                        New message
+                        {props.title}
                     </Box>
                 </Box>
                 <IconButton
@@ -233,7 +236,7 @@ export default function CreateChatModal(props: Props) {
                     >
                         {selectedUsers.map(user => (
                             <UserChip
-                                key={user.id}
+                                key={user._id}
                                 user={user}
                                 onRemoveUser={handleRemoveUser} />
                         ))}
@@ -283,14 +286,14 @@ export default function CreateChatModal(props: Props) {
                     overflowY: 'scroll',
                 }}
             >
-                {props.usersLoading ? [...Array(8).keys()].map(index => (
+                {props.usersLoading ? _range(8).map(index => (
                     <SearchableUser
                         key={index}
                         loading />
                 )) : props.users.length > 0 ? users.map(user => (
                     <SearchableUser
-                        key={user.id}
-                        id={user.id}
+                        key={user._id}
+                        _id={user._id}
                         firstName={user.firstName}
                         lastName={user.lastName}
                         username={user.username}
@@ -404,15 +407,15 @@ export default function CreateChatModal(props: Props) {
                             color: '#FFFFFF',
                         },
                         '&.Mui-disabled': {
-                            color: props.isCreatingChat ? 'default' : '#4F6070',
-                            backgroundColor: props.isCreatingChat ? 'default' : '#1B4865',
+                            color: props.isTakingAction ? 'default' : '#4F6070',
+                            backgroundColor: props.isTakingAction ? 'default' : '#1B4865',
                         },
                     }}
-                    loading={props.isCreatingChat}
+                    loading={props.isTakingAction}
                     disabled={selectedUsers.length < 1}
                     onClick={handleCreateChat}
                 >
-                    Chat
+                    {props.actionTitle}
                 </LoadingButton>
             </Box>
         </Dialog>
