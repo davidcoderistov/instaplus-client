@@ -134,6 +134,24 @@ export default function Chat() {
             })
     }
 
+    const [leaveChat, leaveChatData] = useMutation(LEAVE_CHAT)
+
+    const handleLeaveChat = (chatId: string) => {
+        leaveChat({ variables: { chatId } })
+            .then(() => {
+                findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.deleteChat({
+                    queryData: findChatsForUser,
+                    variables: {
+                        chatId,
+                    },
+                }).queryResult)
+                setIsChatDetailsDrawerOpen(false)
+            })
+            .catch(() => {
+                enqueueSnackbar('You cannot leave this chat at this moment. Please try again later', { variant: 'error' })
+            })
+    }
+
     return (
         <>
             <Box
@@ -257,8 +275,9 @@ export default function Chat() {
                     onClickUser={console.log}
                     onDeleteChat={handleDeleteChat}
                     isDeletingChat={deleteChatData.loading}
-                    onAddPeople={console.log}
-                    onLeaveChat={console.log} />
+                    onLeaveChat={handleLeaveChat}
+                    isLeavingChat={leaveChatData.loading}
+                    onAddPeople={console.log} />
             )}
         </>
     )
