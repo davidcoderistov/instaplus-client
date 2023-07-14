@@ -31,8 +31,35 @@ export function updateSelectedStatus(options: UpdateSelectedStatusOptions): Upda
     }
 }
 
+interface DeleteChatOptions {
+    queryData: FindChatsForUserQueryType
+    variables: {
+        chatId: string
+    }
+}
+
+interface DeleteChatReturnValue {
+    queryResult: FindChatsForUserQueryType
+}
+
+export function deleteChat(options: DeleteChatOptions): DeleteChatReturnValue {
+    const data = options.queryData.findChatsForUser.data.filter(chatForUser => chatForUser.chat._id !== options.variables.chatId)
+    return {
+        queryResult: {
+            findChatsForUser: {
+                ...options.queryData.findChatsForUser,
+                data,
+                count: data.length < options.queryData.findChatsForUser.data.length ?
+                    options.queryData.findChatsForUser.count - 1 :
+                    options.queryData.findChatsForUser.count,
+            },
+        },
+    }
+}
+
 const mutations = {
     updateSelectedStatus,
+    deleteChat,
 }
 
 export default mutations
