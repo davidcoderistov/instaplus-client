@@ -1,7 +1,9 @@
-import { useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useAuthUser } from '../../hooks/misc'
-import { useQuery } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
+import { useSnackbar } from 'notistack'
 import { FIND_CHATS_FOR_USER, FIND_MESSAGES_BY_CHAT_ID } from '../../graphql/queries/chat'
+import { DELETE_CHAT, LEAVE_CHAT } from '../../graphql/mutations/chat'
 import { FindChatsForUserQueryType, FindMessagesByChatIdQueryType } from '../../graphql/types/queries/chat'
 import findChatsForUserMutations from '../../apollo/mutations/chat/findChatsForUser'
 import Box from '@mui/material/Box'
@@ -9,6 +11,7 @@ import ChatMessageList, { ChatMessage } from '../../lib/src/components/ChatMessa
 import InstaChat from '../../lib/src/components/Chat'
 import ChatOverview from '../../lib/src/components/ChatOverview'
 import ChatLoadingSkeleton from '../../lib/src/components/ChatLoadingSkeleton'
+import ChatDetailsDrawer from '../../lib/src/components/ChatDetailsDrawer'
 import { Message } from '../../lib/src/types/Message'
 
 
@@ -96,6 +99,7 @@ export default function Chat() {
     const hasMoreMessages = useMemo(() => messages.length < messagesCount, [messages, messagesCount])
 
     const handleClickChat = useCallback((chatId: string) => {
+        setIsChatDetailsDrawerOpen(false)
         findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.updateSelectedStatus({
             queryData: findChatsForUser,
             variables: {
@@ -104,114 +108,158 @@ export default function Chat() {
         }).queryResult)
     }, [])
 
+    const [isChatDetailsDrawerOpen, setIsChatDetailsDrawerOpen] = useState(false)
+
+    const handleViewChatDetails = () => {
+        setIsChatDetailsDrawerOpen(isChatDetailsDrawerOpen => !isChatDetailsDrawerOpen)
+    }
+
+    const { enqueueSnackbar } = useSnackbar()
+
+    const [deleteChat, deleteChatData] = useMutation(DELETE_CHAT)
+
+    const handleDeleteChat = (chatId: string) => {
+        deleteChat({ variables: { chatId } })
+            .then(() => {
+                findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.deleteChat({
+                    queryData: findChatsForUser,
+                    variables: {
+                        chatId,
+                    },
+                }).queryResult)
+                setIsChatDetailsDrawerOpen(false)
+            })
+            .catch(() => {
+                enqueueSnackbar('Chat could not be deleted. Please try again later', { variant: 'error' })
+            })
+    }
+
     return (
-        <Box
-            component='div'
-            display='block'
-            width='100%'
-            sx={{
-                overflowX: 'hidden',
-            }}
-        >
+        <>
             <Box
-                component='section'
+                component='div'
+                display='block'
                 width='100%'
-                flexDirection='column'
-                display='flex'
-                height='100%'
                 sx={{
                     overflowX: 'hidden',
                 }}
             >
                 <Box
-                    component='div'
-                    boxSizing='border-box'
-                    position='relative'
-                    zIndex='0'
-                    display='block'
+                    component='section'
+                    width='100%'
+                    flexDirection='column'
+                    display='flex'
+                    height='100%'
+                    sx={{
+                        overflowX: 'hidden',
+                    }}
                 >
                     <Box
                         component='div'
-                        bgcolor='#121212'
-                        maxHeight='100%'
-                        height='100%'
+                        boxSizing='border-box'
+                        position='relative'
+                        zIndex='0'
                         display='block'
                     >
                         <Box
                             component='div'
-                            height='100vh'
-                            width='100%'
-                            bgcolor='transparent'
-                            flexDirection='column'
-                            boxSizing='border-box'
-                            display='flex'
-                            alignItems='stretch'
-                            justifyContent='flex-start'
-                            position='relative'
-                            border='0'
-                            sx={{
-                                overflowX: 'visible',
-                                overflowY: 'visible',
-                            }}
+                            bgcolor='#121212'
+                            maxHeight='100%'
+                            height='100%'
+                            display='block'
                         >
                             <Box
                                 component='div'
-                                flexWrap='nowrap'
+                                height='100vh'
+                                width='100%'
+                                bgcolor='transparent'
+                                flexDirection='column'
                                 boxSizing='border-box'
                                 display='flex'
-                                height='100%'
-                                flexShrink='0'
-                                minHeight='inherit'
                                 alignItems='stretch'
-                                flexDirection='row'
                                 justifyContent='flex-start'
                                 position='relative'
-                                zIndex='0'
-                                flexGrow='1'
+                                border='0'
+                                sx={{
+                                    overflowX: 'visible',
+                                    overflowY: 'visible',
+                                }}
                             >
-                                {findChatsForUser.loading ? (
-                                    <ChatMessageList loading />
-                                ) : (
-                                    <ChatMessageList
-                                        authUserId={authUser._id}
-                                        chatName={authUser.username}
-                                        chatMessages={chats}
-                                        hasMoreChatMessages={hasMoreChats}
-                                        onCreateNewChat={console.log}
-                                        onFetchMoreChatMessages={console.log}
-                                        onClickChatMessage={handleClickChat}
-                                    />
-                                )}
-                                {selectedChat ? (
-                                    <InstaChat
-                                        type={selectedChat.chatMembers.length > 2 ? 'group' : 'single'}
-                                        authUserId={authUser._id}
-                                        loading={findMessagesByChatId.loading}
-                                        creator={{ id: selectedChat.creatorId, username: selectedChat.creatorUsername }}
-                                        chatMembers={selectedChat.chatMembers}
-                                        messages={messages}
-                                        messagesCount={messagesCount}
-                                        hasMoreMessages={hasMoreMessages}
-                                        onFetchMoreMessages={console.log}
-                                        onClickChatMembers={console.log}
-                                        onClickChatDetails={console.log}
-                                        onViewChatDescription={console.log}
-                                        onClickPhoto={console.log}
-                                        onClickReplyPhoto={console.log}
-                                        onReact={console.log}
-                                        onSendMessage={console.log}
-                                        onSendLike={console.log}
-                                        onUploadFile={console.log} />
-                                ) : findChatsForUser.loading ? (
-                                    <ChatLoadingSkeleton />
-                                ) : (
-                                    <ChatOverview onSendMessage={console.log} />
-                                )}
+                                <Box
+                                    component='div'
+                                    flexWrap='nowrap'
+                                    boxSizing='border-box'
+                                    display='flex'
+                                    height='100%'
+                                    flexShrink='0'
+                                    minHeight='inherit'
+                                    alignItems='stretch'
+                                    flexDirection='row'
+                                    justifyContent='flex-start'
+                                    position='relative'
+                                    zIndex='0'
+                                    flexGrow='1'
+                                >
+                                    {findChatsForUser.loading ? (
+                                        <ChatMessageList loading />
+                                    ) : (
+                                        <ChatMessageList
+                                            authUserId={authUser._id}
+                                            chatName={authUser.username}
+                                            chatMessages={chats}
+                                            hasMoreChatMessages={hasMoreChats}
+                                            onCreateNewChat={console.log}
+                                            onFetchMoreChatMessages={console.log}
+                                            onClickChatMessage={handleClickChat}
+                                        />
+                                    )}
+                                    {selectedChat ? (
+                                        <InstaChat
+                                            type={selectedChat.chatMembers.length > 2 ? 'group' : 'single'}
+                                            authUserId={authUser._id}
+                                            loading={findMessagesByChatId.loading}
+                                            isViewingChatDetails={isChatDetailsDrawerOpen}
+                                            creator={{
+                                                id: selectedChat.creatorId,
+                                                username: selectedChat.creatorUsername,
+                                            }}
+                                            chatMembers={selectedChat.chatMembers}
+                                            messages={messages}
+                                            messagesCount={messagesCount}
+                                            hasMoreMessages={hasMoreMessages}
+                                            onFetchMoreMessages={console.log}
+                                            onClickChatMembers={console.log}
+                                            onClickChatDetails={handleViewChatDetails}
+                                            onViewChatDescription={console.log}
+                                            onClickPhoto={console.log}
+                                            onClickReplyPhoto={console.log}
+                                            onReact={console.log}
+                                            onSendMessage={console.log}
+                                            onSendLike={console.log}
+                                            onUploadFile={console.log} />
+                                    ) : findChatsForUser.loading ? (
+                                        <ChatLoadingSkeleton />
+                                    ) : (
+                                        <ChatOverview onSendMessage={console.log} />
+                                    )}
+                                </Box>
                             </Box>
                         </Box>
                     </Box>
                 </Box>
             </Box>
-        </Box>
+            {selectedChat && isChatDetailsDrawerOpen && (
+                <ChatDetailsDrawer
+                    open={true}
+                    chatId={selectedChat.id}
+                    creatorId={selectedChat.creatorId}
+                    chatMembers={selectedChat.chatMembers}
+                    onClickUser={console.log}
+                    onDeleteChat={handleDeleteChat}
+                    isDeletingChat={deleteChatData.loading}
+                    onAddPeople={console.log}
+                    onLeaveChat={console.log} />
+            )}
+        </>
     )
 }
