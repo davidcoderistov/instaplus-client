@@ -233,6 +233,7 @@ export default function Chat() {
                                     )}
                                     {selectedChat ? (
                                         <InstaChat
+                                            chatId={selectedChat.id}
                                             type={selectedChat.chatMembers.length > 2 ? 'group' : 'single'}
                                             authUserId={authUser._id}
                                             loading={findMessagesByChatId.loading}
@@ -246,9 +247,8 @@ export default function Chat() {
                                             messagesCount={messagesCount}
                                             hasMoreMessages={hasMoreMessages}
                                             onFetchMoreMessages={console.log}
-                                            onClickChatMembers={console.log}
-                                            onClickChatDetails={handleViewChatDetails}
-                                            onViewChatDescription={console.log}
+                                            onViewChatDetails={handleViewChatDetails}
+                                            onViewUser={console.log}
                                             onClickPhoto={console.log}
                                             onClickReplyPhoto={console.log}
                                             onReact={console.log}
