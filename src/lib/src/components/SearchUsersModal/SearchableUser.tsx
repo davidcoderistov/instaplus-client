@@ -9,7 +9,7 @@ import Skeleton from '@mui/material/Skeleton'
 
 
 interface User {
-    id: string | number
+    _id: string | number
     username: string
     firstName: string
     lastName: string
@@ -19,7 +19,7 @@ interface User {
 
 interface StaticProps {
     loading?: never
-    id: string | number
+    _id: string | number
     username: string
     firstName: string
     lastName: string
@@ -31,7 +31,7 @@ interface StaticProps {
 
 interface LoadingProps {
     loading: true
-    id?: never
+    _id?: never
     username?: never
     firstName?: never
     lastName?: never
@@ -59,7 +59,7 @@ const SearchableUser = React.memo((props: Props) => {
             onClick={handleClickUser}
         >
             <ListItemAvatar
-                loading={props.loading}
+                loading={Boolean(props.loading)}
                 loader={
                     <Skeleton
                         variant='circular'
@@ -70,9 +70,9 @@ const SearchableUser = React.memo((props: Props) => {
                 photoUrls={props.loading || !props.photoUrl ? [] : [props.photoUrl]}
                 usernames={props.loading ? [] : [props.username]}
             />
-            <ListItemContent gutters={props.loading}>
+            <ListItemContent gutters={Boolean(props.loading)}>
                 <ListItemTitle
-                    loading={props.loading}
+                    loading={Boolean(props.loading)}
                     loader={
                         <Skeleton
                             variant='rounded'
@@ -86,7 +86,7 @@ const SearchableUser = React.memo((props: Props) => {
                     title={!props.loading ? props.username : null}
                 />
                 <ListItemSubtitle
-                    loading={props.loading}
+                    loading={Boolean(props.loading)}
                     loader={
                         <Skeleton
                             variant='rounded'
