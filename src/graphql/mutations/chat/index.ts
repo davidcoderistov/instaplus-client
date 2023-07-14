@@ -18,3 +18,19 @@ export const CREATE_CHAT = gql`
         }
     }
 `
+
+export const DELETE_CHAT = gql`
+    mutation deleteChat($chatId: String!) {
+        deleteChat(chatId: $chatId) {
+            _id
+        }
+    }
+`
+
+export const LEAVE_CHAT = gql`
+    mutation deleteChat($chatId: String!) {
+        leaveChat(chatId: $chatId) {
+            _id
+        }
+    }
+`
