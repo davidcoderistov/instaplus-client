@@ -7,6 +7,7 @@ export const CREATE_CHAT = gql`
             _id
             creator {
                 _id
+                username
             }
             chatMembers {
                 _id
@@ -15,6 +16,8 @@ export const CREATE_CHAT = gql`
                 username
                 photoUrl
             }
+            selected @client
+            temporary @client
         }
     }
 `
