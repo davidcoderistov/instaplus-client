@@ -1,4 +1,5 @@
 import { FindChatsForUserQueryType } from '../../../graphql/types/queries/chat'
+import { ChatWithLatestMessage } from '../../../graphql/types/models'
 
 
 interface UpdateSelectedStatusOptions {
@@ -44,14 +45,37 @@ interface DeleteChatReturnValue {
 
 export function deleteChat(options: DeleteChatOptions): DeleteChatReturnValue {
     const data = options.queryData.findChatsForUser.data.filter(chatForUser => chatForUser.chat._id !== options.variables.chatId)
+    const count = options.queryData.findChatsForUser.count
     return {
         queryResult: {
             findChatsForUser: {
                 ...options.queryData.findChatsForUser,
                 data,
-                count: data.length < options.queryData.findChatsForUser.data.length ?
-                    options.queryData.findChatsForUser.count - 1 :
-                    options.queryData.findChatsForUser.count,
+                count: data.length < options.queryData.findChatsForUser.data.length ? count - 1 : count,
+            },
+        },
+    }
+}
+
+interface AddChatOptions {
+    queryData: FindChatsForUserQueryType
+    variables: {
+        chat: ChatWithLatestMessage
+    }
+}
+
+interface AddChatReturnValue {
+    queryResult: FindChatsForUserQueryType
+}
+
+export function addChat(options: AddChatOptions): AddChatReturnValue {
+    const count = options.queryData.findChatsForUser.count
+    return {
+        queryResult: {
+            findChatsForUser: {
+                ...options.queryData.findChatsForUser,
+                data: [options.variables.chat, ...options.queryData.findChatsForUser.data],
+                count: options.variables.chat.chat.temporary ? count : count + 1,
             },
         },
     }
@@ -60,6 +84,7 @@ export function deleteChat(options: DeleteChatOptions): DeleteChatReturnValue {
 const mutations = {
     updateSelectedStatus,
     deleteChat,
+    addChat,
 }
 
 export default mutations
