@@ -72,6 +72,11 @@ const cache = new InMemoryCache({
                         return selected
                     },
                 },
+                temporary: {
+                    read(temporary = false) {
+                        return temporary
+                    },
+                },
             },
         },
     },

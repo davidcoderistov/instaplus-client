@@ -25,6 +25,7 @@ export interface Chat {
     creator: Pick<User, '_id' | 'username'>
     chatMembers: User[]
     selected: boolean
+    temporary: boolean
 }
 
 export interface ChatWithLatestMessage {
