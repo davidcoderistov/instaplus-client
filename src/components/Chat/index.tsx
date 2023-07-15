@@ -3,8 +3,10 @@ import { useAuthUser } from '../../hooks/misc'
 import { useQuery, useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
 import { FIND_CHATS_FOR_USER, FIND_MESSAGES_BY_CHAT_ID } from '../../graphql/queries/chat'
-import { DELETE_CHAT, LEAVE_CHAT } from '../../graphql/mutations/chat'
+import { CREATE_CHAT, DELETE_CHAT, LEAVE_CHAT } from '../../graphql/mutations/chat'
 import { FindChatsForUserQueryType, FindMessagesByChatIdQueryType } from '../../graphql/types/queries/chat'
+import { CreateChatMutationType } from '../../graphql/types/mutations/chat'
+import { ChatWithLatestMessage } from '../../graphql/types/models'
 import findChatsForUserMutations from '../../apollo/mutations/chat/findChatsForUser'
 import Box from '@mui/material/Box'
 import ChatMessageList, { ChatMessage } from '../../lib/src/components/ChatMessageList'
@@ -12,7 +14,9 @@ import InstaChat from '../../lib/src/components/Chat'
 import ChatOverview from '../../lib/src/components/ChatOverview'
 import ChatLoadingSkeleton from '../../lib/src/components/ChatLoadingSkeleton'
 import ChatDetailsDrawer from '../../lib/src/components/ChatDetailsDrawer'
+import CreateChatModal from '../CreateChatModal'
 import { Message } from '../../lib/src/types/Message'
+import _intersection from 'lodash/intersection'
 
 
 export default function Chat() {
@@ -28,20 +32,22 @@ export default function Chat() {
 
     const chats: ChatMessage[] = useMemo(() => {
         if (!findChatsForUser.error && !findChatsForUser.loading && findChatsForUser.data) {
-            return findChatsForUser.data.findChatsForUser.data.map(({ chat, message }) => {
-                return {
-                    id: chat._id,
-                    chatMembers: chat.chatMembers.map(chatMember => ({ ...chatMember, id: chatMember._id })),
-                    text: message.text,
-                    photoUrl: message.photoUrl,
-                    videoUrl: message.videoUrl,
-                    creatorId: message.creator._id,
-                    creatorUsername: message.creator.username,
-                    timestamp: message.createdAt,
-                    seen: true,
-                    selected: chat.selected,
-                }
-            })
+            return findChatsForUser.data.findChatsForUser.data
+                .map(({ chat, message }) => {
+                    return {
+                        id: chat._id,
+                        chatMembers: chat.chatMembers.map(chatMember => ({ ...chatMember, id: chatMember._id })),
+                        text: message.text,
+                        photoUrl: message.photoUrl,
+                        videoUrl: message.videoUrl,
+                        creatorId: message.creator._id,
+                        creatorUsername: message.creator.username,
+                        timestamp: message.createdAt,
+                        seen: true,
+                        selected: chat.selected,
+                        temporary: chat.temporary,
+                    }
+                })
         }
         return []
     }, [findChatsForUser.loading, findChatsForUser.error, findChatsForUser.data])
@@ -152,6 +158,77 @@ export default function Chat() {
             })
     }
 
+    const [isCreateChatModalOpen, setIsCreateChatModalOpen] = useState(false)
+
+    const openCreateChatModal = () => {
+        setIsCreateChatModalOpen(true)
+    }
+
+    const closeCreateChatModal = () => {
+        setIsCreateChatModalOpen(false)
+    }
+
+    const [createChat, { loading: isCreatingChat }] = useMutation<CreateChatMutationType>(CREATE_CHAT)
+
+    const handleCreateChat = (userIds: (string | number)[]) => {
+        let findChatForUser: ChatWithLatestMessage | undefined
+        const allUserIds = [...userIds, authUser._id]
+        if (findChatsForUser.data) {
+            findChatForUser = findChatsForUser.data.findChatsForUser.data.find(chatForUser => {
+                return chatForUser.chat.chatMembers.length === allUserIds.length && _intersection(
+                    chatForUser.chat.chatMembers.map(member => member._id),
+                    allUserIds,
+                ).length === allUserIds.length
+            })
+        }
+        if (findChatForUser) {
+            const chatId = findChatForUser.chat._id
+            findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.updateSelectedStatus({
+                queryData: findChatsForUser,
+                variables: {
+                    chatId,
+                },
+            }).queryResult)
+            closeCreateChatModal()
+        } else {
+            createChat({
+                variables: {
+                    chatMemberIds: allUserIds,
+                },
+            }).then(({ data }) => {
+                const chat = data?.createChat
+                if (chat) {
+                    findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.addChat({
+                        queryData: findChatsForUser,
+                        variables: {
+                            chat: {
+                                chat: {
+                                    ...chat,
+                                    selected: true,
+                                    temporary: true,
+                                },
+                                message: {
+                                    _id: 'temporary-message-id',
+                                    text: null,
+                                    photoUrl: null,
+                                    videoUrl: null,
+                                    creator: authUser,
+                                    createdAt: 1,
+                                },
+                            },
+                        },
+                    }).queryResult)
+                } else {
+                    enqueueSnackbar('Chat could not be created. Please try again later', { variant: 'error' })
+                }
+            }).catch(() => {
+                enqueueSnackbar('Chat could not be created. Please try again later', { variant: 'error' })
+            }).finally(() => {
+                closeCreateChatModal()
+            })
+        }
+    }
+
     return (
         <>
             <Box
@@ -226,7 +303,7 @@ export default function Chat() {
                                             chatName={authUser.username}
                                             chatMessages={chats}
                                             hasMoreChatMessages={hasMoreChats}
-                                            onCreateNewChat={console.log}
+                                            onCreateNewChat={openCreateChatModal}
                                             onFetchMoreChatMessages={console.log}
                                             onClickChatMessage={handleClickChat}
                                         />
@@ -278,6 +355,13 @@ export default function Chat() {
                     onLeaveChat={handleLeaveChat}
                     isLeavingChat={leaveChatData.loading}
                     onAddPeople={console.log} />
+            )}
+            {isCreateChatModalOpen && (
+                <CreateChatModal
+                    open={true}
+                    isCreatingChat={isCreatingChat}
+                    onCreateChat={handleCreateChat}
+                    onCloseModal={closeCreateChatModal} />
             )}
         </>
     )
