@@ -3,7 +3,7 @@ import { useAuthUser } from '../../hooks/misc'
 import { useQuery, useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
 import { FIND_CHATS_FOR_USER, FIND_MESSAGES_BY_CHAT_ID } from '../../graphql/queries/chat'
-import { CREATE_CHAT, DELETE_CHAT, LEAVE_CHAT } from '../../graphql/mutations/chat'
+import { CREATE_CHAT, ADD_CHAT_MEMBERS, DELETE_CHAT, LEAVE_CHAT } from '../../graphql/mutations/chat'
 import { FindChatsForUserQueryType, FindMessagesByChatIdQueryType } from '../../graphql/types/queries/chat'
 import { CreateChatMutationType } from '../../graphql/types/mutations/chat'
 import { ChatWithLatestMessage } from '../../graphql/types/models'
@@ -15,6 +15,7 @@ import ChatOverview from '../../lib/src/components/ChatOverview'
 import ChatLoadingSkeleton from '../../lib/src/components/ChatLoadingSkeleton'
 import ChatDetailsDrawer from '../../lib/src/components/ChatDetailsDrawer'
 import CreateChatModal from '../CreateChatModal'
+import AddChatMembersModal from '../AddChatMembersModal'
 import { Message } from '../../lib/src/types/Message'
 import _intersection from 'lodash/intersection'
 
@@ -229,6 +230,32 @@ export default function Chat() {
         }
     }
 
+    const [addChatMembersModalOpen, setIsAddChatMembersModalOpen] = useState(false)
+
+    const openAddChatMembersModal = () => {
+        setIsAddChatMembersModalOpen(true)
+    }
+
+    const closeAddChatMembersModal = () => {
+        setIsAddChatMembersModalOpen(false)
+    }
+
+    const [addChatMembers, { loading: isAddingChatMembers }] = useMutation<CreateChatMutationType>(ADD_CHAT_MEMBERS)
+
+    const handleAddChatMembers = (chatMemberIds: (string | number)[]) => {
+        const chatId = (selectedChat as ChatMessage).id
+        addChatMembers({
+            variables: {
+                chatId,
+                chatMemberIds,
+            },
+        }).catch(() => {
+            enqueueSnackbar('These people could not be added to the chat. Please try again later', { variant: 'error' })
+        }).finally(() => {
+            closeAddChatMembersModal()
+        })
+    }
+
     return (
         <>
             <Box
@@ -354,7 +381,7 @@ export default function Chat() {
                     isDeletingChat={deleteChatData.loading}
                     onLeaveChat={handleLeaveChat}
                     isLeavingChat={leaveChatData.loading}
-                    onAddPeople={console.log} />
+                    onAddPeople={openAddChatMembersModal} />
             )}
             {isCreateChatModalOpen && (
                 <CreateChatModal
@@ -362,6 +389,14 @@ export default function Chat() {
                     isCreatingChat={isCreatingChat}
                     onCreateChat={handleCreateChat}
                     onCloseModal={closeCreateChatModal} />
+            )}
+            {selectedChat && addChatMembersModalOpen && (
+                <AddChatMembersModal
+                    open={true}
+                    isAddingChatMembers={isAddingChatMembers}
+                    excludeUserIds={selectedChat.chatMembers.map(member => member.id)}
+                    onAddChatMembers={handleAddChatMembers}
+                    onCloseModal={closeAddChatMembersModal} />
             )}
         </>
     )
