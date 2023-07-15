@@ -17,6 +17,7 @@ export interface ChatMessage {
     timestamp: number
     seen: boolean
     selected: boolean
+    temporary: boolean
 }
 
 interface StaticProps {
@@ -436,6 +437,7 @@ export default function ChatMessageList(props: Props) {
                                                             timestamp={chatMessage.timestamp}
                                                             seen={chatMessage.seen}
                                                             selected={chatMessage.selected}
+                                                            temporary={chatMessage.temporary}
                                                             onClick={handleClick} />
                                                     ))}
                                                 </Box>

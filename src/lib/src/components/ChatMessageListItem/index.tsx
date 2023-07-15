@@ -20,6 +20,7 @@ interface StaticProps {
     timestamp: number
     seen: boolean
     selected: boolean
+    temporary: boolean
     authUserId: string | number
 
     onClick(id: string | number): void
@@ -37,6 +38,7 @@ interface LoadingProps {
     timestamp?: never
     seen?: never
     selected?: never
+    temporary?: never
     authUserId?: never
 
     onClick?: never
@@ -174,162 +176,166 @@ const ChatMessageListItem = React.memo((props: Props) => {
                             ) : usernames}
                         </Box>
                     </Box>
-                    <Box
-                        component='div'
-                        height='5px'
-                        display='block' />
-                    <Box
-                        component='div'
-                        height='18px'
-                        bgcolor='transparent'
-                        width='100%'
-                        boxSizing='border-box'
-                        display='flex'
-                        alignItems='center'
-                        flexShrink='0'
-                        position='static'
-                        flexDirection='row'
-                        alignSelf='auto'
-                        justifyContent='flex-start'
-                        flexGrow='0'
-                        sx={{
-                            overflowY: 'visible',
-                            borderBottomLeftRadius: '0',
-                            borderBottomRightRadius: '0',
-                            overflowX: 'visible',
-                            borderTopLeftRadius: '0',
-                            borderTopRightRadius: '0',
-                        }}
-                    >
-                        {props.loading ? (
-                            <Skeleton
-                                variant='rounded'
-                                width={180}
-                                height={16}
+                    {!props.temporary && (
+                        <>
+                            <Box
+                                component='div'
+                                height='5px'
+                                display='block' />
+                            <Box
+                                component='div'
+                                height='18px'
+                                bgcolor='transparent'
+                                width='100%'
+                                boxSizing='border-box'
+                                display='flex'
+                                alignItems='center'
+                                flexShrink='0'
+                                position='static'
+                                flexDirection='row'
+                                alignSelf='auto'
+                                justifyContent='flex-start'
+                                flexGrow='0'
                                 sx={{
-                                    backgroundColor: '#202020',
-                                    borderRadius: '8px',
-                                }} />
-                        ) : (
-                            <>
-                                <Box
-                                    component='span'
-                                    lineHeight='16px'
-                                    fontWeight={props.seen ? '400' : '700'}
-                                    minWidth='0'
-                                    marginBottom='0!important'
-                                    marginRight='0!important'
-                                    color={props.seen ? '#A8A8A8' : '#F5F5F5'}
-                                    position='relative'
-                                    display='block'
-                                    fontSize='12px'
-                                    maxWidth='100%'
-                                    marginLeft='0!important'
-                                    marginTop='0!important'
-                                    sx={{
-                                        overflowY: 'visible',
-                                        wordWrap: 'break-word',
-                                        overflowX: 'visible',
-                                        whiteSpace: 'pre-line',
-                                        wordBreak: 'break-word',
-                                    }}
-                                >
-                                    <Box
-                                        component='span'
-                                        display='block'
-                                        maxWidth='100%'
+                                    overflowY: 'visible',
+                                    borderBottomLeftRadius: '0',
+                                    borderBottomRightRadius: '0',
+                                    overflowX: 'visible',
+                                    borderTopLeftRadius: '0',
+                                    borderTopRightRadius: '0',
+                                }}
+                            >
+                                {props.loading ? (
+                                    <Skeleton
+                                        variant='rounded'
+                                        width={180}
+                                        height={16}
                                         sx={{
-                                            whiteSpace: 'nowrap',
-                                            textOverflow: 'ellipsis',
-                                            overflowX: 'hidden',
-                                            overflowY: 'hidden',
-                                        }}
-                                    >
-                                        {getMessageText()}
-                                    </Box>
-                                </Box>
-                                <Box
-                                    component='span'
-                                    marginRight='4px'
-                                    marginLeft='4px'
-                                    marginTop='0'
-                                    marginBottom='0'
-                                    flexShrink='0'
-                                    color='#A8A8A8'
-                                >
-                                    <Box
-                                        component='span'
-                                    >
+                                            backgroundColor: '#202020',
+                                            borderRadius: '8px',
+                                        }} />
+                                ) : (
+                                    <>
                                         <Box
                                             component='span'
-                                            height='1px'
-                                            width='1px'
-                                            position='absolute'
-                                            sx={{
-                                                clip: 'rect(0,0,0,0)',
-                                                overflowX: 'hidden',
-                                                overflowY: 'hidden',
-                                            }}
-                                        >
-                                            &nbsp;
-                                        </Box>
-                                        <Box
-                                            component='span'
-                                        > · </Box>
-                                    </Box>
-                                </Box>
-                                <Box
-                                    component='div'
-                                    minWidth='0'
-                                    flexShrink='0'
-                                    display='block'
-                                >
-                                    <Box
-                                        component='span'
-                                        lineHeight='16px'
-                                        fontWeight='400'
-                                        minWidth='0'
-                                        marginBottom='0!important'
-                                        marginRight='0!important'
-                                        color='#A8A8A8'
-                                        position='relative'
-                                        display='block'
-                                        fontSize='12px'
-                                        maxWidth='100%'
-                                        marginLeft='0!important'
-                                        marginTop='0!important'
-                                        sx={{
-                                            overflowY: 'visible',
-                                            wordWrap: 'break-word',
-                                            overflowX: 'visible',
-                                            whiteSpace: 'pre-line',
-                                            wordBreak: 'break-word',
-                                        }}
-                                    >
-                                        <Box
-                                            component='span'
+                                            lineHeight='16px'
+                                            fontWeight={props.seen ? '400' : '700'}
+                                            minWidth='0'
+                                            marginBottom='0!important'
+                                            marginRight='0!important'
+                                            color={props.seen ? '#A8A8A8' : '#F5F5F5'}
+                                            position='relative'
                                             display='block'
+                                            fontSize='12px'
                                             maxWidth='100%'
+                                            marginLeft='0!important'
+                                            marginTop='0!important'
                                             sx={{
-                                                whiteSpace: 'nowrap',
-                                                textOverflow: 'ellipsis',
-                                                overflowX: 'hidden',
-                                                overflowY: 'hidden',
+                                                overflowY: 'visible',
+                                                wordWrap: 'break-word',
+                                                overflowX: 'visible',
+                                                whiteSpace: 'pre-line',
+                                                wordBreak: 'break-word',
                                             }}
                                         >
                                             <Box
-                                                component='div'
-                                                whiteSpace='nowrap'
+                                                component='span'
                                                 display='block'
+                                                maxWidth='100%'
+                                                sx={{
+                                                    whiteSpace: 'nowrap',
+                                                    textOverflow: 'ellipsis',
+                                                    overflowX: 'hidden',
+                                                    overflowY: 'hidden',
+                                                }}
                                             >
-                                                {getTimeElapsed(props.timestamp)}
+                                                {getMessageText()}
                                             </Box>
                                         </Box>
-                                    </Box>
-                                </Box>
-                            </>
-                        )}
-                    </Box>
+                                        <Box
+                                            component='span'
+                                            marginRight='4px'
+                                            marginLeft='4px'
+                                            marginTop='0'
+                                            marginBottom='0'
+                                            flexShrink='0'
+                                            color='#A8A8A8'
+                                        >
+                                            <Box
+                                                component='span'
+                                            >
+                                                <Box
+                                                    component='span'
+                                                    height='1px'
+                                                    width='1px'
+                                                    position='absolute'
+                                                    sx={{
+                                                        clip: 'rect(0,0,0,0)',
+                                                        overflowX: 'hidden',
+                                                        overflowY: 'hidden',
+                                                    }}
+                                                >
+                                                    &nbsp;
+                                                </Box>
+                                                <Box
+                                                    component='span'
+                                                > · </Box>
+                                            </Box>
+                                        </Box>
+                                        <Box
+                                            component='div'
+                                            minWidth='0'
+                                            flexShrink='0'
+                                            display='block'
+                                        >
+                                            <Box
+                                                component='span'
+                                                lineHeight='16px'
+                                                fontWeight='400'
+                                                minWidth='0'
+                                                marginBottom='0!important'
+                                                marginRight='0!important'
+                                                color='#A8A8A8'
+                                                position='relative'
+                                                display='block'
+                                                fontSize='12px'
+                                                maxWidth='100%'
+                                                marginLeft='0!important'
+                                                marginTop='0!important'
+                                                sx={{
+                                                    overflowY: 'visible',
+                                                    wordWrap: 'break-word',
+                                                    overflowX: 'visible',
+                                                    whiteSpace: 'pre-line',
+                                                    wordBreak: 'break-word',
+                                                }}
+                                            >
+                                                <Box
+                                                    component='span'
+                                                    display='block'
+                                                    maxWidth='100%'
+                                                    sx={{
+                                                        whiteSpace: 'nowrap',
+                                                        textOverflow: 'ellipsis',
+                                                        overflowX: 'hidden',
+                                                        overflowY: 'hidden',
+                                                    }}
+                                                >
+                                                    <Box
+                                                        component='div'
+                                                        whiteSpace='nowrap'
+                                                        display='block'
+                                                    >
+                                                        {getTimeElapsed(props.timestamp)}
+                                                    </Box>
+                                                </Box>
+                                            </Box>
+                                        </Box>
+                                    </>
+                                )}
+                            </Box>
+                        </>
+                    )}
                 </Box>
             )}
             {mw900 && (
