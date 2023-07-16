@@ -44,14 +44,11 @@ interface DeleteChatReturnValue {
 }
 
 export function deleteChat(options: DeleteChatOptions): DeleteChatReturnValue {
-    const data = options.queryData.findChatsForUser.data.filter(chatForUser => chatForUser.chat._id !== options.variables.chatId)
-    const count = options.queryData.findChatsForUser.count
     return {
         queryResult: {
             findChatsForUser: {
                 ...options.queryData.findChatsForUser,
-                data,
-                count: data.length < options.queryData.findChatsForUser.data.length ? count - 1 : count,
+                data: options.queryData.findChatsForUser.data.filter(chatForUser => chatForUser.chat._id !== options.variables.chatId),
             },
         },
     }
@@ -69,13 +66,11 @@ interface AddChatReturnValue {
 }
 
 export function addChat(options: AddChatOptions): AddChatReturnValue {
-    const count = options.queryData.findChatsForUser.count
     return {
         queryResult: {
             findChatsForUser: {
                 ...options.queryData.findChatsForUser,
                 data: [options.variables.chat, ...options.queryData.findChatsForUser.data],
-                count: options.variables.chat.chat.temporary ? count : count + 1,
             },
         },
     }
