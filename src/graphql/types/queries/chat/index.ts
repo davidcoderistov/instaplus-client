@@ -3,14 +3,14 @@ import { ChatWithLatestMessage, Message } from '../../models'
 
 export interface FindChatsForUserQueryType {
     findChatsForUser: {
-        count: number
+        hasNext: boolean
         data: ChatWithLatestMessage[]
     }
 }
 
 export interface FindMessagesByChatIdQueryType {
     findMessagesByChatId: {
-        count: number
+        hasNext: boolean
         data: Message[]
     }
 }
