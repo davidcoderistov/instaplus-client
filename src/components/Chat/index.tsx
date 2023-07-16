@@ -53,14 +53,12 @@ export default function Chat() {
         return []
     }, [findChatsForUser.loading, findChatsForUser.error, findChatsForUser.data])
 
-    const chatsCount: number = useMemo(() => {
+    const hasMoreChats: boolean = useMemo(() => {
         if (!findChatsForUser.error && !findChatsForUser.loading && findChatsForUser.data) {
-            return findChatsForUser.data.findChatsForUser.count
+            return findChatsForUser.data.findChatsForUser.hasNext
         }
-        return 0
+        return false
     }, [findChatsForUser.loading, findChatsForUser.error, findChatsForUser.data])
-
-    const hasMoreChats = useMemo(() => chats.length < chatsCount, [chats, chatsCount])
 
     const selectedChat: ChatMessage | null = useMemo(() => {
         return chats.find(chat => chat.selected) ?? null
@@ -96,14 +94,12 @@ export default function Chat() {
         return []
     }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data])
 
-    const messagesCount: number = useMemo(() => {
+    const hasMoreMessages: boolean = useMemo(() => {
         if (!findMessagesByChatId.loading && !findMessagesByChatId.error && findMessagesByChatId.data) {
-            return findMessagesByChatId.data.findMessagesByChatId.count
+            return findMessagesByChatId.data.findMessagesByChatId.hasNext
         }
-        return 0
+        return false
     }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data])
-
-    const hasMoreMessages = useMemo(() => messages.length < messagesCount, [messages, messagesCount])
 
     const handleClickChat = useCallback((chatId: string) => {
         setIsChatDetailsDrawerOpen(false)
@@ -348,7 +344,6 @@ export default function Chat() {
                                             }}
                                             chatMembers={selectedChat.chatMembers}
                                             messages={messages}
-                                            messagesCount={messagesCount}
                                             hasMoreMessages={hasMoreMessages}
                                             onFetchMoreMessages={console.log}
                                             onViewChatDetails={handleViewChatDetails}
