@@ -132,6 +132,38 @@ export default function Chat() {
         return false
     }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data])
 
+    const onFetchMoreMessages = () => {
+        const chat = selectedChat as ChatMessage
+        const chatId = chat.id
+        if (findMessagesByChatId.data && findMessagesByChatId.data.findMessagesByChatId.nextCursor) {
+            findMessagesByChatId.fetchMore({
+                variables: {
+                    chatId,
+                    cursor: {
+                        _id: findMessagesByChatId.data.findMessagesByChatId.nextCursor._id,
+                        createdAt: findMessagesByChatId.data.findMessagesByChatId.nextCursor.createdAt,
+                    },
+                },
+                updateQuery(existing: FindMessagesByChatIdQueryType, { fetchMoreResult }: { fetchMoreResult: FindMessagesByChatIdQueryType }) {
+                    return {
+                        ...existing,
+                        findMessagesByChatId: {
+                            ...fetchMoreResult.findMessagesByChatId,
+                            data: [
+                                ..._differenceBy(
+                                    existing.findMessagesByChatId.data,
+                                    fetchMoreResult.findMessagesByChatId.data,
+                                    '_id',
+                                ),
+                                ...fetchMoreResult.findMessagesByChatId.data,
+                            ],
+                        },
+                    }
+                },
+            }).catch(console.log)
+        }
+    }
+
     const handleClickChat = useCallback((chatId: string) => {
         setIsChatDetailsDrawerOpen(false)
         findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.updateSelectedStatus({
@@ -376,7 +408,7 @@ export default function Chat() {
                                             chatMembers={selectedChat.chatMembers}
                                             messages={messages}
                                             hasMoreMessages={hasMoreMessages}
-                                            onFetchMoreMessages={console.log}
+                                            onFetchMoreMessages={onFetchMoreMessages}
                                             onViewChatDetails={handleViewChatDetails}
                                             onViewUser={console.log}
                                             onClickPhoto={console.log}
