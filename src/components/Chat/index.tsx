@@ -388,7 +388,7 @@ export default function Chat() {
                                     ) : findChatsForUser.loading ? (
                                         <ChatLoadingSkeleton />
                                     ) : (
-                                        <ChatOverview onSendMessage={console.log} />
+                                        <ChatOverview onSendMessage={openCreateChatModal} />
                                     )}
                                 </Box>
                             </Box>
