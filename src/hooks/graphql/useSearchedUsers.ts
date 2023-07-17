@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { useApolloClient, useLazyQuery } from '@apollo/client'
 import { FIND_USERS_BY_SEARCH_QUERY } from '../../graphql/queries/user'
 import { FindUsersBySearchQueryQueryType } from '../../graphql/types/queries/user'
@@ -7,6 +7,8 @@ import _differenceBy from 'lodash/differenceBy'
 
 
 export function useSearchedUsers(excludeUserIds?: (string | number)[]) {
+
+    const resultSet = useRef(false)
 
     const [isSearching, setIsSearching] = useState(false)
     const [searchedUsers, setSearchedUsers] = useState<FindUsersBySearchQueryQueryType['findUsersBySearchQuery']>([])
@@ -29,26 +31,30 @@ export function useSearchedUsers(excludeUserIds?: (string | number)[]) {
                 },
             })
             if (queryData) {
+                resultSet.current = true
                 setSearchedUsers(getUsers(queryData.findUsersBySearchQuery, excludeUserIds))
             } else {
+                resultSet.current = false
                 setIsSearching(true)
                 _findUsersBySearchQuery(searchQuery)
             }
         } else {
-            searchUsers('', true)
+            resultSet.current = true
+            setSearchedUsers([])
         }
     }
 
-    const searchUsers = (searchQuery: string, cacheOnly?: boolean) => {
+    const searchUsers = (searchQuery: string) => {
         findUsersBySearchQuery({
             variables: {
                 searchQuery,
                 limit: 25,
             },
-            ...cacheOnly && { fetchPolicy: 'cache-only' },
         }).then(findUsersBySearchQuery => {
             if (findUsersBySearchQuery.data && findUsersBySearchQuery.data.findUsersBySearchQuery) {
-                setSearchedUsers(getUsers(findUsersBySearchQuery.data.findUsersBySearchQuery, excludeUserIds))
+                if (!resultSet.current) {
+                    setSearchedUsers(getUsers(findUsersBySearchQuery.data.findUsersBySearchQuery, excludeUserIds))
+                }
             } else {
                 setSearchedUsers([])
             }
