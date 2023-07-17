@@ -1,6 +1,6 @@
-import { Chat } from '../../models'
+import { ChatWithLatestMessage } from '../../models'
 
 
 export interface CreateChatMutationType {
-    createChat: Chat
+    createChat: ChatWithLatestMessage
 }

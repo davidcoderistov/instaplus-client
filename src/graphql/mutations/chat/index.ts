@@ -4,20 +4,34 @@ import { gql } from '@apollo/client'
 export const CREATE_CHAT = gql`
     mutation createChat($chatMemberIds: [String!]!) {
         createChat(chatMemberIds: $chatMemberIds) {
-            _id
-            creator {
+            chat {
                 _id
-                username
+                creator {
+                    _id
+                    username
+                }
+                chatMembers {
+                    _id
+                    firstName
+                    lastName
+                    username
+                    photoUrl
+                }
+                selected @client
+                temporary @client
             }
-            chatMembers {
+            message {
                 _id
-                firstName
-                lastName
-                username
+                creator {
+                    _id
+                    username
+                    photoUrl
+                }
+                text
                 photoUrl
+                videoUrl
+                createdAt
             }
-            selected @client
-            temporary @client
         }
     }
 `

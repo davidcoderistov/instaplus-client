@@ -8,6 +8,7 @@ import { FindChatsForUserQueryType, FindMessagesByChatIdQueryType } from '../../
 import { CreateChatMutationType } from '../../graphql/types/mutations/chat'
 import { ChatWithLatestMessage } from '../../graphql/types/models'
 import findChatsForUserMutations from '../../apollo/mutations/chat/findChatsForUser'
+import { Message as IMessage } from '../../graphql/types/models'
 import Box from '@mui/material/Box'
 import ChatMessageList, { ChatMessage } from '../../lib/src/components/ChatMessageList'
 import InstaChat from '../../lib/src/components/Chat'
@@ -34,7 +35,9 @@ export default function Chat() {
     const chats: ChatMessage[] = useMemo(() => {
         if (!findChatsForUser.error && !findChatsForUser.loading && findChatsForUser.data) {
             return findChatsForUser.data.findChatsForUser.data
-                .map(({ chat, message }) => {
+                .map((chatForUser) => {
+                    const { chat } = chatForUser
+                    const message = chatForUser.message as IMessage
                     return {
                         id: chat._id,
                         chatMembers: chat.chatMembers.map(chatMember => ({ ...chatMember, id: chatMember._id })),
@@ -221,24 +224,24 @@ export default function Chat() {
                     chatMemberIds: allUserIds,
                 },
             }).then(({ data }) => {
-                const chat = data?.createChat
-                if (chat) {
+                const createChat = data?.createChat
+                if (createChat) {
                     findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.addChat({
                         queryData: findChatsForUser,
                         variables: {
                             chat: {
                                 chat: {
-                                    ...chat,
+                                    ...createChat.chat,
                                     selected: true,
-                                    temporary: true,
+                                    temporary: !createChat.message,
                                 },
                                 message: {
-                                    _id: 'temporary-message-id',
-                                    text: null,
-                                    photoUrl: null,
-                                    videoUrl: null,
-                                    creator: authUser,
-                                    createdAt: 1,
+                                    _id: createChat.message?._id || 'temporary-message-id',
+                                    text: createChat.message?.text ?? null,
+                                    photoUrl: createChat.message?.photoUrl ?? null,
+                                    videoUrl: createChat.message?.videoUrl ?? null,
+                                    creator: createChat.message?.creator || authUser,
+                                    createdAt: createChat.message?.createdAt || 1,
                                 },
                             },
                         },
