@@ -6,3 +6,8 @@ export interface User {
     photoUrl: string | null
     accessToken: string
 }
+
+export interface NextCursor {
+    _id: string
+    createdAt: number
+}

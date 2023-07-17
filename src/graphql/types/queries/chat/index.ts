@@ -1,16 +1,17 @@
 import { ChatWithLatestMessage, Message } from '../../models'
+import { NextCursor } from '../../../../types'
 
 
 export interface FindChatsForUserQueryType {
     findChatsForUser: {
-        hasNext: boolean
+        nextCursor: NextCursor | null
         data: ChatWithLatestMessage[]
     }
 }
 
 export interface FindMessagesByChatIdQueryType {
     findMessagesByChatId: {
-        hasNext: boolean
+        nextCursor: NextCursor | null
         data: Message[]
     }
 }

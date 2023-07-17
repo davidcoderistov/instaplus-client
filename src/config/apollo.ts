@@ -79,6 +79,9 @@ const cache = new InMemoryCache({
                 },
             },
         },
+        NextCursor: {
+            keyFields: false,
+        },
     },
 })
 

@@ -2,9 +2,12 @@ import { gql } from '@apollo/client'
 
 
 export const FIND_CHATS_FOR_USER = gql`
-    query findChatsForUser($lastCreatedAt: Timestamp, $lastId: String, $limit: Int!) {
-        findChatsForUser(lastCreatedAt: $lastCreatedAt, lastId: $lastId, limit: $limit) {
-            hasNext
+    query findChatsForUser($cursor: Cursor, $limit: Int!) {
+        findChatsForUser(cursor: $cursor, limit: $limit) {
+            nextCursor {
+                _id
+                createdAt
+            }
             data {
                 chat {
                     _id
@@ -40,9 +43,12 @@ export const FIND_CHATS_FOR_USER = gql`
 `
 
 export const FIND_MESSAGES_BY_CHAT_ID = gql`
-    query findMessagesByChatId($chatId: String!, $limit: Int!, $lastCreatedAt: Timestamp, $lastId: String) {
-        findMessagesByChatId(chatId: $chatId, limit: $limit, lastCreatedAt: $lastCreatedAt, lastId: $lastId) {
-            hasNext
+    query findMessagesByChatId($chatId: String!, $limit: Int!, $cursor: Cursor) {
+        findMessagesByChatId(chatId: $chatId, limit: $limit, cursor: $cursor) {
+            nextCursor {
+                _id
+                createdAt
+            }
             data {
                 _id
                 creator {
