@@ -17,7 +17,7 @@ export function useSearchedUsers(excludeUserIds?: (string | number)[]) {
 
     const _findUsersBySearchQuery = useMemo(() => _debounce((searchQuery: string) => {
         searchUsers(searchQuery)
-    }, 500, { leading: true }), [])
+    }, 500, { trailing: true }), [])
 
     const client = useApolloClient()
 
@@ -33,6 +33,7 @@ export function useSearchedUsers(excludeUserIds?: (string | number)[]) {
             if (queryData) {
                 resultSet.current = true
                 setSearchedUsers(getUsers(queryData.findUsersBySearchQuery, excludeUserIds))
+                setIsSearching(false)
             } else {
                 resultSet.current = false
                 setIsSearching(true)
