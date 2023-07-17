@@ -18,6 +18,7 @@ import CreateChatModal from '../CreateChatModal'
 import AddChatMembersModal from '../AddChatMembersModal'
 import { Message } from '../../lib/src/types/Message'
 import _intersection from 'lodash/intersection'
+import _differenceBy from 'lodash/differenceBy'
 
 
 export default function Chat() {
@@ -26,7 +27,6 @@ export default function Chat() {
 
     const findChatsForUser = useQuery<FindChatsForUserQueryType>(FIND_CHATS_FOR_USER, {
         variables: {
-            offset: 0,
             limit: 10,
         },
     })
@@ -55,7 +55,7 @@ export default function Chat() {
 
     const hasMoreChats: boolean = useMemo(() => {
         if (!findChatsForUser.error && !findChatsForUser.loading && findChatsForUser.data) {
-            return findChatsForUser.data.findChatsForUser.hasNext
+            return !!findChatsForUser.data.findChatsForUser.nextCursor
         }
         return false
     }, [findChatsForUser.loading, findChatsForUser.error, findChatsForUser.data])
@@ -64,11 +64,39 @@ export default function Chat() {
         return chats.find(chat => chat.selected) ?? null
     }, [chats])
 
+    const onFetchMoreChats = () => {
+        if (findChatsForUser.data && findChatsForUser.data.findChatsForUser.nextCursor) {
+            findChatsForUser.fetchMore({
+                variables: {
+                    cursor: {
+                        _id: findChatsForUser.data.findChatsForUser.nextCursor._id,
+                        createdAt: findChatsForUser.data.findChatsForUser.nextCursor.createdAt,
+                    },
+                },
+                updateQuery(existing: FindChatsForUserQueryType, { fetchMoreResult }: { fetchMoreResult: FindChatsForUserQueryType }) {
+                    return {
+                        ...existing,
+                        findChatsForUser: {
+                            ...fetchMoreResult.findChatsForUser,
+                            data: [
+                                ..._differenceBy(
+                                    existing.findChatsForUser.data,
+                                    fetchMoreResult.findChatsForUser.data,
+                                    'chat._id',
+                                ),
+                                ...fetchMoreResult.findChatsForUser.data,
+                            ],
+                        },
+                    }
+                },
+            }).catch(console.log)
+        }
+    }
+
     const findMessagesByChatId = useQuery<FindMessagesByChatIdQueryType>(FIND_MESSAGES_BY_CHAT_ID, {
         skip: !selectedChat,
         variables: {
             chatId: selectedChat?.id,
-            offset: 0,
             limit: 10,
         },
     })
@@ -96,7 +124,7 @@ export default function Chat() {
 
     const hasMoreMessages: boolean = useMemo(() => {
         if (!findMessagesByChatId.loading && !findMessagesByChatId.error && findMessagesByChatId.data) {
-            return findMessagesByChatId.data.findMessagesByChatId.hasNext
+            return !!findMessagesByChatId.data.findMessagesByChatId.nextCursor
         }
         return false
     }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data])
@@ -327,7 +355,7 @@ export default function Chat() {
                                             chatMessages={chats}
                                             hasMoreChatMessages={hasMoreChats}
                                             onCreateNewChat={openCreateChatModal}
-                                            onFetchMoreChatMessages={console.log}
+                                            onFetchMoreChatMessages={onFetchMoreChats}
                                             onClickChatMessage={handleClickChat}
                                         />
                                     )}
