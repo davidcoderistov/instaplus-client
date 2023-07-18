@@ -233,7 +233,7 @@ export default function Chat() {
     const handleCreateChat = (userIds: (string | number)[]) => {
         let findChatForUser: ChatWithLatestMessage | undefined
         const allUserIds = [...userIds, authUser._id]
-        if (findChatsForUser.data) {
+        if (allUserIds.length <= 2 && findChatsForUser.data) {
             findChatForUser = findChatsForUser.data.findChatsForUser.data.find(chatForUser => {
                 return chatForUser.chat.chatMembers.length === allUserIds.length && _intersection(
                     chatForUser.chat.chatMembers.map(member => member._id),
@@ -241,7 +241,7 @@ export default function Chat() {
                 ).length === allUserIds.length
             })
         }
-        if (findChatForUser) {
+        if (allUserIds.length <= 2 && findChatForUser) {
             const chatId = findChatForUser.chat._id
             findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.updateSelectedStatus({
                 queryData: findChatsForUser,
