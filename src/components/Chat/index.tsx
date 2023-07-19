@@ -104,9 +104,11 @@ export default function Chat() {
         },
     })
 
+    const [messagesOffset, setMessagesOffset] = useState(10)
+
     const messages: Message[] = useMemo(() => {
         if (!findMessagesByChatId.loading && !findMessagesByChatId.error && findMessagesByChatId.data) {
-            return findMessagesByChatId.data.findMessagesByChatId.data.map(message => ({
+            return findMessagesByChatId.data.findMessagesByChatId.data.slice(0, messagesOffset).map(message => ({
                 id: message._id,
                 creator: {
                     id: message.creator._id,
@@ -123,44 +125,53 @@ export default function Chat() {
             }))
         }
         return []
-    }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data])
+    }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data, messagesOffset])
 
     const hasMoreMessages: boolean = useMemo(() => {
         if (!findMessagesByChatId.loading && !findMessagesByChatId.error && findMessagesByChatId.data) {
+            if (messagesOffset < findMessagesByChatId.data.findMessagesByChatId.data.length) {
+                return true
+            }
             return !!findMessagesByChatId.data.findMessagesByChatId.nextCursor
         }
         return false
-    }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data])
+    }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data, messagesOffset])
 
     const onFetchMoreMessages = () => {
-        const chat = selectedChat as ChatMessage
-        const chatId = chat.id
-        if (findMessagesByChatId.data && findMessagesByChatId.data.findMessagesByChatId.nextCursor) {
-            findMessagesByChatId.fetchMore({
-                variables: {
-                    chatId,
-                    cursor: {
-                        _id: findMessagesByChatId.data.findMessagesByChatId.nextCursor._id,
-                        createdAt: findMessagesByChatId.data.findMessagesByChatId.nextCursor.createdAt,
-                    },
-                },
-                updateQuery(existing: FindMessagesByChatIdQueryType, { fetchMoreResult }: { fetchMoreResult: FindMessagesByChatIdQueryType }) {
-                    return {
-                        ...existing,
-                        findMessagesByChatId: {
-                            ...fetchMoreResult.findMessagesByChatId,
-                            data: [
-                                ..._differenceBy(
-                                    existing.findMessagesByChatId.data,
-                                    fetchMoreResult.findMessagesByChatId.data,
-                                    '_id',
-                                ),
-                                ...fetchMoreResult.findMessagesByChatId.data,
-                            ],
+        if (findMessagesByChatId.data) {
+            if (messagesOffset < findMessagesByChatId.data.findMessagesByChatId.data.length) {
+                setMessagesOffset(messagesOffset => messagesOffset + 10)
+            } else {
+                if (findMessagesByChatId.data.findMessagesByChatId.nextCursor) {
+                    const chat = selectedChat as ChatMessage
+                    const chatId = chat.id
+                    findMessagesByChatId.fetchMore({
+                        variables: {
+                            chatId,
+                            cursor: {
+                                _id: findMessagesByChatId.data.findMessagesByChatId.nextCursor._id,
+                                createdAt: findMessagesByChatId.data.findMessagesByChatId.nextCursor.createdAt,
+                            },
                         },
-                    }
-                },
-            }).catch(console.log)
+                        updateQuery(existing: FindMessagesByChatIdQueryType, { fetchMoreResult }: { fetchMoreResult: FindMessagesByChatIdQueryType }) {
+                            return {
+                                ...existing,
+                                findMessagesByChatId: {
+                                    ...fetchMoreResult.findMessagesByChatId,
+                                    data: [
+                                        ..._differenceBy(
+                                            existing.findMessagesByChatId.data,
+                                            fetchMoreResult.findMessagesByChatId.data,
+                                            '_id',
+                                        ),
+                                        ...fetchMoreResult.findMessagesByChatId.data,
+                                    ],
+                                },
+                            }
+                        },
+                    }).then(() => setMessagesOffset(messagesOffset => messagesOffset + 10)).catch(console.log)
+                }
+            }
         }
     }
 
@@ -172,6 +183,7 @@ export default function Chat() {
                 chatId,
             },
         }).queryResult)
+        setMessagesOffset(10)
     }, [])
 
     const [isChatDetailsDrawerOpen, setIsChatDetailsDrawerOpen] = useState(false)
