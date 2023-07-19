@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useRef, forwardRef } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef, forwardRef } from 'react'
 import { useClickOutside } from '../../hooks'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -20,7 +20,6 @@ interface Props {
     isViewingChatDetails: boolean
 
     messages: Message[]
-    messagesCount: number
     hasMoreMessages: boolean
 
     onFetchMoreMessages(): void
@@ -55,13 +54,13 @@ const ForwardedChatMessage = React.memo(forwardRef<any, any>((props, ref) => (
 
 const Chat = React.memo((props: Props) => {
 
-    const timestampMessages = useCallback((messages: Message[], messagesCount: number)
+    const timestampMessages = useCallback((messages: Message[], hasMoreMessages: boolean)
         : Array<{ message: Message, timestamp: boolean }> => {
         const messagesCopy = messages.map(message => ({
             message,
             timestamp: false,
         }))
-        if (messagesCount > 0) {
+        if (messagesCopy.length > 0) {
             let separatorsCount = 0
             for (let i = 0; i < messages.length - 1; ++i) {
                 const first = moment(messages[i].createdAt)
@@ -74,7 +73,7 @@ const Chat = React.memo((props: Props) => {
                     ++separatorsCount
                 }
             }
-            if (messages.length === messagesCount) {
+            if (!hasMoreMessages) {
                 messagesCopy.splice(0, 0, {
                     message: messages[0],
                     timestamp: true,
@@ -148,7 +147,7 @@ const Chat = React.memo((props: Props) => {
     }, [props.onSendMessage, replyingMessage])
 
     const messages = useMemo(() => {
-        return timestampMessages(Array.from(props.messages).reverse(), props.messagesCount).map(
+        return timestampMessages(Array.from(props.messages).reverse(), props.hasMoreMessages).map(
             ({ message, timestamp }, index, messages) => {
                 if (timestamp) {
                     return (
@@ -191,7 +190,30 @@ const Chat = React.memo((props: Props) => {
                     />
                 )
             })
-    }, [props.messages, props.messagesCount, props.type, props.authUserId, timestampMessages, handleReplyMessage, props.onClickPhoto, props.onClickReplyPhoto, props.onReact, emojiBtnRef])
+    }, [props.messages, props.hasMoreMessages, props.type, props.authUserId, timestampMessages, handleReplyMessage, props.onClickPhoto, props.onClickReplyPhoto, props.onReact, emojiBtnRef])
+
+    const scrollableChatRef = useRef<HTMLDivElement>(null)
+    const shouldScrollToBottomRef = useRef(false)
+    const initialRenderRef = useRef(true)
+
+    useEffect(() => {
+        if (shouldScrollToBottomRef.current && scrollableChatRef.current) {
+            scrollableChatRef.current.scrollTop = scrollableChatRef.current.scrollHeight
+            shouldScrollToBottomRef.current = false
+        }
+    }, [scrollableChatRef.current])
+
+    useEffect(() => {
+        if (scrollableChatRef.current) {
+            scrollableChatRef.current.scrollTop = scrollableChatRef.current.scrollHeight
+        } else {
+            if (initialRenderRef.current) {
+                initialRenderRef.current = false
+            } else {
+                shouldScrollToBottomRef.current = true
+            }
+        }
+    }, [props.chatId])
 
     return (
         <Box
@@ -416,6 +438,7 @@ const Chat = React.memo((props: Props) => {
                                                                     ) : (
                                                                         <Box
                                                                             id='scrollableChat'
+                                                                            ref={scrollableChatRef}
                                                                             component='div'
                                                                             flexShrink='1'
                                                                             width='100%'
