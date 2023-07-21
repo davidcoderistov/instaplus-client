@@ -34,7 +34,6 @@ export const FIND_CHATS_FOR_USER = gql`
                     }
                     text
                     photoUrl
-                    videoUrl
                     createdAt
                 }
             }
@@ -58,7 +57,6 @@ export const FIND_MESSAGES_BY_CHAT_ID = gql`
                 }
                 text
                 photoUrl
-                videoUrl
                 createdAt
             }
         }

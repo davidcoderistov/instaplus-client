@@ -29,7 +29,6 @@ export const CREATE_CHAT = gql`
                 }
                 text
                 photoUrl
-                videoUrl
                 createdAt
             }
         }
