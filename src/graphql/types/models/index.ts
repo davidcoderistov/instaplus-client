@@ -11,13 +11,28 @@ export interface AuthUser {
     accessToken: string
 }
 
-export interface Message {
+interface BaseMessage {
     _id: string
-    creator: User
+    creator: {
+        _id: string
+        username: string
+        photoUrl: string | null
+    }
     text: string | null
     photoUrl: string | null
+    photoOrientation: 'portrait' | 'landscape' | null
     videoUrl: string | null
+    reactions: {
+        items: string[]
+        count: number
+    } | null
     createdAt: number
+}
+
+export type ReplyMessage = Pick<BaseMessage, '_id' | 'creator' | 'text' | 'photoUrl' | 'photoOrientation' | 'videoUrl'>
+
+export interface Message extends BaseMessage {
+    reply: ReplyMessage | null
 }
 
 export interface Chat {
@@ -30,5 +45,5 @@ export interface Chat {
 
 export interface ChatWithLatestMessage {
     chat: Chat
-    message: Message | null
+    message: BaseMessage | null
 }

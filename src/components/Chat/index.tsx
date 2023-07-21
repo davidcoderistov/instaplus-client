@@ -117,10 +117,17 @@ export default function Chat() {
                 },
                 text: message.text,
                 photoUrl: message.photoUrl,
-                photoOrientation: 'portrait',
+                photoOrientation: message.photoOrientation,
                 videoUrl: message.videoUrl,
                 reactions: null,
-                reply: null,
+                reply: message.reply ? ({
+                    ...message.reply,
+                    id: message.reply._id,
+                    creator: {
+                        ...message.reply.creator,
+                        id: message.reply.creator._id,
+                    },
+                }) : null,
                 createdAt: message.createdAt,
             }))
         }
@@ -283,6 +290,8 @@ export default function Chat() {
                                     _id: createChat.message?._id || 'temporary-message-id',
                                     text: createChat.message?.text ?? null,
                                     photoUrl: createChat.message?.photoUrl ?? null,
+                                    photoOrientation: null,
+                                    reactions: null,
                                     videoUrl: createChat.message?.videoUrl ?? null,
                                     creator: createChat.message?.creator || authUser,
                                     createdAt: createChat.message?.createdAt || 1,
