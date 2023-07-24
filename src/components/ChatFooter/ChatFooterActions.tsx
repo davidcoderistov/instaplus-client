@@ -5,14 +5,15 @@ import { useSnackbar } from 'notistack'
 
 
 interface Props {
+    chatId: string | number
     isTyping: boolean
     isReplying: boolean
 
     onSendMessage(): void
 
-    onSendLike(): void
+    onSendLike(chatId: string | number): void
 
-    onUploadFile(file: File): void
+    onUploadFile(chatId: string | number, file: File): void
 }
 
 export default function ChatFooterAction(props: Props) {
@@ -25,7 +26,7 @@ export default function ChatFooterAction(props: Props) {
         if (event.target.files) {
             const file: File | null = event.target.files[0]
             if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
-                props.onUploadFile(file)
+                props.onUploadFile(props.chatId, file)
             } else {
                 enqueueSnackbar('You can upload photos and videos only', {
                     variant: 'error', anchorOrigin: { horizontal: 'right', vertical: 'bottom' }, autoHideDuration: 3000,
@@ -33,11 +34,15 @@ export default function ChatFooterAction(props: Props) {
             }
             event.target.value = ''
         }
-    }, [props.onUploadFile, enqueueSnackbar])
+    }, [props.onUploadFile, enqueueSnackbar, props.chatId])
 
     const handleClickUploadFile = () => {
         fileInputRef.current?.click()
     }
+
+    const handleSendLike = useCallback(() => {
+        props.onSendLike(props.chatId)
+    }, [props.onSendLike, props.chatId])
 
     return props.isTyping ? (
         <Button
@@ -152,7 +157,7 @@ export default function ChatFooterAction(props: Props) {
                     borderBottom: '0',
                     borderTop: '0',
                 }}
-                onClick={props.onSendLike}
+                onClick={handleSendLike}
             >
                 <Box
                     component='div'
