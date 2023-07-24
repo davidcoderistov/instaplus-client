@@ -1,13 +1,14 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useAuthUser } from '../../hooks/misc'
 import { useQuery, useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
 import { FIND_CHATS_FOR_USER, FIND_MESSAGES_BY_CHAT_ID } from '../../graphql/queries/chat'
-import { CREATE_CHAT, ADD_CHAT_MEMBERS, DELETE_CHAT, LEAVE_CHAT } from '../../graphql/mutations/chat'
+import { CREATE_CHAT, ADD_CHAT_MEMBERS, DELETE_CHAT, LEAVE_CHAT, SEND_MESSAGE } from '../../graphql/mutations/chat'
 import { FindChatsForUserQueryType, FindMessagesByChatIdQueryType } from '../../graphql/types/queries/chat'
-import { CreateChatMutationType } from '../../graphql/types/mutations/chat'
+import { CreateChatMutationType, SendMessageMutationType } from '../../graphql/types/mutations/chat'
 import { ChatWithLatestMessage } from '../../graphql/types/models'
 import findChatsForUserMutations from '../../apollo/mutations/chat/findChatsForUser'
+import findMessagesByChatIdMutations from '../../apollo/mutations/chat/findMessagesByChatId'
 import { Message as IMessage } from '../../graphql/types/models'
 import Box from '@mui/material/Box'
 import ChatMessageList, { ChatMessage } from '../../lib/src/components/ChatMessageList'
@@ -20,6 +21,8 @@ import AddChatMembersModal from '../AddChatMembersModal'
 import { Message } from '../../lib/src/types/Message'
 import _intersection from 'lodash/intersection'
 import _differenceBy from 'lodash/differenceBy'
+import { v4 as uuidv4 } from 'uuid'
+import moment from 'moment'
 
 
 export default function Chat() {
@@ -100,11 +103,11 @@ export default function Chat() {
         skip: !selectedChat,
         variables: {
             chatId: selectedChat?.id,
-            limit: 10,
+            limit: 15,
         },
     })
 
-    const [messagesOffset, setMessagesOffset] = useState(10)
+    const [messagesOffset, setMessagesOffset] = useState(15)
 
     const messages: Message[] = useMemo(() => {
         if (!findMessagesByChatId.loading && !findMessagesByChatId.error && findMessagesByChatId.data) {
@@ -134,15 +137,28 @@ export default function Chat() {
         return []
     }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data, messagesOffset])
 
-    const hasMoreMessages: boolean = useMemo(() => {
-        if (!findMessagesByChatId.loading && !findMessagesByChatId.error && findMessagesByChatId.data) {
-            if (messagesOffset < findMessagesByChatId.data.findMessagesByChatId.data.length) {
-                return true
+
+    const isMessagesCountSetRef = useRef(false)
+    const [initialMessagesCount, setInitialMessagesCount] = useState(0)
+
+    useEffect(() => {
+        if (!findMessagesByChatId.loading && !findMessagesByChatId.error && findMessagesByChatId.data && selectedChat) {
+            if (!isMessagesCountSetRef.current) {
+                setInitialMessagesCount(findMessagesByChatId.data.findMessagesByChatId.data.length)
+                isMessagesCountSetRef.current = true
             }
-            return !!findMessagesByChatId.data.findMessagesByChatId.nextCursor
         }
-        return false
-    }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data, messagesOffset])
+    }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data, messagesOffset, selectedChat])
+
+    const hasMoreMessages: boolean = useMemo(() => {
+        if (messagesOffset < initialMessagesCount) {
+            return true
+        } else if (!findMessagesByChatId.loading && !findMessagesByChatId.error && findMessagesByChatId.data) {
+            return !!findMessagesByChatId.data.findMessagesByChatId.nextCursor
+        } else {
+            return false
+        }
+    }, [findMessagesByChatId.loading, findMessagesByChatId.error, findMessagesByChatId.data, messagesOffset, initialMessagesCount])
 
     const onFetchMoreMessages = () => {
         if (findMessagesByChatId.data) {
@@ -159,6 +175,7 @@ export default function Chat() {
                                 _id: findMessagesByChatId.data.findMessagesByChatId.nextCursor._id,
                                 createdAt: findMessagesByChatId.data.findMessagesByChatId.nextCursor.createdAt,
                             },
+                            limit: 10,
                         },
                         updateQuery(existing: FindMessagesByChatIdQueryType, { fetchMoreResult }: { fetchMoreResult: FindMessagesByChatIdQueryType }) {
                             return {
@@ -183,6 +200,7 @@ export default function Chat() {
     }
 
     const handleClickChat = useCallback((chatId: string) => {
+        isMessagesCountSetRef.current = false
         setIsChatDetailsDrawerOpen(false)
         findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.updateSelectedStatus({
             queryData: findChatsForUser,
@@ -190,7 +208,7 @@ export default function Chat() {
                 chatId,
             },
         }).queryResult)
-        setMessagesOffset(10)
+        setMessagesOffset(15)
     }, [])
 
     const [isChatDetailsDrawerOpen, setIsChatDetailsDrawerOpen] = useState(false)
@@ -336,6 +354,116 @@ export default function Chat() {
         })
     }
 
+    const [sendMessageMutation] = useMutation<SendMessageMutationType>(SEND_MESSAGE)
+    const [isUploadingPhoto, setIsUploadingPhoto] = useState(false)
+
+    const sendTextMessage = (chatId: string, text: string, reply: IMessage['reply']) => {
+        const _id = uuidv4()
+        findMessagesByChatId.updateQuery(findMessagesByChatId => findMessagesByChatIdMutations.addMessage({
+            queryData: findMessagesByChatId,
+            variables: {
+                message: {
+                    _id,
+                    creator: {
+                        _id: authUser._id,
+                        username: authUser.username,
+                        photoUrl: authUser.photoUrl,
+                    },
+                    text,
+                    photoUrl: null,
+                    photoOrientation: null,
+                    videoUrl: null,
+                    reactions: null,
+                    reply,
+                    createdAt: moment().valueOf(),
+                },
+            },
+        }).queryResult)
+        sendMessage({
+            chatId,
+            text,
+            photo: null,
+            replyId: reply ? reply._id : null,
+        }, _id)
+    }
+
+    const sendPhotoMessage = (chatId: string, photo: File) => {
+        sendMessage({
+            chatId,
+            text: null,
+            photo,
+            replyId: null,
+        }, null)
+    }
+
+    const sendMessage = (args: { chatId: string, text?: string | null, photo?: File | null, replyId?: string | null }, updateMessageId: string | null) => {
+        const hasPhoto = Boolean(args.photo)
+        if (hasPhoto) {
+            setIsUploadingPhoto(true)
+        }
+        sendMessageMutation({
+            variables: {
+                chatId: args.chatId,
+                text: args.text,
+                photo: args.photo,
+                replyId: args.replyId,
+            },
+            ...hasPhoto && {
+                context: {
+                    hasUpload: true,
+                },
+            },
+        }).then(({ data }) => {
+            const message = data?.sendMessage
+            if (message) {
+                if (updateMessageId) {
+                    findMessagesByChatId.updateQuery(findMessagesByChatId => findMessagesByChatIdMutations.updateMessage({
+                        queryData: findMessagesByChatId,
+                        variables: {
+                            id: updateMessageId,
+                            message,
+                        },
+                    }).queryResult)
+                } else {
+                    findMessagesByChatId.updateQuery(findMessagesByChatId => findMessagesByChatIdMutations.addMessage({
+                        queryData: findMessagesByChatId,
+                        variables: {
+                            message,
+                        },
+                    }).queryResult)
+                }
+            } else {
+                enqueueSnackbar('Message could not be sent. Please try again later', { variant: 'error' })
+            }
+        }).catch(() => {
+            enqueueSnackbar('Message could not be sent. Please try again later', { variant: 'error' })
+        }).finally(() => {
+            if (hasPhoto) {
+                setIsUploadingPhoto(false)
+            }
+        })
+    }
+
+    const handleSendMessage = useCallback((chatId: string, message: string, replyingMessage: Message | null) => {
+        sendTextMessage(chatId, message, replyingMessage ? {
+            ...replyingMessage,
+            _id: replyingMessage.id as string,
+            creator: {
+                ...replyingMessage.creator,
+                _id: replyingMessage.creator.id as string,
+                photoUrl: replyingMessage.creator.photoUrl ?? null,
+            },
+        } : null)
+    }, [])
+
+    const handleSendLike = useCallback((chatId: string) => {
+        sendTextMessage(chatId, '❤', null)
+    }, [])
+
+    const handleUploadFile = useCallback((chatId: string, file: File) => {
+        sendPhotoMessage(chatId, file)
+    }, [])
+
     return (
         <>
             <Box
@@ -422,6 +550,7 @@ export default function Chat() {
                                             authUserId={authUser._id}
                                             loading={findMessagesByChatId.loading}
                                             isViewingChatDetails={isChatDetailsDrawerOpen}
+                                            isUploadingPhoto={isUploadingPhoto}
                                             creator={{
                                                 id: selectedChat.creatorId,
                                                 username: selectedChat.creatorUsername,
@@ -435,9 +564,9 @@ export default function Chat() {
                                             onClickPhoto={console.log}
                                             onClickReplyPhoto={console.log}
                                             onReact={console.log}
-                                            onSendMessage={console.log}
-                                            onSendLike={console.log}
-                                            onUploadFile={console.log} />
+                                            onSendMessage={handleSendMessage}
+                                            onSendLike={handleSendLike}
+                                            onUploadFile={handleUploadFile} />
                                     ) : findChatsForUser.loading ? (
                                         <ChatLoadingSkeleton />
                                     ) : (
