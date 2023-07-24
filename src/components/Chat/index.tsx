@@ -359,24 +359,32 @@ export default function Chat() {
 
     const sendTextMessage = (chatId: string, text: string, reply: IMessage['reply']) => {
         const _id = uuidv4()
+        const message = {
+            _id,
+            creator: {
+                _id: authUser._id,
+                username: authUser.username,
+                photoUrl: authUser.photoUrl,
+            },
+            text,
+            photoUrl: null,
+            photoOrientation: null,
+            videoUrl: null,
+            reactions: null,
+            reply,
+            createdAt: moment().valueOf(),
+        }
+        findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.updateLatestMessage({
+            queryData: findChatsForUser,
+            variables: {
+                chatId,
+                message,
+            },
+        }).queryResult)
         findMessagesByChatId.updateQuery(findMessagesByChatId => findMessagesByChatIdMutations.addMessage({
             queryData: findMessagesByChatId,
             variables: {
-                message: {
-                    _id,
-                    creator: {
-                        _id: authUser._id,
-                        username: authUser.username,
-                        photoUrl: authUser.photoUrl,
-                    },
-                    text,
-                    photoUrl: null,
-                    photoOrientation: null,
-                    videoUrl: null,
-                    reactions: null,
-                    reply,
-                    createdAt: moment().valueOf(),
-                },
+                message,
             },
         }).queryResult)
         sendMessage({
@@ -428,6 +436,15 @@ export default function Chat() {
                     findMessagesByChatId.updateQuery(findMessagesByChatId => findMessagesByChatIdMutations.addMessage({
                         queryData: findMessagesByChatId,
                         variables: {
+                            message,
+                        },
+                    }).queryResult)
+                }
+                if (hasPhoto) {
+                    findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.updateLatestMessage({
+                        queryData: findChatsForUser,
+                        variables: {
+                            chatId: args.chatId,
                             message,
                         },
                     }).queryResult)
