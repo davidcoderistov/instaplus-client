@@ -71,3 +71,31 @@ export const LEAVE_CHAT = gql`
         }
     }
 `
+
+export const SEND_MESSAGE = gql`
+    mutation sendMessage($chatId: String!, $photo: Upload, $replyId: String, $text: String) {
+        sendMessage(chatId: $chatId, photo: $photo, replyId: $replyId, text: $text) {
+            _id
+            creator {
+                _id
+                username
+                photoUrl
+            }
+            text
+            photoUrl
+            photoOrientation
+            reply {
+                _id
+                creator {
+                    _id
+                    username
+                    photoUrl
+                }
+                text
+                photoUrl
+                photoOrientation
+            }
+            createdAt
+        }
+    }
+`
