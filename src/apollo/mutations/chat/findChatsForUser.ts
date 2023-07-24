@@ -54,6 +54,10 @@ export function updateLatestMessage(options: UpdateLatestMessageOptions): Update
                         return {
                             ...chatForUser,
                             message: options.variables.message,
+                            chat: {
+                                ...chatForUser.chat,
+                                temporary: false,
+                            },
                         }
                     }
                     return chatForUser
