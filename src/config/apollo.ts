@@ -63,6 +63,9 @@ const cache = new InMemoryCache({
                 findChatsForUser: {
                     keyArgs: false,
                 },
+                findMessagesByChatId: {
+                    keyArgs: ['chatId'],
+                },
             },
         },
         Chat: {
