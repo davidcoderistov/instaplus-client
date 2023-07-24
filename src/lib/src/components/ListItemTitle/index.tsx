@@ -94,7 +94,7 @@ export default function ListItemTitle(props: Props) {
                         borderTop='0'
                         sx={{
                             touchAction: 'manipulation',
-                            cursor: props.loading ? 'default' : 'pointer',
+                            cursor: props.loading || !props.onClick ? 'default' : 'pointer',
                         }}
                         onClick={handleClick}
                     >

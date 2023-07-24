@@ -123,7 +123,7 @@ export default function ListItemAvatar(props: Props) {
                                     },
                                     touchAction: 'manipulation',
                                     overflowX: 'hidden',
-                                    cursor: props.loading ? 'default' : 'pointer',
+                                    cursor: props.loading || !props.onClick ? 'default' : 'pointer',
                                     outlineStyle: 'none',
                                     overflowY: 'hidden',
                                 }}
