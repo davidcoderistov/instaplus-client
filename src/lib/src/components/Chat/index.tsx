@@ -41,11 +41,11 @@ interface Props {
 
     onReact(emoji: string, message: Message): void
 
-    onSendMessage(message: string, replyingMessage: Message | null): void
+    onSendMessage(chatId: string | number, message: string, replyingMessage: Message | null): void
 
-    onSendLike(): void
+    onSendLike(chatId: string | number): void
 
-    onUploadFile(file: File): void
+    onUploadFile(chatId: string | number, file: File): void
 }
 
 const ForwardedChatMessage = React.memo(forwardRef<any, any>((props, ref) => (
@@ -141,8 +141,8 @@ const Chat = React.memo((props: Props) => {
         setReplyingMessage(null)
     }, [])
 
-    const handleSendMessage = useCallback((message: string) => {
-        props.onSendMessage(message, replyingMessage)
+    const handleSendMessage = useCallback((chatId: string | number, message: string) => {
+        props.onSendMessage(chatId, message, replyingMessage)
         setReplyingMessage(null)
     }, [props.onSendMessage, replyingMessage])
 
@@ -523,6 +523,7 @@ const Chat = React.memo((props: Props) => {
                                                 </Box>
                                             </Box>
                                             <ChatFooter
+                                                chatId={props.chatId}
                                                 authUserId={props.authUserId}
                                                 replyingMessage={replyingMessage}
                                                 onSendMessage={handleSendMessage}

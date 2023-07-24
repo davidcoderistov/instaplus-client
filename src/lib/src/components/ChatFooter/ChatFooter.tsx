@@ -6,16 +6,17 @@ import ChatFooterActions from './ChatFooterActions'
 
 
 interface Props {
+    chatId: string | number
     isReplying: boolean
 
-    onSendMessage(message: string): void
+    onSendMessage(chatId: string | number, message: string): void
 
-    onSendLike(): void
+    onSendLike(chatId: string | number): void
 
-    onUploadFile(file: File): void
+    onUploadFile(chatId: string | number, file: File): void
 }
 
-export default function ChatFooter({ isReplying, onSendMessage, onSendLike, onUploadFile }: Props) {
+export default function ChatFooter({ chatId, isReplying, onSendMessage, onSendLike, onUploadFile }: Props) {
 
     const [message, setMessage] = useState('')
 
@@ -24,9 +25,9 @@ export default function ChatFooter({ isReplying, onSendMessage, onSendLike, onUp
     }, [])
 
     const handleSendMessage = useCallback(() => {
-        onSendMessage(message)
+        onSendMessage(chatId, message)
         setMessage('')
-    }, [message, onSendMessage])
+    }, [message, onSendMessage, chatId])
 
     return (
         <Box
@@ -72,6 +73,7 @@ export default function ChatFooter({ isReplying, onSendMessage, onSendLike, onUp
                     onChange={setMessage}
                     onSendMessage={handleSendMessage} />
                 <ChatFooterActions
+                    chatId={chatId}
                     isTyping={message.length > 0}
                     isReplying={isReplying}
                     onSendMessage={handleSendMessage}

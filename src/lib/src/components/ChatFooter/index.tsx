@@ -4,14 +4,15 @@ import { Message } from '../../types/Message'
 
 
 interface Props {
+    chatId: string | number
     authUserId: string | number
     replyingMessage: Message | null
 
-    onSendMessage(message: string): void
+    onSendMessage(chatId: string | number, message: string): void
 
-    onSendLike(): void
+    onSendLike(chatId: string | number): void
 
-    onUploadFile(file: File): void
+    onUploadFile(chatId: string | number, file: File): void
 
     onCancelReply(): void
 }
@@ -244,6 +245,7 @@ export default function ChatFooter(props: Props) {
                 </Box>
             )}
             <ChatFooterWrapper
+                chatId={props.chatId}
                 isReplying={!!props.replyingMessage}
                 onSendMessage={props.onSendMessage}
                 onSendLike={props.onSendLike}
