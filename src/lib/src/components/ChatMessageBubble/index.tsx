@@ -2,7 +2,8 @@ import React, { useState, useMemo, useCallback, MutableRefObject } from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import ChatMessagePhoto from '../ChatMessagePhoto'
-import { Message } from '../../types/Message'
+import { Message, Reaction } from '../../types/Message'
+import _uniqBy from 'lodash/uniqBy'
 
 
 const Wrapper = (props: { type?: 'wrap' | 'contain', flexGrow: string }) => {
@@ -50,6 +51,8 @@ interface Props {
     onReact(message: Message, lhs: boolean, event: React.MouseEvent): void
 
     onReply(message: Message): void
+
+    onViewReactions(reactions: Reaction[]): void
 }
 
 export default function ChatMessageBubble(props: Props) {
@@ -61,10 +64,18 @@ export default function ChatMessageBubble(props: Props) {
 
     const hasAvatar = useMemo(() =>
         props.lhs && (props.position === 'end' || props.position === 'solo'), [props.lhs, props.position])
+
     const hasReactions = useMemo(() =>
             props.message.reactions ?
-                (props.message.reactions.items.length > 0 && props.message.reactions.count > 0) : false,
+                props.message.reactions.length > 0 : false,
         [props.message.reactions])
+
+    const reactions = useMemo(() => {
+        if (props.message.reactions) {
+            return _uniqBy(props.message.reactions, 'reaction')
+        }
+        return []
+    }, [props.message.reactions])
 
     const borderBottomLeftRadius = rhs || props.position === 'end' || props.position === 'solo' ? '18px' : '4px'
     const borderTopLeftRadius = rhs || props.position === 'start' || props.position === 'solo' ? '18px' : '4px'
@@ -92,6 +103,12 @@ export default function ChatMessageBubble(props: Props) {
     const handleClickReply = useCallback(() => {
         props.onReply(props.message)
     }, [props.onReply, props.message])
+
+    const handleViewReactions = useCallback(() => {
+        if (Array.isArray(props.message.reactions)) {
+            props.onViewReactions(props.message.reactions)
+        }
+    }, [props.onViewReactions, props.message.reactions])
 
     return (
         <Box
@@ -478,6 +495,7 @@ export default function ChatMessageBubble(props: Props) {
                                                     borderBottomLeftRadius: 'inherit',
                                                     borderTopStyle: 'solid',
                                                 }}
+                                                onClick={handleViewReactions}
                                             >
                                                 <Box
                                                     component='div'
@@ -500,9 +518,9 @@ export default function ChatMessageBubble(props: Props) {
                                                         borderTopLeftRadius: '11px',
                                                     }}
                                                 >
-                                                    {props.message.reactions?.items.map((reaction, index) => (
+                                                    {reactions.map(reaction => (
                                                         <Box
-                                                            key={index}
+                                                            key={reaction._id}
                                                             component='span'
                                                             justifyContent='center'
                                                             marginRight='2px'
@@ -519,11 +537,11 @@ export default function ChatMessageBubble(props: Props) {
                                                                 textAlign='center'
                                                                 fontSize='0.75rem'
                                                             >
-                                                                {reaction}
+                                                                {reaction.reaction}
                                                             </Box>
                                                         </Box>
                                                     ))}
-                                                    {props.message.reactions && props.message.reactions.count > 1 && (
+                                                    {props.message.reactions && props.message.reactions.length > 1 && (
                                                         <Box
                                                             component='div'
                                                             marginRight='2px'
@@ -532,7 +550,7 @@ export default function ChatMessageBubble(props: Props) {
                                                             marginLeft='2px'
                                                             display='block'
                                                         >
-                                                            {props.message.reactions?.count}
+                                                            {props.message.reactions.length}
                                                         </Box>
                                                     )}
                                                 </Box>

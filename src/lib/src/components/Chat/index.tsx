@@ -9,7 +9,7 @@ import ChatMessage from '../ChatMessage'
 import ChatMessageTimestamp from '../ChatMessageTimestamp'
 import EmojiPicker, { EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { Message, ReplyMessage } from '../../types/Message'
+import { Message, Reaction, ReplyMessage } from '../../types/Message'
 import moment from 'moment'
 
 
@@ -48,6 +48,8 @@ interface Props {
     onSendLike(chatId: string | number): void
 
     onUploadFile(chatId: string | number, file: File): void
+
+    onViewReactions(reactions: Reaction[]): void
 }
 
 const ForwardedChatMessage = React.memo(forwardRef<any, any>((props, ref) => (
@@ -189,6 +191,7 @@ const Chat = React.memo((props: Props) => {
                         onClickReplyPhoto={props.onClickReplyPhoto}
                         onReact={handleOpenEmojiPicker}
                         onReply={handleReplyMessage}
+                        onViewReactions={props.onViewReactions}
                     />
                 )
             })
