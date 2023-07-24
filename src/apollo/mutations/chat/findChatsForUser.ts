@@ -70,7 +70,13 @@ export function addChat(options: AddChatOptions): AddChatReturnValue {
         queryResult: {
             findChatsForUser: {
                 ...options.queryData.findChatsForUser,
-                data: [options.variables.chat, ...options.queryData.findChatsForUser.data],
+                data: [options.variables.chat, ...options.queryData.findChatsForUser.data.map(chatForUser => ({
+                    ...chatForUser,
+                    chat: {
+                        ...chatForUser.chat,
+                        selected: false,
+                    },
+                }))],
             },
         },
     }
