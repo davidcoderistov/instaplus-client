@@ -1,5 +1,5 @@
 import { FindChatsForUserQueryType } from '../../../graphql/types/queries/chat'
-import { ChatWithLatestMessage } from '../../../graphql/types/models'
+import { ChatWithLatestMessage, Message } from '../../../graphql/types/models'
 
 
 interface UpdateSelectedStatusOptions {
@@ -26,6 +26,37 @@ export function updateSelectedStatus(options: UpdateSelectedStatusOptions): Upda
                             selected: chatForUser.chat._id === options.variables.chatId,
                         },
                     }
+                }),
+            },
+        },
+    }
+}
+
+interface UpdateLatestMessageOptions {
+    queryData: FindChatsForUserQueryType
+    variables: {
+        chatId: string,
+        message: Message
+    }
+}
+
+interface UpdateLatestMessageReturnValue {
+    queryResult: FindChatsForUserQueryType
+}
+
+export function updateLatestMessage(options: UpdateLatestMessageOptions): UpdateLatestMessageReturnValue {
+    return {
+        queryResult: {
+            findChatsForUser: {
+                ...options.queryData.findChatsForUser,
+                data: options.queryData.findChatsForUser.data.map(chatForUser => {
+                    if (chatForUser.chat._id === options.variables.chatId) {
+                        return {
+                            ...chatForUser,
+                            message: options.variables.message,
+                        }
+                    }
+                    return chatForUser
                 }),
             },
         },
@@ -84,6 +115,7 @@ export function addChat(options: AddChatOptions): AddChatReturnValue {
 
 const mutations = {
     updateSelectedStatus,
+    updateLatestMessage,
     deleteChat,
     addChat,
 }
