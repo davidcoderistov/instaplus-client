@@ -7,6 +7,7 @@ interface Props {
     chatId: string | number
     authUserId: string | number
     replyingMessage: Message | null
+    isUploadingPhoto?: boolean
 
     onSendMessage(chatId: string | number, message: string): void
 
@@ -247,6 +248,7 @@ export default function ChatFooter(props: Props) {
             <ChatFooterWrapper
                 chatId={props.chatId}
                 isReplying={!!props.replyingMessage}
+                isUploadingPhoto={Boolean(props.isUploadingPhoto)}
                 onSendMessage={props.onSendMessage}
                 onSendLike={props.onSendLike}
                 onUploadFile={props.onUploadFile} />

@@ -31,6 +31,8 @@ interface Props {
     }
     chatMembers: { id: string | number, username: string, photoUrl: string | null }[]
 
+    isUploadingPhoto?: boolean
+
     onViewChatDetails(chatId: string | number): void
 
     onViewUser(userId: string | number): void
@@ -526,6 +528,7 @@ const Chat = React.memo((props: Props) => {
                                                 chatId={props.chatId}
                                                 authUserId={props.authUserId}
                                                 replyingMessage={replyingMessage}
+                                                isUploadingPhoto={Boolean(props.isUploadingPhoto)}
                                                 onSendMessage={handleSendMessage}
                                                 onSendLike={props.onSendLike}
                                                 onUploadFile={props.onUploadFile}
