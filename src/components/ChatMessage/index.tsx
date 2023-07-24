@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import ChatMessageTitle from '../ChatMessageTitle'
 import ChatMessageReply from '../ChatMessageReply'
 import ChatMessageBubble from '../ChatMessageBubble'
-import { Message, ReplyMessage } from '../../types/Message'
+import { Message, Reaction, ReplyMessage } from '../../types/Message'
 
 
 interface Props {
@@ -19,6 +19,8 @@ interface Props {
     onReact(message: Message, lhs: boolean, event: React.MouseEvent): void
 
     onReply(message: Message): void
+
+    onViewReactions(reactions: Reaction[]): void
 }
 
 const ForwardedChatMessageBubble = forwardRef<any, any>((props, ref) => (
@@ -99,6 +101,7 @@ const ChatMessage = React.memo((props: Props) => {
                         onClickPhoto={props.onClickPhoto}
                         onReact={props.onReact}
                         onReply={props.onReply}
+                        onViewReactions={props.onViewReactions}
                     />
                     {(props.position === 'end' || props.position === 'solo') && (
                         <Box
