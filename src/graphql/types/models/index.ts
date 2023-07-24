@@ -11,6 +11,12 @@ export interface AuthUser {
     accessToken: string
 }
 
+interface Reaction {
+    _id: string
+    reaction: string
+    creator: User
+}
+
 interface BaseMessage {
     _id: string
     creator: {
@@ -22,10 +28,7 @@ interface BaseMessage {
     photoUrl: string | null
     photoOrientation: 'portrait' | 'landscape' | null
     videoUrl: string | null
-    reactions: {
-        items: string[]
-        count: number
-    } | null
+    reactions: Reaction[] | null
     createdAt: number
 }
 

@@ -69,6 +69,17 @@ export const FIND_MESSAGES_BY_CHAT_ID = gql`
                     photoUrl
                     photoOrientation
                 }
+                reactions {
+                    _id
+                    reaction
+                    creator {
+                        _id
+                        firstName
+                        lastName
+                        username
+                        photoUrl
+                    }
+                }
                 createdAt
             }
         }

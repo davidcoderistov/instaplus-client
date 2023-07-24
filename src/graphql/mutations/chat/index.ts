@@ -95,6 +95,17 @@ export const SEND_MESSAGE = gql`
                 photoUrl
                 photoOrientation
             }
+            reactions {
+                _id
+                reaction
+                creator {
+                    _id
+                    firstName
+                    lastName
+                    username
+                    photoUrl
+                }
+            }
             createdAt
         }
     }
