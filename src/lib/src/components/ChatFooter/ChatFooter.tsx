@@ -8,6 +8,7 @@ import ChatFooterActions from './ChatFooterActions'
 interface Props {
     chatId: string | number
     isReplying: boolean
+    isUploadingPhoto: boolean
 
     onSendMessage(chatId: string | number, message: string): void
 
@@ -16,7 +17,14 @@ interface Props {
     onUploadFile(chatId: string | number, file: File): void
 }
 
-export default function ChatFooter({ chatId, isReplying, onSendMessage, onSendLike, onUploadFile }: Props) {
+export default function ChatFooter({
+                                       chatId,
+                                       isReplying,
+                                       isUploadingPhoto,
+                                       onSendMessage,
+                                       onSendLike,
+                                       onUploadFile,
+                                   }: Props) {
 
     const [message, setMessage] = useState('')
 
@@ -67,15 +75,18 @@ export default function ChatFooter({ chatId, isReplying, onSendMessage, onSendLi
                 minHeight='44px'
             >
                 <ChatFooterEmojiPicker
-                    onPickEmoji={handlePickEmoji} />
+                    onPickEmoji={handlePickEmoji}
+                    isUploadingPhoto={isUploadingPhoto} />
                 <ChatFooterTextInput
                     message={message}
+                    isUploadingPhoto={isUploadingPhoto}
                     onChange={setMessage}
                     onSendMessage={handleSendMessage} />
                 <ChatFooterActions
                     chatId={chatId}
                     isTyping={message.length > 0}
                     isReplying={isReplying}
+                    isUploadingPhoto={isUploadingPhoto}
                     onSendMessage={handleSendMessage}
                     onSendLike={onSendLike}
                     onUploadFile={onUploadFile} />

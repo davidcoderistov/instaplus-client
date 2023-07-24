@@ -5,13 +5,14 @@ import InputBase from '@mui/material/InputBase'
 
 interface Props {
     message: string
+    isUploadingPhoto: boolean
 
     onChange(message: string): void
 
     onSendMessage(): void
 }
 
-export default function ChatFooterTextInput({ message, onChange, onSendMessage }: Props) {
+export default function ChatFooterTextInput({ message, isUploadingPhoto, onChange, onSendMessage }: Props) {
 
     const handleChangeMessage = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         onChange(event.target.value)
@@ -59,6 +60,7 @@ export default function ChatFooterTextInput({ message, onChange, onSendMessage }
                     value={message}
                     onChange={handleChangeMessage}
                     onKeyPress={handleKeyPress}
+                    disabled={isUploadingPhoto}
                     sx={{
                         '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
                             display: 'none',

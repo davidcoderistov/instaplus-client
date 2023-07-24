@@ -6,9 +6,11 @@ import { useClickOutside } from '../../hooks'
 
 interface Props {
     onPickEmoji(emoji: string): void
+
+    isUploadingPhoto: boolean
 }
 
-const ChatFooterEmojiPicker = React.memo(({ onPickEmoji }: Props) => {
+const ChatFooterEmojiPicker = React.memo(({ onPickEmoji, isUploadingPhoto }: Props) => {
 
     const [emojiPickerOpen, setEmojiPickerOpen] = useState(false)
 
@@ -22,8 +24,10 @@ const ChatFooterEmojiPicker = React.memo(({ onPickEmoji }: Props) => {
     })
 
     const handleOpenEmojiPicker = (event: React.MouseEvent) => {
-        setEmojiPickerOpen(emojiPickerOpen => !emojiPickerOpen)
-        event.stopPropagation()
+        if (!isUploadingPhoto) {
+            setEmojiPickerOpen(emojiPickerOpen => !emojiPickerOpen)
+            event.stopPropagation()
+        }
     }
 
     const handlePickEmoji = useCallback(({ emoji }: EmojiClickData) => {
@@ -88,7 +92,7 @@ const ChatFooterEmojiPicker = React.memo(({ onPickEmoji }: Props) => {
                     borderTopRightRadius: 'inherit',
                     borderLeftColor: '#00000066',
                     borderLeftStyle: 'solid',
-                    cursor: 'pointer',
+                    cursor: isUploadingPhoto ? 'default' : 'pointer',
                     outlineStyle: 'none',
                     borderBottomWidth: '0',
                     borderBottomStyle: 'solid',
