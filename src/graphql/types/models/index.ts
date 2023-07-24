@@ -11,7 +11,7 @@ export interface AuthUser {
     accessToken: string
 }
 
-interface Reaction {
+export interface Reaction {
     _id: string
     reaction: string
     creator: User

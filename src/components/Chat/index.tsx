@@ -9,7 +9,7 @@ import { CreateChatMutationType, SendMessageMutationType } from '../../graphql/t
 import { ChatWithLatestMessage } from '../../graphql/types/models'
 import findChatsForUserMutations from '../../apollo/mutations/chat/findChatsForUser'
 import findMessagesByChatIdMutations from '../../apollo/mutations/chat/findMessagesByChatId'
-import { Message as IMessage } from '../../graphql/types/models'
+import { Message as IMessage, Reaction } from '../../graphql/types/models'
 import Box from '@mui/material/Box'
 import ChatMessageList, { ChatMessage } from '../../lib/src/components/ChatMessageList'
 import InstaChat from '../../lib/src/components/Chat'
@@ -18,6 +18,7 @@ import ChatLoadingSkeleton from '../../lib/src/components/ChatLoadingSkeleton'
 import ChatDetailsDrawer from '../../lib/src/components/ChatDetailsDrawer'
 import CreateChatModal from '../CreateChatModal'
 import AddChatMembersModal from '../AddChatMembersModal'
+import ViewReactionsModal from '../../lib/src/components/ViewReactionsModal'
 import { Message } from '../../lib/src/types/Message'
 import _intersection from 'lodash/intersection'
 import _differenceBy from 'lodash/differenceBy'
@@ -122,7 +123,7 @@ export default function Chat() {
                 photoUrl: message.photoUrl,
                 photoOrientation: message.photoOrientation,
                 videoUrl: message.videoUrl,
-                reactions: null,
+                reactions: message.reactions,
                 reply: message.reply ? ({
                     ...message.reply,
                     id: message.reply._id,
@@ -481,6 +482,16 @@ export default function Chat() {
         sendPhotoMessage(chatId, file)
     }, [])
 
+    const [viewReactions, setViewReactions] = useState<Reaction[] | null>(null)
+
+    const handleViewReactions = useCallback((reactions: Reaction[]) => {
+        setViewReactions(reactions)
+    }, [])
+
+    const handleCloseReactionsModal = () => {
+        setViewReactions(null)
+    }
+
     return (
         <>
             <Box
@@ -581,6 +592,7 @@ export default function Chat() {
                                             onClickPhoto={console.log}
                                             onClickReplyPhoto={console.log}
                                             onReact={console.log}
+                                            onViewReactions={handleViewReactions}
                                             onSendMessage={handleSendMessage}
                                             onSendLike={handleSendLike}
                                             onUploadFile={handleUploadFile} />
@@ -622,6 +634,12 @@ export default function Chat() {
                     excludeUserIds={selectedChat.chatMembers.map(member => member.id)}
                     onAddChatMembers={handleAddChatMembers}
                     onCloseModal={closeAddChatMembersModal} />
+            )}
+            {viewReactions && (
+                <ViewReactionsModal
+                    open={true}
+                    reactions={viewReactions}
+                    onCloseModal={handleCloseReactionsModal} />
             )}
         </>
     )
