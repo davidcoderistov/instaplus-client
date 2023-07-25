@@ -3,7 +3,14 @@ import { useAuthUser } from '../../hooks/misc'
 import { useQuery, useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
 import { FIND_CHATS_FOR_USER, FIND_MESSAGES_BY_CHAT_ID } from '../../graphql/queries/chat'
-import { CREATE_CHAT, ADD_CHAT_MEMBERS, DELETE_CHAT, LEAVE_CHAT, SEND_MESSAGE } from '../../graphql/mutations/chat'
+import {
+    CREATE_CHAT,
+    ADD_CHAT_MEMBERS,
+    DELETE_CHAT,
+    LEAVE_CHAT,
+    SEND_MESSAGE,
+    REACT_TO_MESSAGE,
+} from '../../graphql/mutations/chat'
 import { FindChatsForUserQueryType, FindMessagesByChatIdQueryType } from '../../graphql/types/queries/chat'
 import { CreateChatMutationType, SendMessageMutationType } from '../../graphql/types/mutations/chat'
 import { ChatWithLatestMessage } from '../../graphql/types/models'
@@ -492,6 +499,25 @@ export default function Chat() {
         setViewReactions(null)
     }
 
+    const [reactToMessage] = useMutation(REACT_TO_MESSAGE)
+
+    const handleReactToMessage = useCallback((emoji: string, message: Message) => {
+        findMessagesByChatId.updateQuery(findMessagesByChatId => findMessagesByChatIdMutations.reactToMessage({
+            queryData: findMessagesByChatId,
+            variables: {
+                messageId: message.id as string,
+                reaction: emoji,
+                creator: authUser,
+            },
+        }).queryResult)
+        reactToMessage({
+            variables: {
+                messageId: message.id,
+                reaction: emoji,
+            },
+        })
+    }, [])
+
     return (
         <>
             <Box
@@ -591,7 +617,7 @@ export default function Chat() {
                                             onViewUser={console.log}
                                             onClickPhoto={console.log}
                                             onClickReplyPhoto={console.log}
-                                            onReact={console.log}
+                                            onReact={handleReactToMessage}
                                             onViewReactions={handleViewReactions}
                                             onSendMessage={handleSendMessage}
                                             onSendLike={handleSendLike}
