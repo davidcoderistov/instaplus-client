@@ -110,3 +110,11 @@ export const SEND_MESSAGE = gql`
         }
     }
 `
+
+export const REACT_TO_MESSAGE = gql`
+    mutation reactToMessage($messageId: String!, $reaction: String!) {
+        reactToMessage(messageId: $messageId, reaction: $reaction) {
+            _id
+        }
+    }
+`
