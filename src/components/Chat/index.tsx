@@ -241,6 +241,7 @@ export default function Chat() {
                     },
                 }).queryResult)
                 client.cache.evict({ fieldName: 'findMessagesByChatId', args: { chatId } })
+                client.cache.gc()
                 setIsChatDetailsDrawerOpen(false)
             })
             .catch(() => {
@@ -260,6 +261,7 @@ export default function Chat() {
                     },
                 }).queryResult)
                 client.cache.evict({ fieldName: 'findMessagesByChatId', args: { chatId } })
+                client.cache.gc()
                 setIsChatDetailsDrawerOpen(false)
             })
             .catch(() => {
