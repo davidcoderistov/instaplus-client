@@ -48,5 +48,5 @@ export interface Chat {
 
 export interface ChatWithLatestMessage {
     chat: Chat
-    message: BaseMessage | null
+    message: Message | null
 }

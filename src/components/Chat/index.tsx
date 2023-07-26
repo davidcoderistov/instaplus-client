@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useAuthUser } from '../../hooks/misc'
-import { useQuery, useMutation } from '@apollo/client'
+import { useApolloClient, useQuery, useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
 import { FIND_CHATS_FOR_USER, FIND_MESSAGES_BY_CHAT_ID } from '../../graphql/queries/chat'
 import {
@@ -227,6 +227,8 @@ export default function Chat() {
 
     const { enqueueSnackbar } = useSnackbar()
 
+    const client = useApolloClient()
+
     const [deleteChat, deleteChatData] = useMutation(DELETE_CHAT)
 
     const handleDeleteChat = (chatId: string) => {
@@ -238,6 +240,7 @@ export default function Chat() {
                         chatId,
                     },
                 }).queryResult)
+                client.cache.evict({ fieldName: 'findMessagesByChatId', args: { chatId } })
                 setIsChatDetailsDrawerOpen(false)
             })
             .catch(() => {
@@ -256,6 +259,7 @@ export default function Chat() {
                         chatId,
                     },
                 }).queryResult)
+                client.cache.evict({ fieldName: 'findMessagesByChatId', args: { chatId } })
                 setIsChatDetailsDrawerOpen(false)
             })
             .catch(() => {
@@ -318,6 +322,7 @@ export default function Chat() {
                                     photoUrl: createChat.message?.photoUrl ?? null,
                                     photoOrientation: null,
                                     reactions: null,
+                                    reply: null,
                                     videoUrl: createChat.message?.videoUrl ?? null,
                                     creator: createChat.message?.creator || authUser,
                                     createdAt: createChat.message?.createdAt || 1,
