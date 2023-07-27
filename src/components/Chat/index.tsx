@@ -58,14 +58,14 @@ export default function Chat() {
                         creatorId: message.creator._id,
                         creatorUsername: message.creator.username,
                         timestamp: message.createdAt,
-                        seen: true,
+                        seen: message.seenByUserIds.includes(authUser._id),
                         selected: chat.selected,
                         temporary: chat.temporary,
                     }
                 })
         }
         return []
-    }, [findChatsForUser.loading, findChatsForUser.error, findChatsForUser.data])
+    }, [authUser, findChatsForUser.loading, findChatsForUser.error, findChatsForUser.data])
 
     const hasMoreChats: boolean = useMemo(() => {
         if (!findChatsForUser.error && !findChatsForUser.loading && findChatsForUser.data) {
@@ -323,6 +323,7 @@ export default function Chat() {
                                     text: createChat.message?.text ?? null,
                                     photoUrl: createChat.message?.photoUrl ?? null,
                                     photoOrientation: null,
+                                    seenByUserIds: [],
                                     reactions: null,
                                     reply: null,
                                     videoUrl: createChat.message?.videoUrl ?? null,
@@ -384,6 +385,7 @@ export default function Chat() {
             text,
             photoUrl: null,
             photoOrientation: null,
+            seenByUserIds: [],
             videoUrl: null,
             reactions: null,
             reply,

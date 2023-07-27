@@ -30,6 +30,7 @@ export const NEW_MESSAGE = gql`
                 text
                 photoUrl
                 photoOrientation
+                seenByUserIds
                 reply {
                     _id
                     creator {
@@ -70,6 +71,7 @@ export const NEW_MESSAGE_REACTION = gql`
             text
             photoUrl
             photoOrientation
+            seenByUserIds
             reply {
                 _id
                 creator {

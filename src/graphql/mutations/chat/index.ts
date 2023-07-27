@@ -29,6 +29,7 @@ export const CREATE_CHAT = gql`
                 }
                 text
                 photoUrl
+                seenByUserIds
                 createdAt
             }
         }
@@ -84,6 +85,7 @@ export const SEND_MESSAGE = gql`
             text
             photoUrl
             photoOrientation
+            seenByUserIds
             reply {
                 _id
                 creator {
@@ -131,6 +133,7 @@ export const MARK_MESSAGE_AS_READ = gql`
             text
             photoUrl
             photoOrientation
+            seenByUserIds
             reply {
                 _id
                 creator {

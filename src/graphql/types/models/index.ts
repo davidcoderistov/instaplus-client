@@ -27,6 +27,7 @@ interface BaseMessage {
     text: string | null
     photoUrl: string | null
     photoOrientation: 'portrait' | 'landscape' | null
+    seenByUserIds: string[]
     videoUrl: string | null
     reactions: Reaction[] | null
     createdAt: number

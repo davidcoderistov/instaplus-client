@@ -34,6 +34,7 @@ export const FIND_CHATS_FOR_USER = gql`
                     }
                     text
                     photoUrl
+                    seenByUserIds
                     createdAt
                 }
             }
@@ -58,6 +59,7 @@ export const FIND_MESSAGES_BY_CHAT_ID = gql`
                 text
                 photoUrl
                 photoOrientation
+                seenByUserIds
                 reply {
                     _id
                     creator {
