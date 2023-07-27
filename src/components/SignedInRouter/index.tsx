@@ -1,9 +1,10 @@
 import React from 'react'
-import { useApolloClient, useSubscription } from '@apollo/client'
+import { useApolloClient, useMutation, useSubscription } from '@apollo/client'
 import { FIND_CHATS_FOR_USER, FIND_MESSAGES_BY_CHAT_ID } from '../../graphql/queries/chat'
 import { FindChatsForUserQueryType, FindMessagesByChatIdQueryType } from '../../graphql/types/queries/chat'
 import { NEW_MESSAGE, NEW_MESSAGE_REACTION } from '../../graphql/subscriptions/chat'
 import { NewMessageSubscriptionType } from '../../graphql/types/subscriptions/chat'
+import { MARK_MESSAGE_AS_READ } from '../../graphql/mutations/chat'
 import findChatsForUserMutations from '../../apollo/mutations/chat/findChatsForUser'
 import findMessagesByChatIdMutations from '../../apollo/mutations/chat/findMessagesByChatId'
 import { Message } from '../../graphql/types/models'
@@ -20,6 +21,8 @@ export default function SignedInRouter() {
     const [authUser] = useAuthUser()
 
     const client = useApolloClient()
+
+    const [markMessageAsRead] = useMutation(MARK_MESSAGE_AS_READ)
 
     useSubscription<NewMessageSubscriptionType>(NEW_MESSAGE, {
         fetchPolicy: 'no-cache',
@@ -61,10 +64,26 @@ export default function SignedInRouter() {
                     },
                     (queryData: FindMessagesByChatIdQueryType | null) => {
                         if (queryData) {
+                            let message = chatWithLatestMessage.message as Message
+                            const findChatsForUserQueryData: FindChatsForUserQueryType | null = client.cache.readQuery({ query: FIND_CHATS_FOR_USER })
+                            if (findChatsForUserQueryData && findChatsForUserQueryData.findChatsForUser) {
+                                const chatForUser = findChatsForUserQueryData.findChatsForUser.data.find(chatForUser => chatForUser.chat._id === chatWithLatestMessage.chat._id)
+                                if (chatForUser && chatForUser.chat.selected) {
+                                    markMessageAsRead({
+                                        variables: {
+                                            messageId: message._id,
+                                        },
+                                    })
+                                    message = {
+                                        ...message,
+                                        seenByUserIds: [...message.seenByUserIds, authUser._id],
+                                    }
+                                }
+                            }
                             return findMessagesByChatIdMutations.addMessage({
                                 queryData,
                                 variables: {
-                                    message: chatWithLatestMessage.message as Message,
+                                    message,
                                 },
                             }).queryResult
                         }
