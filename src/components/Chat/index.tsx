@@ -10,6 +10,7 @@ import {
     LEAVE_CHAT,
     SEND_MESSAGE,
     REACT_TO_MESSAGE,
+    MARK_MESSAGE_AS_READ,
 } from '../../graphql/mutations/chat'
 import { FindChatsForUserQueryType, FindMessagesByChatIdQueryType } from '../../graphql/types/queries/chat'
 import { CreateChatMutationType, SendMessageMutationType } from '../../graphql/types/mutations/chat'
@@ -207,15 +208,31 @@ export default function Chat() {
         }
     }
 
+    const [markMessageAsRead] = useMutation(MARK_MESSAGE_AS_READ)
+
     const handleClickChat = useCallback((chatId: string) => {
         isMessagesCountSetRef.current = false
         setIsChatDetailsDrawerOpen(false)
-        findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.updateSelectedStatus({
-            queryData: findChatsForUser,
-            variables: {
-                chatId,
-            },
-        }).queryResult)
+        findChatsForUser.updateQuery(findChatsForUser => {
+            if (findChatsForUser.findChatsForUser.data) {
+                const chatForUser = findChatsForUser.findChatsForUser.data.find(chatForUser => chatForUser.chat._id === chatId)
+                if (chatForUser && chatForUser.message) {
+                    if (!chatForUser.message.seenByUserIds.includes(authUser._id)) {
+                        markMessageAsRead({
+                            variables: {
+                                messageId: chatForUser.message._id,
+                            },
+                        })
+                    }
+                }
+            }
+            return findChatsForUserMutations.updateSelectedStatus({
+                queryData: findChatsForUser,
+                variables: {
+                    chatId,
+                },
+            }).queryResult
+        })
         setMessagesOffset(15)
     }, [])
 
