@@ -7,7 +7,7 @@ import { getStorageLoggedInUser } from '../localStorage'
 
 
 const apiUri = 'http://localhost:8001/api'
-const wsUrl = 'http://localhost:8001/api'
+const wsUrl = 'ws://localhost:8001/api'
 
 const httpLink = createHttpLink({
     uri: apiUri,
