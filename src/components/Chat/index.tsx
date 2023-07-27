@@ -402,7 +402,7 @@ export default function Chat() {
             text,
             photoUrl: null,
             photoOrientation: null,
-            seenByUserIds: [],
+            seenByUserIds: [authUser._id],
             videoUrl: null,
             reactions: null,
             reply,
