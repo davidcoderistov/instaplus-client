@@ -118,3 +118,42 @@ export const REACT_TO_MESSAGE = gql`
         }
     }
 `
+
+export const MARK_MESSAGE_AS_READ = gql`
+    mutation markMessageAsRead($messageId: String!) {
+        markMessageAsRead(messageId: $messageId) {
+            _id
+            creator {
+                _id
+                username
+                photoUrl
+            }
+            text
+            photoUrl
+            photoOrientation
+            reply {
+                _id
+                creator {
+                    _id
+                    username
+                    photoUrl
+                }
+                text
+                photoUrl
+                photoOrientation
+            }
+            reactions {
+                _id
+                reaction
+                creator {
+                    _id
+                    firstName
+                    lastName
+                    username
+                    photoUrl
+                }
+            }
+            createdAt
+        }
+    }
+`
