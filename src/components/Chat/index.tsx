@@ -27,6 +27,7 @@ import ChatDetailsDrawer from '../../lib/src/components/ChatDetailsDrawer'
 import CreateChatModal from '../CreateChatModal'
 import AddChatMembersModal from '../AddChatMembersModal'
 import ViewReactionsModal from '../../lib/src/components/ViewReactionsModal'
+import ImagePreviewModal from '../../lib/src/components/ImagePreviewModal'
 import { Message } from '../../lib/src/types/Message'
 import _intersection from 'lodash/intersection'
 import _differenceBy from 'lodash/differenceBy'
@@ -547,6 +548,16 @@ export default function Chat() {
         })
     }, [])
 
+    const [previewPhotoUrl, setPreviewPhotoUrl] = useState<string | null>(null)
+
+    const handlePreviewPhoto = useCallback((photoUrl: string) => {
+        setPreviewPhotoUrl(photoUrl)
+    }, [])
+
+    const handleCloseImagePreviewModal = () => {
+        setPreviewPhotoUrl(null)
+    }
+
     return (
         <>
             <Box
@@ -644,8 +655,8 @@ export default function Chat() {
                                             onFetchMoreMessages={onFetchMoreMessages}
                                             onViewChatDetails={handleViewChatDetails}
                                             onViewUser={console.log}
-                                            onClickPhoto={console.log}
-                                            onClickReplyPhoto={console.log}
+                                            onClickPhoto={handlePreviewPhoto}
+                                            onClickReplyPhoto={handlePreviewPhoto}
                                             onReact={handleReactToMessage}
                                             onViewReactions={handleViewReactions}
                                             onSendMessage={handleSendMessage}
@@ -695,6 +706,12 @@ export default function Chat() {
                     open={true}
                     reactions={viewReactions}
                     onCloseModal={handleCloseReactionsModal} />
+            )}
+            {previewPhotoUrl && (
+                <ImagePreviewModal
+                    open={true}
+                    photoUrl={previewPhotoUrl}
+                    onClose={handleCloseImagePreviewModal} />
             )}
         </>
     )
