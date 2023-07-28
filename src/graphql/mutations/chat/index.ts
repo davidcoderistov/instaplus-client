@@ -85,6 +85,7 @@ export const SEND_MESSAGE = gql`
             text
             photoUrl
             photoOrientation
+            previewPhotoUrl
             seenByUserIds
             reply {
                 _id
@@ -96,6 +97,7 @@ export const SEND_MESSAGE = gql`
                 text
                 photoUrl
                 photoOrientation
+                previewPhotoUrl
             }
             reactions {
                 _id
@@ -133,6 +135,7 @@ export const MARK_MESSAGE_AS_READ = gql`
             text
             photoUrl
             photoOrientation
+            previewPhotoUrl
             seenByUserIds
             reply {
                 _id
@@ -144,6 +147,7 @@ export const MARK_MESSAGE_AS_READ = gql`
                 text
                 photoUrl
                 photoOrientation
+                previewPhotoUrl
             }
             reactions {
                 _id

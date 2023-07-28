@@ -30,6 +30,7 @@ export const NEW_MESSAGE = gql`
                 text
                 photoUrl
                 photoOrientation
+                previewPhotoUrl
                 seenByUserIds
                 reply {
                     _id
@@ -41,6 +42,7 @@ export const NEW_MESSAGE = gql`
                     text
                     photoUrl
                     photoOrientation
+                    previewPhotoUrl
                 }
                 reactions {
                     _id
@@ -71,6 +73,7 @@ export const NEW_MESSAGE_REACTION = gql`
             text
             photoUrl
             photoOrientation
+            previewPhotoUrl
             seenByUserIds
             reply {
                 _id
@@ -82,6 +85,7 @@ export const NEW_MESSAGE_REACTION = gql`
                 text
                 photoUrl
                 photoOrientation
+                previewPhotoUrl
             }
             reactions {
                 _id

@@ -130,6 +130,7 @@ export default function Chat() {
                 text: message.text,
                 photoUrl: message.photoUrl,
                 photoOrientation: message.photoOrientation,
+                previewPhotoUrl: message.previewPhotoUrl,
                 videoUrl: message.videoUrl,
                 reactions: message.reactions,
                 reply: message.reply ? ({
@@ -339,6 +340,7 @@ export default function Chat() {
                                     _id: createChat.message?._id || 'temporary-message-id',
                                     text: createChat.message?.text ?? null,
                                     photoUrl: createChat.message?.photoUrl ?? null,
+                                    previewPhotoUrl: null,
                                     photoOrientation: null,
                                     seenByUserIds: [],
                                     reactions: null,
@@ -401,6 +403,7 @@ export default function Chat() {
             },
             text,
             photoUrl: null,
+            previewPhotoUrl: null,
             photoOrientation: null,
             seenByUserIds: [authUser._id],
             videoUrl: null,

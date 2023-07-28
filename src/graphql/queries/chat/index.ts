@@ -59,6 +59,7 @@ export const FIND_MESSAGES_BY_CHAT_ID = gql`
                 text
                 photoUrl
                 photoOrientation
+                previewPhotoUrl
                 seenByUserIds
                 reply {
                     _id
@@ -70,6 +71,7 @@ export const FIND_MESSAGES_BY_CHAT_ID = gql`
                     text
                     photoUrl
                     photoOrientation
+                    previewPhotoUrl
                 }
                 reactions {
                     _id
