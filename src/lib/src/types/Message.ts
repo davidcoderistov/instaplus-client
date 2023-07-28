@@ -16,12 +16,13 @@ interface BaseMessage {
     text: string | null
     photoUrl: string | null
     photoOrientation: 'portrait' | 'landscape' | null
+    previewPhotoUrl: string | null
     videoUrl: string | null
     reactions: Reaction[] | null
     createdAt: number
 }
 
-export type ReplyMessage = Pick<BaseMessage, 'id' | 'creator' | 'text' | 'photoUrl' | 'photoOrientation' | 'videoUrl'>
+export type ReplyMessage = Pick<BaseMessage, 'id' | 'creator' | 'text' | 'photoUrl' | 'photoOrientation' | 'videoUrl' | 'previewPhotoUrl'>
 
 export interface Message extends BaseMessage {
     reply: ReplyMessage | null

@@ -45,7 +45,7 @@ interface Props {
     position: 'start' | 'between' | 'end' | 'solo'
     lhs: boolean
     message: Message
-    onClickPhoto: (message: Message) => void | null
+    onClickPhoto: (photoUrl: string) => void | null
     emojiRef: MutableRefObject<Node | null>
 
     onReact(message: Message, lhs: boolean, event: React.MouseEvent): void
@@ -84,9 +84,9 @@ export default function ChatMessageBubble(props: Props) {
 
     const handleClickPhoto = useCallback(() => {
         if (props.onClickPhoto) {
-            props.onClickPhoto(props.message)
+            props.onClickPhoto(props.message.previewPhotoUrl as string)
         }
-    }, [props.message, props.onClickPhoto])
+    }, [props.message.previewPhotoUrl, props.onClickPhoto])
 
     const handleMouseEnter = useCallback(() => {
         setHovered(true)
