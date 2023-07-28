@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useClickOutside } from '../../hooks'
 import Box from '@mui/material/Box'
 import Backdrop from '@mui/material/Backdrop'
@@ -19,7 +19,7 @@ export default function ImagePreviewModal(props: Props) {
     const imgRef = useRef<Node | null>(null)
 
     useEffect(() => {
-        const handleKeyPress = (event: React.KeyboardEvent) => {
+        const handleKeyPress = (event: any) => {
             if (event.key === 'Escape') {
                 props.onClose()
             }
