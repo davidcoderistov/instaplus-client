@@ -37,9 +37,9 @@ interface Props {
 
     onViewUser(userId: string | number): void
 
-    onClickPhoto(message: Message): void
+    onClickPhoto(photoUrl: string): void
 
-    onClickReplyPhoto(message: ReplyMessage): void
+    onClickReplyPhoto(photoUrl: string): void
 
     onReact(emoji: string, message: Message): void
 

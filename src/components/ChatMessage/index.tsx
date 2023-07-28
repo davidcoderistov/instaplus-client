@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import ChatMessageTitle from '../ChatMessageTitle'
 import ChatMessageReply from '../ChatMessageReply'
 import ChatMessageBubble from '../ChatMessageBubble'
-import { Message, Reaction, ReplyMessage } from '../../types/Message'
+import { Message, Reaction } from '../../types/Message'
 
 
 interface Props {
@@ -13,8 +13,8 @@ interface Props {
     lhs: boolean
     authUserId: string | number
     message: Message
-    onClickPhoto: (message: Message) => void | null
-    onClickReplyPhoto: (message: ReplyMessage) => void | null
+    onClickPhoto: (photoUrl: string) => void | null
+    onClickReplyPhoto: (photoUrl: string) => void | null
 
     onReact(message: Message, lhs: boolean, event: React.MouseEvent): void
 
@@ -35,7 +35,7 @@ const ChatMessage = React.memo((props: Props) => {
 
     const handleClickReplyPhoto = useCallback(() => {
         if (props.onClickReplyPhoto && props.message.reply) {
-            props.onClickReplyPhoto(props.message.reply)
+            props.onClickReplyPhoto(props.message.reply.previewPhotoUrl)
         }
     }, [props.onClickReplyPhoto, props.message.reply])
 
