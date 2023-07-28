@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import Box from '@mui/material/Box'
 
 
@@ -12,10 +12,11 @@ interface Props {
     slider?: React.ReactNode
 }
 
-export default function ImagePreview(props: Props) {
+const ImagePreview = forwardRef((props: Props, ref) => {
 
     return (
         <Box
+            ref={ref}
             component='div'
             maxHeight={props.dense ? '470px' : '674px'}
             maxWidth={props.dense ? '470px' : '674px'}
@@ -60,7 +61,6 @@ export default function ImagePreview(props: Props) {
                         position='relative'
                         maxHeight='inherit'
                         display='block'
-                        sx={{ cursor: props.photoUrl ? 'pointer' : 'default' }}
                     >
                         <Box
                             component='div'
@@ -79,7 +79,7 @@ export default function ImagePreview(props: Props) {
                             >
                                 {props.photoUrl && (
                                     <img
-                                        alt='Post photo'
+                                        alt='Photo preview'
                                         src={props.photoUrl}
                                         style={{
                                             objectFit: 'cover',
@@ -105,4 +105,6 @@ export default function ImagePreview(props: Props) {
             {props.slider}
         </Box>
     )
-}
+})
+
+export default ImagePreview
