@@ -4,6 +4,7 @@ import ChatMessageTitle from '../ChatMessageTitle'
 import ChatMessageReply from '../ChatMessageReply'
 import ChatMessageBubble from '../ChatMessageBubble'
 import { Message, Reaction } from '../../types/Message'
+import _isEqual from 'lodash/isEqual'
 
 
 interface Props {
@@ -116,6 +117,16 @@ const ChatMessage = React.memo((props: Props) => {
             </Box>
         </Box>
     )
+}, (prevProps, nextProps) => {
+
+    const { message: prevMessage, ...prevRest } = prevProps
+    const { message: nextMessage, ...nextRest } = nextProps
+
+    const messagesEqual = _isEqual(prevMessage, nextMessage)
+
+    const restPropsEqual = _isEqual(prevRest, nextRest)
+
+    return messagesEqual && restPropsEqual
 })
 
 export default ChatMessage
