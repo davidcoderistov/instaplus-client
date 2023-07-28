@@ -35,7 +35,7 @@ const ChatMessage = React.memo((props: Props) => {
 
     const handleClickReplyPhoto = useCallback(() => {
         if (props.onClickReplyPhoto && props.message.reply) {
-            props.onClickReplyPhoto(props.message.reply.previewPhotoUrl)
+            props.onClickReplyPhoto(props.message.reply.previewPhotoUrl as string)
         }
     }, [props.onClickReplyPhoto, props.message.reply])
 
