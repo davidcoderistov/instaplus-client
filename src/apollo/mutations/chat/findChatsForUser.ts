@@ -45,23 +45,25 @@ interface UpdateLatestMessageReturnValue {
 }
 
 export function updateLatestMessage(options: UpdateLatestMessageOptions): UpdateLatestMessageReturnValue {
+    const data = Array.from(options.queryData.findChatsForUser.data)
+    const findChatIndex = options.queryData.findChatsForUser.data.findIndex(chatForUser => chatForUser.chat._id === options.variables.chatId)
+    if (findChatIndex > -1) {
+        const chatForUser = data[findChatIndex]
+        data.splice(findChatIndex, 1)
+        data.unshift({
+            ...chatForUser,
+            message: options.variables.message,
+            chat: {
+                ...chatForUser.chat,
+                temporary: false,
+            },
+        })
+    }
     return {
         queryResult: {
             findChatsForUser: {
                 ...options.queryData.findChatsForUser,
-                data: options.queryData.findChatsForUser.data.map(chatForUser => {
-                    if (chatForUser.chat._id === options.variables.chatId) {
-                        return {
-                            ...chatForUser,
-                            message: options.variables.message,
-                            chat: {
-                                ...chatForUser.chat,
-                                temporary: false,
-                            },
-                        }
-                    }
-                    return chatForUser
-                }),
+                data,
             },
         },
     }
