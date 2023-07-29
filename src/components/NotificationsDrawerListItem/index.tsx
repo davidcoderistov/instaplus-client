@@ -18,8 +18,7 @@ interface Notification {
 
 interface PostNotification extends Notification {
     postId: string | number
-    postPhotoUrl: string
-    isPostReel: boolean
+    postPhotoUrls: string[]
 }
 
 interface FollowNotification extends Notification {
@@ -80,9 +79,9 @@ const NotificationsDrawerListItem = React.memo((props: Props) => {
             if (props.notification.type === 'follow') {
                 text = 'started following you.'
             } else if (props.notification.type === 'like') {
-                text = `liked your ${props.notification.isPostReel ? 'reel' : 'photo'}.`
+                text = `liked your post.`
             } else if (props.notification.type === 'comment') {
-                text = `commented on your ${props.notification.isPostReel ? 'reel' : 'photo'}.`
+                text = `commented on your post.`
             }
             return (
                 <Box
@@ -104,7 +103,7 @@ const NotificationsDrawerListItem = React.memo((props: Props) => {
                     fontWeight='400'
                     color='#A8A8A8'
                 >
-                    {getTimeElapsed(props.notification.createdAt, 'minutes')}
+                    {getTimeElapsed(props.notification.createdAt, 'hours')}
                 </Box>
             )
         }
@@ -193,7 +192,7 @@ const NotificationsDrawerListItem = React.memo((props: Props) => {
                             overflowY: 'hidden',
                         }}
                     >
-                        <img alt='User avatar'
+                        <img alt='Post photo'
                              style={{
                                  height: '100%',
                                  width: '100%',
@@ -202,7 +201,7 @@ const NotificationsDrawerListItem = React.memo((props: Props) => {
                                  overflow: 'clip',
                              }}
                              height='44'
-                             src={props.notification.postPhotoUrl}
+                             src={props.notification.postPhotoUrls[0]}
                              width='44' />
                     </Box>
                 </Box>
