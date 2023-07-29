@@ -40,8 +40,7 @@ interface Notification {
 
 interface PostNotification extends Notification {
     postId: string | number
-    postPhotoUrl: string
-    isPostReel: boolean
+    postPhotoUrls: string[]
 }
 
 interface FollowNotification extends Notification {
