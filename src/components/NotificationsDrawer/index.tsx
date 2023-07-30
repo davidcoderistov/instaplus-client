@@ -32,9 +32,14 @@ const NotificationsDrawerDivider = () => {
     )
 }
 
+interface User {
+    _id: string
+    username: string
+    photoUrl: string | null
+}
+
 interface Notification {
-    photoUrls: string[]
-    usernames: string[]
+    users: User[]
     peopleCount: number
     createdAt: number
 }
@@ -46,7 +51,6 @@ interface PostNotification extends Notification {
 
 interface FollowNotification extends Notification {
     type: 'follow'
-    userId: string | number | null
 }
 
 interface LikeNotification extends PostNotification {
