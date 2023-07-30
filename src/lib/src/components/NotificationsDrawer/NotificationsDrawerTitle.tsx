@@ -11,6 +11,12 @@ interface Props {
 
 export default function NotificationsDrawerTitle(props: Props) {
 
+    const handleSeeAll = () => {
+        if (props.onSeeAll) {
+            props.onSeeAll()
+        }
+    }
+
     return (
         <Box
             component='div'
@@ -49,7 +55,7 @@ export default function NotificationsDrawerTitle(props: Props) {
                 <Button
                     variant='primary'
                     text='See all'
-                    onClick={props.onSeeAll}
+                    onClick={handleSeeAll}
                 />
             )}
         </Box>
