@@ -6,17 +6,20 @@ interface Props {
     loading: boolean
     loader: React.ReactNode | null
     title: string | React.ReactNode | null
+    clickable?: boolean
 
     onClick?(): void
 }
 
-export default function ListItemTitle(props: Props) {
+export default function ListItemTitle({ clickable = true, ...props }: Props) {
 
     const handleClick = useCallback(() => {
         if (!props.loading && !!props.onClick) {
             props.onClick()
         }
     }, [props.loading, props.onClick])
+
+    const isClickable = props.onClick ? true : clickable
 
     return (
         <Box
@@ -94,7 +97,7 @@ export default function ListItemTitle(props: Props) {
                         borderTop='0'
                         sx={{
                             touchAction: 'manipulation',
-                            cursor: props.loading || !props.onClick ? 'default' : 'pointer',
+                            cursor: props.loading || !isClickable ? 'default' : 'pointer',
                         }}
                         onClick={handleClick}
                     >

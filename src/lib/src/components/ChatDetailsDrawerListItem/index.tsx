@@ -37,14 +37,12 @@ export default function ChatDetailsDrawerListItem(props: Props) {
                 loader={null}
                 photoUrls={props.user.photoUrl ? [props.user.photoUrl] : []}
                 usernames={[props.user.username]}
-                onClick={handleClickUser}
             />
             <ListItemContent gutters={false}>
                 <ListItemTitle
                     loading={false}
                     loader={null}
                     title={props.user.username}
-                    onClick={handleClickUser}
                 />
                 <ListItemSubtitle
                     loading={false}

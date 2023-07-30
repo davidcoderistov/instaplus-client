@@ -9,9 +9,14 @@ import Skeleton from '@mui/material/Skeleton'
 import { getTimeElapsed } from '../../utils'
 
 
+interface User {
+    _id: string
+    username: string
+    photoUrl: string | null
+}
+
 interface Notification {
-    photoUrls: string[]
-    usernames: string[]
+    users: User[]
     peopleCount: number
     createdAt: number
 }
@@ -23,7 +28,6 @@ interface PostNotification extends Notification {
 
 interface FollowNotification extends Notification {
     type: 'follow'
-    userId: string | number | null
 }
 
 interface LikeNotification extends PostNotification {
@@ -56,14 +60,16 @@ const NotificationsDrawerListItem = React.memo((props: Props) => {
         if (!props.loading) {
             props.onClick(
                 props.notification.type,
-                props.notification.type === 'follow' ? props.notification.userId : props.notification.postId,
+                props.notification.type === 'follow' ?
+                    props.notification.users.length < 2 ? props.notification.users[0]._id : null
+                    : props.notification.postId,
             )
         }
     }
 
     const usernames = useMemo(() => {
         if (!props.loading) {
-            const usernames = props.notification.usernames.slice(0, 2).join(props.notification.peopleCount === 2 ? ' and ' : ', ')
+            const usernames = props.notification.users.map(user => user.username).slice(0, 2).join(props.notification.peopleCount === 2 ? ' and ' : ', ')
             if (props.notification.peopleCount > 2) {
                 const othersCount = props.notification.peopleCount - 2
                 return `${usernames} and ${othersCount} ${othersCount > 1 ? 'others' : 'other'}`
@@ -138,8 +144,8 @@ const NotificationsDrawerListItem = React.memo((props: Props) => {
                         height={44}
                         sx={{ backgroundColor: '#202020' }} />
                 }
-                photoUrls={!props.loading ? props.notification.photoUrls : []}
-                usernames={!props.loading ? props.notification.usernames : []}
+                photoUrls={!props.loading ? props.notification.users.map(user => user.photoUrl) : []}
+                usernames={!props.loading ? props.notification.users.map(user => user.username) : []}
             />
             <ListItemContent gutters={Boolean(props.loading)}>
                 <ListItemTitle
