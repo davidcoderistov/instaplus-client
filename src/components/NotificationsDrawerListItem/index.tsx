@@ -130,7 +130,7 @@ const NotificationsDrawerListItem = React.memo((props: Props) => {
             onClick={handleClickItem}
         >
             <ListItemAvatar
-                loading={props.loading}
+                loading={Boolean(props.loading)}
                 loader={
                     <Skeleton
                         variant='circular'
@@ -141,9 +141,9 @@ const NotificationsDrawerListItem = React.memo((props: Props) => {
                 photoUrls={!props.loading ? props.notification.photoUrls : []}
                 usernames={!props.loading ? props.notification.usernames : []}
             />
-            <ListItemContent gutters={props.loading}>
+            <ListItemContent gutters={Boolean(props.loading)}>
                 <ListItemTitle
-                    loading={props.loading}
+                    loading={Boolean(props.loading)}
                     loader={
                         <Skeleton
                             variant='rounded'

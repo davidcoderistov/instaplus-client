@@ -7,6 +7,7 @@ import { ArrowBackIos } from '@mui/icons-material'
 import NotificationsDrawerListItem from '../NotificationsDrawerListItem'
 import NotificationsDrawerTitle from './NotificationsDrawerTitle'
 import NotificationsInfiniteList from './NotificationsInfiniteList'
+import _range from 'lodash/range'
 
 
 const NotificationsDrawerDivider = () => {
@@ -196,7 +197,7 @@ export default function NotificationsDrawer(props: SearchDrawerProps) {
                     width='100%'
                     sx={{ overflowX: 'hidden', overflowY: 'auto', verticalAlign: 'baseline' }}
                 >
-                    {props.loading ? [...Array(10).keys()].map(index => (
+                    {props.loading ? _range(10).map(index => (
                         <NotificationsDrawerListItem
                             key={index}
                             loading />
@@ -289,7 +290,7 @@ export default function NotificationsDrawer(props: SearchDrawerProps) {
                 onClickNotification={props.onClick} />
             <NotificationsInfiniteList
                 id='scrollableThisWeekNotificationsList'
-                visible={view === 'thisWeek' || (thisWeekNotificationsCount && onlyOneSection)}
+                visible={view === 'thisWeek' || (thisWeekNotificationsCount > 0 && onlyOneSection)}
                 title='This week'
                 notifications={props.thisWeekNotifications}
                 hasMoreNotifications={props.thisWeekNotifications.length < thisWeekNotificationsCount}
@@ -297,7 +298,7 @@ export default function NotificationsDrawer(props: SearchDrawerProps) {
                 onClickNotification={props.onClick} />
             <NotificationsInfiniteList
                 id='scrollableThisMonthNotificationsList'
-                visible={view === 'thisMonth' || (thisMonthNotificationsCount && onlyOneSection)}
+                visible={view === 'thisMonth' || (thisMonthNotificationsCount > 0 && onlyOneSection)}
                 title='This month'
                 notifications={props.thisMonthNotifications}
                 hasMoreNotifications={props.thisMonthNotifications.length < thisMonthNotificationsCount}
@@ -305,7 +306,7 @@ export default function NotificationsDrawer(props: SearchDrawerProps) {
                 onClickNotification={props.onClick} />
             <NotificationsInfiniteList
                 id='scrollableEarlierNotificationsList'
-                visible={view === 'earlier' || (earlierNotificationsCount && onlyOneSection)}
+                visible={view === 'earlier' || (earlierNotificationsCount > 0 && onlyOneSection)}
                 title='Earlier'
                 notifications={props.earlierNotifications}
                 hasMoreNotifications={props.earlierNotifications.length < earlierNotificationsCount}
