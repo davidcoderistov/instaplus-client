@@ -52,3 +52,17 @@ export interface ChatWithLatestMessage {
     chat: Chat
     message: Message | null
 }
+
+export interface Post {
+    _id: string
+    photoUrls: string[]
+}
+
+export interface Notification {
+    _id: string
+    type: 'follow' | 'like' | 'comment'
+    post: Pick<Post, '_id' | 'photoUrls'> | null
+    latestUsers: Pick<User, '_id' | 'username' | 'photoUrl'>[]
+    usersCount: number
+    createdAt: number
+}
