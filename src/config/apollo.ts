@@ -66,6 +66,18 @@ const cache = new InMemoryCache({
                 findMessagesByChatId: {
                     keyArgs: ['chatId'],
                 },
+                findDailyNotifications: {
+                    keyArgs: false,
+                },
+                findWeeklyNotifications: {
+                    keyArgs: false,
+                },
+                findMonthlyNotifications: {
+                    keyArgs: false,
+                },
+                findEarlierNotifications: {
+                    keyArgs: false,
+                },
             },
         },
         Chat: {
