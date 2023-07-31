@@ -1,3 +1,4 @@
+import React from 'react'
 import { useLocation } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import { useMediaQuery } from '@mui/material'
@@ -51,9 +52,9 @@ interface Props {
     isCreatingNewPost: boolean
     isSettingsOpen: boolean
 
-    onOpenSearchDrawer(): void
+    onOpenSearchDrawer(event: React.MouseEvent): void
 
-    onOpenNotificationsDrawer(): void
+    onOpenNotificationsDrawer(event: React.MouseEvent): void
 
     onOpenCreateNewPost(): void
 }

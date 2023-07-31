@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import SidebarDrawer from '../SidebarDrawer'
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
@@ -127,12 +127,17 @@ export default function NotificationsDrawer(props: SearchDrawerProps) {
         todayNotificationsCount < 1 && thisWeekNotificationsCount < 1 && thisMonthNotificationsCount < 1 && earlierNotificationsCount > 0
     )
 
+    const handleClickDrawer = (event: React.MouseEvent) => {
+        event.stopPropagation()
+    }
+
     return (
         <SidebarDrawer
             variant='permanent'
             anchor='left'
             open={props.open}
             PaperProps={{ sx: { backgroundColor: 'black', borderRight: '1px solid #232323' } }}
+            onClick={handleClickDrawer}
         >
             <Box
                 component='div'

@@ -9,7 +9,7 @@ interface Props {
     isBordered?: boolean
     icon: React.ReactNode
     activeIcon: React.ReactNode
-    onClick?: () => void
+    onClick?: (event: React.MouseEvent) => void
 }
 
 export default function AppDrawerItem(props: Props) {

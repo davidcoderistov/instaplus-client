@@ -83,12 +83,17 @@ export default function SearchDrawer(props: SearchDrawerProps) {
         }
     }, [props.open])
 
+    const handleClickDrawer = (event: React.MouseEvent) => {
+        event.stopPropagation()
+    }
+
     return (
         <SidebarDrawer
             variant='permanent'
             anchor='left'
             open={props.open}
             PaperProps={{ sx: { backgroundColor: 'black', borderRight: '1px solid #232323' } }}
+            onClick={handleClickDrawer}
         >
             <Box
                 component='div'
