@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useApolloClient, useMutation, useSubscription } from '@apollo/client'
 import { FIND_CHATS_FOR_USER, FIND_MESSAGES_BY_CHAT_ID } from '../../graphql/queries/chat'
 import { FindChatsForUserQueryType, FindMessagesByChatIdQueryType } from '../../graphql/types/queries/chat'
@@ -13,6 +13,7 @@ import { useAuthUser } from '../../hooks/misc'
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import AppDrawer from '../../lib/src/components/AppDrawer'
+import NotificationsDrawer from '../NotificationsDrawer'
 import Chat from '../Chat'
 
 
@@ -95,6 +96,19 @@ export default function SignedInRouter() {
 
     useSubscription(NEW_MESSAGE_REACTION)
 
+    const [isNotificationsDrawerOpen, setIsNotificationsDrawerOpen] = useState(false)
+
+    const handleOpenNotificationsDrawer = (event: React.MouseEvent) => {
+        event.stopPropagation()
+        setIsNotificationsDrawerOpen(isNotificationsDrawerOpen => !isNotificationsDrawerOpen)
+    }
+
+    const handleClickApp = () => {
+        if (isNotificationsDrawerOpen) {
+            setIsNotificationsDrawerOpen(false)
+        }
+    }
+
     return (
         <Box
             component='div'
@@ -102,18 +116,21 @@ export default function SignedInRouter() {
             height='100vh'
             width='100%'
             bgcolor='#000000'
+            onClick={handleClickApp}
         >
             <CssBaseline />
             <AppDrawer
                 username={authUser.username}
                 photoUrl={authUser.photoUrl}
                 isSearchDrawerOpen={false}
-                isNotificationsDrawerOpen={false}
+                isNotificationsDrawerOpen={isNotificationsDrawerOpen}
                 isCreatingNewPost={false}
                 isSettingsOpen={false}
                 onOpenSearchDrawer={console.log}
-                onOpenNotificationsDrawer={console.log}
+                onOpenNotificationsDrawer={handleOpenNotificationsDrawer}
                 onOpenCreateNewPost={console.log} />
+            <NotificationsDrawer
+                open={isNotificationsDrawerOpen} />
             <Routes>
                 <Route path='/' element={
                     <div style={{ color: 'white' }}>
