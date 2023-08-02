@@ -78,6 +78,11 @@ const cache = new InMemoryCache({
                 findEarlierNotifications: {
                     keyArgs: false,
                 },
+                findSearchHistory: {
+                    merge(_, incoming) {
+                        return incoming
+                    },
+                },
             },
         },
         Chat: {
