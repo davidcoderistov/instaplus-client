@@ -11,36 +11,43 @@ import { Close } from '@mui/icons-material'
 import { formatNumber } from '../../utils'
 
 
-interface Tag {
-    type: 'tag'
-    id: string | number
-    name: string
-    postsCount: number
-}
-
 interface User {
-    type: 'user'
-    id: string | number
-    username: string
+    _id: string | number
     firstName: string
     lastName: string
-    photoUrl?: string | null
-    followedByUsernames: string[]
-    followedByCount: number
+    username: string
+    photoUrl: string | null
+}
+
+interface Hashtag {
+    _id: string | number
+    name: string
+    postIds: string[]
+}
+
+interface SearchUser {
+    user: User
+    latestFollower: Pick<User, '_id' | 'username'> | null
+    followersCount: number
+}
+
+interface UserSearch {
+    searchUser: SearchUser | null
+    hashtag: Hashtag | null
 }
 
 interface StaticProps {
     loading?: never
-    item: Tag | User
+    item: UserSearch
 
-    onClickItem?(id: string | number, type: 'tag' | 'user'): void
+    onClickItem?(item: UserSearch): void
 
-    onRemoveItem?(id: string | number, type: 'tag' | 'user'): void
+    onRemoveItem?(item: UserSearch): void
 }
 
 interface LoadingProps {
     loading: true
-    item: Tag | User
+    item?: never
 
     onClickItem?: never
 
@@ -53,34 +60,36 @@ const SearchDrawerListItem = React.memo((props: Props) => {
 
     const handleClickItem = () => {
         if (!props.loading && props.onClickItem) {
-            props.onClickItem(props.item.id, props.item.type)
+            props.onClickItem(props.item)
         }
     }
 
     const handleRemoveItem = (event: React.MouseEvent) => {
         if (!props.loading && props.onRemoveItem) {
             event.stopPropagation()
-            props.onRemoveItem(props.item.id, props.item.type)
+            props.onRemoveItem(props.item)
         }
     }
 
     const subtitle = useMemo(() => {
         if (!props.loading) {
-            if (props.item.type === 'user') {
+            if (props.item.searchUser) {
                 let followedBy = null
-                if (props.item.followedByCount > 0 && props.item.followedByUsernames.length > 0) {
-                    const username = props.item.followedByUsernames[0]
-                    if (props.item.followedByCount > 1) {
-                        followedBy = `Followed by ${username} + ${props.item.followedByCount - 1} more`
+                if (props.item.searchUser.followersCount > 0 && props.item.searchUser.latestFollower) {
+                    const username = props.item.searchUser.latestFollower.username
+                    if (props.item.searchUser.followersCount > 1) {
+                        followedBy = `Followed by ${username} + ${props.item.searchUser.followersCount - 1} more`
                     } else {
                         followedBy = `Followed by ${username}`
                     }
                 }
-                const user = `${props.item.firstName} ${props.item.lastName}`
+                const user = `${props.item.searchUser.user.firstName} ${props.item.searchUser.user.lastName}`
                 return followedBy ? `${user} • ${followedBy}` : user
-            }
-            if (props.item.postsCount > 0) {
-                return `${formatNumber(props.item.postsCount)} posts`
+            } else {
+                const hashtag = props.item.hashtag as Hashtag
+                if (hashtag.postIds.length > 0) {
+                    return `${formatNumber(hashtag.postIds.length)} ${hashtag.postIds.length > 1 ? 'posts' : 'post'}`
+                }
             }
         }
         return null
@@ -93,8 +102,8 @@ const SearchDrawerListItem = React.memo((props: Props) => {
             onClick={handleClickItem}
         >
             <ListItemAvatar
-                loading={props.loading}
-                hashtag={!props.loading && props.item.type === 'tag'}
+                loading={Boolean(props.loading)}
+                hashtag={Boolean(!props.loading && props.item.hashtag)}
                 loader={
                     <Skeleton
                         variant='circular'
@@ -102,12 +111,12 @@ const SearchDrawerListItem = React.memo((props: Props) => {
                         height={44}
                         sx={{ backgroundColor: '#202020' }} />
                 }
-                photoUrls={!props.loading && props.item.type === 'user' && props.item.photoUrl ? [props.item.photoUrl] : []}
-                usernames={!props.loading && props.item.type === 'user' ? [props.item.username] : []}
+                photoUrls={!props.loading && props.item.searchUser ? [props.item.searchUser.user.photoUrl] : []}
+                usernames={!props.loading && props.item.searchUser ? [props.item.searchUser.user.username] : []}
             />
-            <ListItemContent gutters={props.loading}>
+            <ListItemContent gutters={Boolean(props.loading)}>
                 <ListItemTitle
-                    loading={props.loading}
+                    loading={Boolean(props.loading)}
                     loader={
                         <Skeleton
                             variant='rounded'
@@ -118,11 +127,11 @@ const SearchDrawerListItem = React.memo((props: Props) => {
                                 borderRadius: '8px',
                             }} />
                     }
-                    title={!props.loading ? props.item.type === 'user' ? props.item.username : `#${props.item.name}` : null}
+                    title={!props.loading ? props.item.searchUser ? props.item.searchUser.user.username : `#${props.item.hashtag?.name}` : null}
                 />
-                {(props.loading || props.item.type === 'user' || props.item.postsCount > 0) && (
+                {(props.loading || props.item.searchUser || (props.item.hashtag && props.item.hashtag.postIds.length > 0)) && (
                     <ListItemSubtitle
-                        loading={props.loading}
+                        loading={Boolean(props.loading)}
                         loader={
                             <Skeleton
                                 variant='rounded'

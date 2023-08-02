@@ -13,7 +13,7 @@ interface User {
     username: string
     firstName: string
     lastName: string
-    photoUrl?: string | null
+    photoUrl: string | null
     selected: boolean
 }
 
@@ -23,7 +23,7 @@ interface StaticProps {
     username: string
     firstName: string
     lastName: string
-    photoUrl?: string | null
+    photoUrl: string | null
     selected: boolean
 
     onClickUser(user: User): void
@@ -67,7 +67,7 @@ const SearchableUser = React.memo((props: Props) => {
                         height={44}
                         sx={{ backgroundColor: '#3A3A3A' }} />
                 }
-                photoUrls={props.loading || !props.photoUrl ? [] : [props.photoUrl]}
+                photoUrls={props.loading ? [] : [props.photoUrl]}
                 usernames={props.loading ? [] : [props.username]}
             />
             <ListItemContent gutters={Boolean(props.loading)}>

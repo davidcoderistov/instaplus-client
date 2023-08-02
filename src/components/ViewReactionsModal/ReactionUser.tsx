@@ -14,13 +14,15 @@ export default function ReactionUser(props: Reaction) {
             <ListItemAvatar
                 loading={false}
                 loader={null}
-                photoUrls={props.creator.photoUrl ? [props.creator.photoUrl] : []}
+                clickable={false}
+                photoUrls={[props.creator.photoUrl]}
                 usernames={[props.creator.username]}
             />
             <ListItemContent gutters={false}>
                 <ListItemTitle
                     loading={false}
                     loader={null}
+                    clickable={false}
                     title={props.creator.username}
                 />
                 <ListItemSubtitle
