@@ -41,22 +41,17 @@ export default function SearchDrawer(props: { open: boolean }) {
     }, [])
 
     const onClickItem = useCallback((userSearch: UserSearch) => {
-        searchHistory.updateQuery(findSearchHistory => {
-            const { queryResult, success } = findSearchHistoryMutations.addSearchHistoryItem({
-                queryData: findSearchHistory,
-                variables: {
-                    userSearch,
-                },
-            })
-            if (success) {
-                markUserSearch({
-                    variables: {
-                        searchedUserId: userSearch.searchUser ? userSearch.searchUser.user._id : null,
-                        searchedHashtagId: userSearch.hashtag ? userSearch.hashtag._id : null,
-                    },
-                })
-            }
-            return queryResult
+        searchHistory.updateQuery(findSearchHistory => findSearchHistoryMutations.addSearchHistoryItem({
+            queryData: findSearchHistory,
+            variables: {
+                userSearch,
+            },
+        }).queryResult)
+        markUserSearch({
+            variables: {
+                searchedUserId: userSearch.searchUser ? userSearch.searchUser.user._id : null,
+                searchedHashtagId: userSearch.hashtag ? userSearch.hashtag._id : null,
+            },
         })
     }, [])
 

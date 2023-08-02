@@ -11,29 +11,27 @@ interface AddSearchHistoryItemOptions {
 
 interface AddSearchHistoryItemReturnValue {
     queryResult: FindSearchHistoryQueryType
-    success: boolean
 }
 
 export function addSearchHistoryItem(options: AddSearchHistoryItemOptions): AddSearchHistoryItemReturnValue {
     const id = options.variables.userSearch.searchUser?.user._id || options.variables.userSearch.hashtag?._id
-    if (options.queryData.findSearchHistory.some(searchHistory => {
+    const searchHistoryItems = Array.from(options.queryData.findSearchHistory)
+    const findSearchHistoryItemIndex = searchHistoryItems.findIndex(searchHistory => {
         const searchHistoryId = searchHistory.searchUser?.user._id || searchHistory.hashtag?._id
         return searchHistoryId === id
-    })) {
-        return {
-            queryResult: options.queryData,
-            success: false,
-        }
+    })
+
+    if (findSearchHistoryItemIndex > -1) {
+        searchHistoryItems.splice(findSearchHistoryItemIndex, 1)
     }
     return {
         queryResult: {
             ...options.queryData,
             findSearchHistory: [
                 options.variables.userSearch,
-                ...options.queryData.findSearchHistory,
+                ...searchHistoryItems,
             ],
         },
-        success: true,
     }
 }
 
