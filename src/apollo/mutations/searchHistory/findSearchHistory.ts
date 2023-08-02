@@ -1,5 +1,41 @@
 import { FindSearchHistoryQueryType } from '../../../graphql/types/queries/searchHistory'
+import { UserSearch } from '../../../graphql/types/models'
 
+
+interface AddSearchHistoryItemOptions {
+    queryData: FindSearchHistoryQueryType
+    variables: {
+        userSearch: UserSearch
+    }
+}
+
+interface AddSearchHistoryItemReturnValue {
+    queryResult: FindSearchHistoryQueryType
+    success: boolean
+}
+
+export function addSearchHistoryItem(options: AddSearchHistoryItemOptions): AddSearchHistoryItemReturnValue {
+    const id = options.variables.userSearch.searchUser?.user._id || options.variables.userSearch.hashtag?._id
+    if (options.queryData.findSearchHistory.some(searchHistory => {
+        const searchHistoryId = searchHistory.searchUser?.user._id || searchHistory.hashtag?._id
+        return searchHistoryId === id
+    })) {
+        return {
+            queryResult: options.queryData,
+            success: false,
+        }
+    }
+    return {
+        queryResult: {
+            ...options.queryData,
+            findSearchHistory: [
+                options.variables.userSearch,
+                ...options.queryData.findSearchHistory,
+            ],
+        },
+        success: true,
+    }
+}
 
 interface RemoveSearchHistoryItemOptions {
     queryData: FindSearchHistoryQueryType
@@ -33,6 +69,7 @@ export function removeSearchHistoryItem(options: RemoveSearchHistoryItemOptions)
 }
 
 const mutations = {
+    addSearchHistoryItem,
     removeSearchHistoryItem,
 }
 
