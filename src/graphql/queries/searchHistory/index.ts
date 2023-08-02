@@ -26,3 +26,29 @@ export const FIND_USER_SEARCHES_BY_SEARCH_QUERY = gql`
         }
     }
 `
+
+export const FIND_SEARCH_HISTORY = gql`
+    query findSearchHistory {
+        findSearchHistory {
+            searchUser {
+                user {
+                    _id
+                    firstName
+                    lastName
+                    username
+                    photoUrl
+                }
+                latestFollower {
+                    _id
+                    username
+                }
+                followersCount
+            }
+            hashtag {
+                _id
+                name
+                postIds
+            }
+        }
+    }
+`
