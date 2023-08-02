@@ -14,6 +14,7 @@ import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import AppDrawer from '../../lib/src/components/AppDrawer'
 import NotificationsDrawer from '../NotificationsDrawer'
+import SearchDrawer from '../SearchDrawer'
 import Chat from '../Chat'
 
 
@@ -101,12 +102,23 @@ export default function SignedInRouter() {
     const handleOpenNotificationsDrawer = (event: React.MouseEvent) => {
         event.stopPropagation()
         setIsNotificationsDrawerOpen(isNotificationsDrawerOpen => !isNotificationsDrawerOpen)
+        setIsSearchDrawerOpen(false)
     }
 
     const handleClickApp = () => {
         if (isNotificationsDrawerOpen) {
             setIsNotificationsDrawerOpen(false)
+        } else if (isSearchDrawerOpen) {
+            setIsSearchDrawerOpen(false)
         }
+    }
+
+    const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false)
+
+    const handleOpenSearchDrawer = (event: React.MouseEvent) => {
+        event.stopPropagation()
+        setIsSearchDrawerOpen(isSearchDrawerOpen => !isSearchDrawerOpen)
+        setIsNotificationsDrawerOpen(false)
     }
 
     return (
@@ -122,15 +134,15 @@ export default function SignedInRouter() {
             <AppDrawer
                 username={authUser.username}
                 photoUrl={authUser.photoUrl}
-                isSearchDrawerOpen={false}
+                isSearchDrawerOpen={isSearchDrawerOpen}
                 isNotificationsDrawerOpen={isNotificationsDrawerOpen}
                 isCreatingNewPost={false}
                 isSettingsOpen={false}
-                onOpenSearchDrawer={console.log}
+                onOpenSearchDrawer={handleOpenSearchDrawer}
                 onOpenNotificationsDrawer={handleOpenNotificationsDrawer}
                 onOpenCreateNewPost={console.log} />
-            <NotificationsDrawer
-                open={isNotificationsDrawerOpen} />
+            <NotificationsDrawer open={isNotificationsDrawerOpen} />
+            <SearchDrawer open={isSearchDrawerOpen} />
             <Routes>
                 <Route path='/' element={
                     <div style={{ color: 'white' }}>
