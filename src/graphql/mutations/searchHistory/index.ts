@@ -12,3 +12,9 @@ export const UNMARK_USER_SEARCH = gql`
         unmarkUserSearch(searchedHashtagId: $searchedHashtagId, searchedUserId: $searchedUserId)
     }
 `
+
+export const CLEAR_SEARCH_HISTORY = gql`
+    mutation clearSearchHistory {
+        clearSearchHistory
+    }
+`
