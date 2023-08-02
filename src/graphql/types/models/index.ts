@@ -66,3 +66,20 @@ export interface Notification {
     usersCount: number
     createdAt: number
 }
+
+export interface Hashtag {
+    _id: string
+    name: string
+    postIds: string[]
+}
+
+export interface SearchUser {
+    user: User
+    latestFollower: Pick<User, '_id' | 'username'> | null
+    followersCount: number
+}
+
+export interface UserSearch {
+    searchUser: SearchUser | null
+    hashtag: Hashtag | null
+}

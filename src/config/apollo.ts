@@ -97,6 +97,27 @@ const cache = new InMemoryCache({
         NextCursor: {
             keyFields: false,
         },
+        UserSearch: {
+            keyFields: (userSearchStoreObject) => {
+                const userSearch = userSearchStoreObject as unknown as {
+                    __typename: string,
+                    searchUser: { user: { __ref: string } } | null
+                    hashtag: { __ref: string } | null
+                }
+                if (userSearch.searchUser) {
+                    const parts = userSearch.searchUser.user.__ref.split(':')
+                    if (parts.length > 1) {
+                        return `${userSearch.__typename}:${parts[1]}`
+                    }
+                } else if (userSearch.hashtag) {
+                    const parts = userSearch.hashtag.__ref.split(':')
+                    if (parts.length > 1) {
+                        return `${userSearch.__typename}:${parts[1]}`
+                    }
+                }
+                return undefined
+            },
+        },
     },
 })
 
