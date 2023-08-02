@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import SidebarDrawer from '../SidebarDrawer'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
@@ -8,42 +8,49 @@ import SearchDrawerUserItem from '../SearchDrawerListItem'
 import ClearSearchHistoryModal from '../ClearSearchHistoryModal'
 import Button from '../Button'
 import { Typography } from '@mui/material'
+import _range from 'lodash/range'
 
-
-interface Tag {
-    type: 'tag'
-    id: string | number
-    name: string
-    postsCount: number
-}
 
 interface User {
-    type: 'user'
-    id: string | number
-    username: string
+    _id: string | number
     firstName: string
     lastName: string
-    photoUrl: string
-    followedByUsernames: string[]
-    followedByCount: number
+    username: string
+    photoUrl: string | null
 }
 
-type Item = Tag | User
+interface Hashtag {
+    _id: string | number
+    name: string
+    postIds: string[]
+}
+
+interface SearchUser {
+    user: User
+    latestFollower: Pick<User, '_id' | 'username'> | null
+    followersCount: number
+}
+
+interface UserSearch {
+    searchUser: SearchUser | null
+    hashtag: Hashtag | null
+}
 
 interface SearchDrawerProps {
     open: boolean
-    searchHistoryItems: Item[]
+    searchHistoryItems: UserSearch[]
     isSearchHistoryLoading: boolean
-    searchedItems: Item[]
+    isClearingSearchHistory: boolean
+    searchedItems: UserSearch[]
     isSearching: boolean
 
     onSearch(searchQuery: string): void
 
     onClearSearchHistory(): void
 
-    onClickItem(id: string | number, type: 'tag' | 'user'): void
+    onClickItem(item: UserSearch): void
 
-    onRemoveItem(id: string | number, type: 'tag' | 'user'): void
+    onRemoveItem(item: UserSearch): void
 }
 
 export default function SearchDrawer(props: SearchDrawerProps) {
@@ -60,22 +67,35 @@ export default function SearchDrawer(props: SearchDrawerProps) {
 
     const handleClearSearchQuery = useCallback(() => {
         setSearchQuery('')
+        props.onSearch('')
     }, [props.onSearch])
 
     const [isClearSearchHistoryModalOpen, setIsClearSearchHistoryModalOpen] = useState(false)
 
-    const handleOpenClearSearchHistoryModal = useCallback(() => {
+    const handleOpenClearSearchHistoryModal = () => {
         setIsClearSearchHistoryModalOpen(true)
-    }, [])
+    }
 
-    const handleCloseClearSearchHistoryModal = useCallback(() => {
+    const handleCloseClearSearchHistoryModal = () => {
         setIsClearSearchHistoryModalOpen(false)
-    }, [])
+    }
 
-    const handleClearSearchHistory = useCallback(() => {
-        setIsClearSearchHistoryModalOpen(false)
+    const handleClearSearchHistory = () => {
         props.onClearSearchHistory()
-    }, [props.onClearSearchHistory])
+    }
+
+    const shouldCloseClearSearchHistoryModalRef = useRef(false)
+
+    useEffect(() => {
+        if (props.isClearingSearchHistory) {
+            shouldCloseClearSearchHistoryModalRef.current = true
+        } else {
+            if (shouldCloseClearSearchHistoryModalRef.current) {
+                setIsClearSearchHistoryModalOpen(false)
+                shouldCloseClearSearchHistoryModalRef.current = false
+            }
+        }
+    }, [props.isClearingSearchHistory])
 
     useEffect(() => {
         if (!props.open) {
@@ -200,7 +220,7 @@ export default function SearchDrawer(props: SearchDrawerProps) {
                             flexDirection='column'
                             paddingY='0'
                         >
-                            {[...Array(8).keys()].map(index => (
+                            {_range(8).map(index => (
                                 <SearchDrawerUserItem
                                     key={index}
                                     loading
@@ -217,7 +237,7 @@ export default function SearchDrawer(props: SearchDrawerProps) {
                         >
                             {props.searchedItems.map(item => (
                                 <SearchDrawerUserItem
-                                    key={item.id}
+                                    key={item.searchUser ? `user:${item.searchUser.user._id}` : `hashtag:${(item.hashtag as Hashtag)._id}`}
                                     item={item}
                                     onClickItem={props.onClickItem}
                                 />
@@ -231,7 +251,7 @@ export default function SearchDrawer(props: SearchDrawerProps) {
                             flexDirection='column'
                             paddingY='0'
                         >
-                            {[...Array(8).keys()].map(index => (
+                            {_range(8).map(index => (
                                 <SearchDrawerUserItem
                                     key={index}
                                     loading
@@ -294,7 +314,7 @@ export default function SearchDrawer(props: SearchDrawerProps) {
                                 >
                                     {props.searchHistoryItems.map(item => (
                                         <SearchDrawerUserItem
-                                            key={item.id}
+                                            key={item.searchUser ? `user:${item.searchUser.user._id}` : `hashtag:${(item.hashtag as Hashtag)._id}`}
                                             item={item}
                                             onRemoveItem={props.onRemoveItem}
                                         />
@@ -326,6 +346,7 @@ export default function SearchDrawer(props: SearchDrawerProps) {
             </Box>
             <ClearSearchHistoryModal
                 open={isClearSearchHistoryModalOpen}
+                isClearingSearchHistory={props.isClearingSearchHistory}
                 onClearSearchHistory={handleClearSearchHistory}
                 onCloseModal={handleCloseClearSearchHistoryModal}
             />

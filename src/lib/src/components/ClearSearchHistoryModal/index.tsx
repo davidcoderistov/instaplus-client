@@ -1,11 +1,13 @@
 import React from 'react'
 import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
+import LoadingButton from '@mui/lab/LoadingButton'
 import Button from '@mui/material/Button'
 
 
 interface Props {
     open: boolean
+    isClearingSearchHistory: boolean
 
     onClearSearchHistory(): void
 
@@ -13,6 +15,12 @@ interface Props {
 }
 
 export default function ClearSearchHistoryModal(props: Props) {
+
+    const handleCloseModal = () => {
+        if (!props.isClearingSearchHistory) {
+            props.onCloseModal()
+        }
+    }
 
     return (
         <Dialog
@@ -25,7 +33,7 @@ export default function ClearSearchHistoryModal(props: Props) {
                     maxWidth: '400px',
                 },
             }}
-            onClose={props.onCloseModal}
+            onClose={handleCloseModal}
         >
             <Box
                 component='div'
@@ -110,7 +118,7 @@ export default function ClearSearchHistoryModal(props: Props) {
                                 accounts you've searched for as suggested results.
                             </Box>
                         </Box>
-                        <Button
+                        <LoadingButton
                             variant='text'
                             fullWidth
                             color='error'
@@ -121,15 +129,19 @@ export default function ClearSearchHistoryModal(props: Props) {
                                 '&:hover': {
                                     backgroundColor: 'inherit',
                                 },
+                                '.MuiLoadingButton-loadingIndicator': {
+                                    color: '#ED4956',
+                                },
                                 borderTop: '1px solid #363636',
                                 borderBottom: '1px solid #363636',
                             }}
                             onClick={props.onClearSearchHistory}
+                            loading={props.isClearingSearchHistory}
                             disableElevation
                             disableRipple
                         >
                             Clear all
-                        </Button>
+                        </LoadingButton>
                         <Button
                             variant='text'
                             fullWidth
@@ -140,7 +152,7 @@ export default function ClearSearchHistoryModal(props: Props) {
                                     backgroundColor: 'inherit',
                                 },
                             }}
-                            onClick={props.onCloseModal}
+                            onClick={handleCloseModal}
                             disableElevation
                             disableRipple
                         >
