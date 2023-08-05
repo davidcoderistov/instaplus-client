@@ -1,36 +1,16 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import ImagePreview from '../ImagePreview'
-import VideoPreviewPlayer from '../VideoPreviewPlayer'
 import PostSliderArrow from '../PostSliderArrow'
 
 
 interface Photo {
-    id: number
     visible: boolean
-    isVideo: false
     photoUrl: string
-}
-
-interface Video {
-    id: number
-    visible: boolean
-    isVideo: true
-    photoUrl: string
-    videoUrl: string
-    isPlaying: boolean
-    isMuted: boolean
-}
-
-type Media = Photo | Video
-
-interface MediaProp {
-    photoUrl: string
-    videoUrl: string | null
 }
 
 interface Props {
-    media: MediaProp[]
+    photoUrls: string[]
     loading: boolean
     large?: boolean
     dense?: boolean
@@ -38,75 +18,27 @@ interface Props {
 
 export default function PostPreviewSlider(props: Props) {
 
-    const [media, setMedia] = useState<Media[]>([])
-
-    useEffect(() => {
-        setMedia(props.media.map((media, index) => {
-            const isVideo = Boolean(media.videoUrl)
-            return {
-                id: index,
-                visible: index < 1,
-                isVideo,
-                photoUrl: media.photoUrl,
-                ...isVideo && {
-                    videoUrl: media.videoUrl,
-                    isPlaying: index < 1,
-                    isMuted: index > 0,
-                },
-            }
-        }))
-    }, [props.media])
-
-    const handlePlayVideo = (index: number) => {
-        if (index < media.length) {
-            setMedia(media => media.map(media => {
-                if (media.id === index) {
-                    if (media.isVideo) {
-                        return {
-                            ...media,
-                            isPlaying: !media.isPlaying,
-                        }
-                    }
-                }
-                return media
-            }))
-        }
-    }
-
-    const handleMuteVideo = (index: number) => {
-        if (index < media.length) {
-            setMedia(media => media.map(media => {
-                if (media.id === index) {
-                    if (media.isVideo) {
-                        return {
-                            ...media,
-                            isMuted: !media.isMuted,
-                        }
-                    }
-                }
-                return media
-            }))
-        }
-    }
+    const [photos, setPhotos] = useState<Photo[]>(props.photoUrls.map((photoUrl, index) => ({
+        visible: index < 1,
+        photoUrl,
+    })))
 
     const handleSlideLeft = (index: number) => {
-        setMedia(media => media.map(media => ({
-            ...media,
-            visible: media.id === index - 1,
-            ...media.isVideo && { isPlaying: false },
+        setPhotos(photos => photos.map((photo, i) => ({
+            ...photo,
+            visible: i === index - 1,
         })))
     }
 
     const handleSlideRight = (index: number) => {
-        setMedia(media => media.map(media => ({
-            ...media,
-            visible: media.id === index + 1,
-            ...media.isVideo && { isPlaying: false },
+        setPhotos(photos => photos.map((photo, i) => ({
+            ...photo,
+            visible: i === index + 1,
         })))
     }
 
     const Slider = useMemo(() => {
-        return media.length > 1 ? (
+        return photos.length > 1 ? (
             <Box
                 component='div'
                 alignItems='center'
@@ -121,22 +53,22 @@ export default function PostPreviewSlider(props: Props) {
                     pointerEvents: 'none',
                 }}
             >
-                {media.map(media => (
+                {photos.map((photo, index) => (
                     <Box
-                        key={media.id}
+                        key={index}
                         marginRight='4px'
                         borderRadius='50%'
                         height='6px'
                         width='6px'
                         sx={{
                             background: '#FFFFFF',
-                            opacity: media.visible ? 1 : 0.4,
+                            opacity: photo.visible ? 1 : 0.4,
                         }}
                     />
                 ))}
             </Box>
         ) : null
-    }, [media])
+    }, [photos])
 
     return (
         <>
@@ -146,7 +78,7 @@ export default function PostPreviewSlider(props: Props) {
                     large={props.large}
                     dense={props.dense}
                     photoUrl={null} />
-            ) : media.map((media, index, arr) => {
+            ) : photos.map((photo, index, arr) => {
 
                 const LeftSliderArrow = index > 0 && arr.length > 1 ? (
                     <PostSliderArrow
@@ -162,27 +94,13 @@ export default function PostPreviewSlider(props: Props) {
                     />
                 ) : null
 
-                return media.isVideo ? (
-                    <VideoPreviewPlayer
-                        key={index}
-                        visible={media.visible}
-                        large={props.large}
-                        dense={props.dense}
-                        videoUrl={media.videoUrl}
-                        isPlaying={media.isPlaying}
-                        isMuted={media.isMuted}
-                        leftSliderArrow={LeftSliderArrow}
-                        rightSliderArrow={RightSliderArrow}
-                        slider={Slider}
-                        onPlay={() => handlePlayVideo(index)}
-                        onMute={() => handleMuteVideo(index)} />
-                ) : (
+                return (
                     <ImagePreview
                         key={index}
-                        visible={media.visible}
+                        visible={photo.visible}
                         large={props.large}
                         dense={props.dense}
-                        photoUrl={media.photoUrl}
+                        photoUrl={photo.photoUrl}
                         leftSliderArrow={LeftSliderArrow}
                         rightSliderArrow={RightSliderArrow}
                         slider={Slider} />

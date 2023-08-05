@@ -11,15 +11,18 @@ interface Props {
 export default function UploadMedia(props: Props) {
 
     const handleUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = Array.from(event.target.files)
-        if (files.every(file => file && (file.type.startsWith('image/') || file.type.startsWith('video/')))) {
-            props.onUploadFiles(files)
-        } else {
-            enqueueSnackbar('You can upload photos and videos only', {
-                variant: 'error', anchorOrigin: { horizontal: 'right', vertical: 'bottom' }, autoHideDuration: 3000,
-            })
+        if (event.target.files) {
+            const files = Array.from(event.target.files)
+            if (files.every(file => file && (file.type.startsWith('image/')))) {
+                props.onUploadFiles(files)
+                event.target.value = ''
+                return
+            }
         }
-        event.target.value = null
+        enqueueSnackbar('You can upload photos only', {
+            variant: 'error', anchorOrigin: { horizontal: 'right', vertical: 'bottom' }, autoHideDuration: 3000,
+        })
+        event.target.value = ''
     }
 
     return (
@@ -104,7 +107,7 @@ export default function UploadMedia(props: Props) {
                         wordBreak: 'break-word',
                     }}
                 >
-                    Upload photos and videos here
+                    Upload photos here
                 </Box>
             </Box>
             <Box
@@ -139,6 +142,8 @@ export default function UploadMedia(props: Props) {
                                 onChange={handleUploadFile} />
                         </>
                     }
+                    onClick={() => {
+                    }}
                     contained
                 />
             </Box>

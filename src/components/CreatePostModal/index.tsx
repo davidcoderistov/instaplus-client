@@ -15,11 +15,6 @@ interface IHashtag {
     postIds: string[]
 }
 
-interface Media {
-    photoUrl: string | null
-    videoUrl: string | null
-}
-
 interface Props {
     open: boolean
     user: {
@@ -55,14 +50,11 @@ export default function CreatePostModal(props: Props) {
         setFiles(files)
     }
 
-    const media: Media[] = useMemo(() => files.map(file => ({
-        ...file.type.startsWith('image/') && { photoUrl: URL.createObjectURL(file) },
-        ...file.type.startsWith('video/') && { videoUrl: URL.createObjectURL(file) },
-    })), [files])
+    const photoUrls: string[] = useMemo(() => files.map(URL.createObjectURL), [files])
 
     const handleSharePost = (caption: string, location: string, hashtags: string[]) => {
         props.onSharePost(files, caption, location, hashtags)
-        files.forEach(file => URL.revokeObjectURL(file))
+        photoUrls.forEach(URL.revokeObjectURL)
     }
 
     const handleCloseModal = () => {
@@ -150,7 +142,7 @@ export default function CreatePostModal(props: Props) {
                 />
             ) : (
                 <CreatePost
-                    media={media}
+                    photoUrls={photoUrls}
                     user={props.user}
                     isSharing={props.isSharing}
                     hashtags={props.hashtags}
