@@ -56,6 +56,9 @@ export interface ChatWithLatestMessage {
 export interface Post {
     _id: string
     photoUrls: string[]
+    caption: string | null
+    location: string | null
+    creator: User
 }
 
 export interface Notification {
