@@ -27,7 +27,7 @@ interface Props {
 
     onFetchHashtags(searchQuery: string): void
 
-    onSharePost(files: File[], caption: string, location: string, hashtags: string[]): void
+    onSharePost(files: File[], caption: string | null, location: string | null, hashtags: string[]): void
 
     onCloseModal(): void
 }
@@ -52,7 +52,7 @@ export default function CreatePostModal(props: Props) {
 
     const photoUrls: string[] = useMemo(() => files.map(URL.createObjectURL), [files])
 
-    const handleSharePost = (caption: string, location: string, hashtags: string[]) => {
+    const handleSharePost = (caption: string | null, location: string | null, hashtags: string[]) => {
         props.onSharePost(files, caption, location, hashtags)
         photoUrls.forEach(URL.revokeObjectURL)
     }
