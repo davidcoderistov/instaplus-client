@@ -1,8 +1,8 @@
-import React, { useCallback, useRef, useState, useMemo } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import InputBase from '@mui/material/InputBase'
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
+import EmojiPicker, { EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react'
 import Hashtag from './Hashtag'
 import { useClickOutside } from '../../hooks'
 
@@ -11,8 +11,8 @@ const EmojiPickerMemo = React.memo((props: { onEmojiClick(data: EmojiClickData):
 
     return (
         <EmojiPicker
-            theme='dark'
-            emojiStyle='native'
+            theme={Theme.DARK}
+            emojiStyle={EmojiStyle.NATIVE}
             skinTonesDisabled
             searchDisabled
             previewConfig={{ showPreview: false }}
@@ -49,13 +49,14 @@ export default function CaptionInput(props: Props) {
     }, [caption])
 
     const handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCaption(event.target.value)
-        props.onChangeValue(event.target.value)
+        const caption = event.target.value
+        setCaption(caption)
+        props.onChangeValue(caption)
         const r = /#[^\s#]+$/
         const hashtags = caption.match(r)
         const isTypingHashtag = Array.isArray(hashtags) && hashtags.length > 0
         if (isTypingHashtag) {
-            props.onFetchHashtags(hashtags[0].slice(1, hashtags.length))
+            props.onFetchHashtags(hashtags[0].slice(1))
         }
     }
 

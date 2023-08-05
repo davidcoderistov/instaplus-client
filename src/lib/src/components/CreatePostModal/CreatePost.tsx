@@ -13,13 +13,8 @@ interface IHashtag {
     postIds: string[]
 }
 
-interface Media {
-    photoUrl: string | null
-    videoUrl: string | null
-}
-
 interface Props {
-    media: Media[]
+    photoUrls: string[]
     user: {
         username: string
         photoUrl: string | null
@@ -71,7 +66,8 @@ export default function CreatePost(props: Props) {
                 width='503px'
             >
                 <PostPreviewSlider
-                    media={props.media}
+                    photoUrls={props.photoUrls}
+                    loading={false}
                 />
             </Box>
             <Box
