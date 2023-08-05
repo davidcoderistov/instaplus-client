@@ -7,6 +7,12 @@ import Button from '../Button'
 import UserAvatar from './UserAvatar'
 
 
+interface IHashtag {
+    _id: string | number
+    name: string
+    postIds: string[]
+}
+
 interface Media {
     photoUrl: string | null
     videoUrl: string | null
@@ -16,11 +22,15 @@ interface Props {
     media: Media[]
     user: {
         username: string
-        photoUrl?: string | null
+        photoUrl: string | null
     }
     isSharing: boolean
+    hashtags: IHashtag[]
+    hashtagsLoading: boolean
 
-    onSharePost(caption: string, location: string): void
+    onFetchHashtags(searchQuery: string): void
+
+    onSharePost(caption: string, location: string, hashtags: string[]): void
 }
 
 export default function CreatePost(props: Props) {
@@ -37,7 +47,9 @@ export default function CreatePost(props: Props) {
     }
 
     const handleSharePost = () => {
-        props.onSharePost(caption.current, location.current)
+        const r = /#[^\s#]+/g
+        const hashtags = caption.current.match(r)
+        props.onSharePost(caption.current, location.current, Array.isArray(hashtags) ? hashtags : [])
     }
 
     return (
@@ -104,7 +116,11 @@ export default function CreatePost(props: Props) {
                         <UserAvatar
                             username={props.user.username}
                             photoUrl={props.user.photoUrl} />
-                        <CaptionInput onChangeValue={handleChangeCaption} />
+                        <CaptionInput
+                            hashtags={props.hashtags}
+                            hashtagsLoading={props.hashtagsLoading}
+                            onFetchHashtags={props.onFetchHashtags}
+                            onChangeValue={handleChangeCaption} />
                         <LocationInput onChangeLocation={handleChangeLocation} />
                         <Box
                             component='div'

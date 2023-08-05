@@ -6,6 +6,7 @@ interface Props {
     gutters?: boolean
     clickable?: boolean
     dark?: boolean
+    opaque?: boolean
     onClick?: () => void
 }
 
@@ -15,7 +16,7 @@ export default function ListItem(props: Props) {
         <Box
             component='div'
             paddingLeft='0'
-            bgcolor='transparent'
+            bgcolor={props.opaque ? '#000000' : 'transparent'}
             width='100%'
             paddingTop='0'
             minWidth='0'
@@ -38,7 +39,7 @@ export default function ListItem(props: Props) {
             marginRight='0'
             sx={{
                 borderRightStyle: 'solid',
-                borderBottomColor: '#00000066',
+                borderBottomColor: props.opaque ? '#262626' : '#00000066',
                 borderLeftWidth: '0',
                 borderTopColor: '#00000066',
                 borderBottomRightRadius: 'unset',
@@ -51,7 +52,7 @@ export default function ListItem(props: Props) {
                 borderLeftStyle: 'solid',
                 borderBottomLeftRadius: 'unset',
                 outlineStyle: 'none',
-                borderBottomWidth: '0',
+                borderBottomWidth: props.opaque ? '1px' : '0',
                 borderBottomStyle: 'solid',
                 borderTopLeftRadius: 'unset',
                 borderTopRightRadius: 'unset',
@@ -59,7 +60,7 @@ export default function ListItem(props: Props) {
                 ...props.clickable && {
                     cursor: 'pointer',
                     '&:hover': {
-                        backgroundColor: props.dark ? '#3C3C3C' : '#121212',
+                        backgroundColor: props.opaque ? '#1A1A1A' : props.dark ? '#3C3C3C' : '#121212',
                     },
                 },
             }}

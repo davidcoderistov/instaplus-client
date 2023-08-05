@@ -9,6 +9,12 @@ import CreatePost from './CreatePost'
 import DiscardChangesModal from '../DiscardChangesModal'
 
 
+interface IHashtag {
+    _id: string | number
+    name: string
+    postIds: string[]
+}
+
 interface Media {
     photoUrl: string | null
     videoUrl: string | null
@@ -18,11 +24,15 @@ interface Props {
     open: boolean
     user: {
         username: string
-        photoUrl: string
+        photoUrl: string | null
     }
     isSharing: boolean
+    hashtags: IHashtag[]
+    hashtagsLoading: boolean
 
-    onSharePost(files: File[], caption: string, location: string): void
+    onFetchHashtags(searchQuery: string): void
+
+    onSharePost(files: File[], caption: string, location: string, hashtags: string[]): void
 
     onCloseModal(): void
 }
@@ -50,8 +60,8 @@ export default function CreatePostModal(props: Props) {
         ...file.type.startsWith('video/') && { videoUrl: URL.createObjectURL(file) },
     })), [files])
 
-    const handleSharePost = (caption: string, location: string) => {
-        props.onSharePost(files, caption, location)
+    const handleSharePost = (caption: string, location: string, hashtags: string[]) => {
+        props.onSharePost(files, caption, location, hashtags)
         files.forEach(file => URL.revokeObjectURL(file))
     }
 
@@ -143,6 +153,9 @@ export default function CreatePostModal(props: Props) {
                     media={media}
                     user={props.user}
                     isSharing={props.isSharing}
+                    hashtags={props.hashtags}
+                    hashtagsLoading={props.hashtagsLoading}
+                    onFetchHashtags={props.onFetchHashtags}
                     onSharePost={handleSharePost} />
             )}
             <DiscardChangesModal
