@@ -25,7 +25,7 @@ interface Props {
 
     onFetchHashtags(searchQuery: string): void
 
-    onSharePost(caption: string, location: string, hashtags: string[]): void
+    onSharePost(caption: string | null, location: string | null, hashtags: string[]): void
 }
 
 export default function CreatePost(props: Props) {
@@ -44,7 +44,13 @@ export default function CreatePost(props: Props) {
     const handleSharePost = () => {
         const r = /#[^\s#]+/g
         const hashtags = caption.current.match(r)
-        props.onSharePost(caption.current, location.current, Array.isArray(hashtags) ? hashtags : [])
+        const captionValue = caption.current.trim()
+        const locationValue = location.current.trim()
+        props.onSharePost(
+            captionValue.length > 0 ? captionValue : null,
+            locationValue.length > 0 ? locationValue : null,
+            Array.isArray(hashtags) ? hashtags.map(hashtag => hashtag.slice(1)) : [],
+        )
     }
 
     return (
