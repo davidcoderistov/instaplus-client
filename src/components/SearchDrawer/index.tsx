@@ -1,6 +1,7 @@
-import { useState, useMemo, useCallback, useRef } from 'react'
+import { useMemo, useCallback } from 'react'
 import { useSnackbar } from 'notistack'
-import { useQuery, useLazyQuery, useMutation, useApolloClient } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
+import { useSearchResults } from '../../hooks/misc'
 import { FIND_SEARCH_HISTORY, FIND_USER_SEARCHES_BY_SEARCH_QUERY } from '../../graphql/queries/searchHistory'
 import {
     FindSearchHistoryQueryType,
@@ -10,12 +11,9 @@ import { MARK_USER_SEARCH, UNMARK_USER_SEARCH, CLEAR_SEARCH_HISTORY } from '../.
 import { UserSearch, Hashtag } from '../../graphql/types/models'
 import findSearchHistoryMutations from '../../apollo/mutations/searchHistory/findSearchHistory'
 import InstaSearchDrawer from '../../lib/src/components/SearchDrawer'
-import _debounce from 'lodash/debounce'
 
 
 export default function SearchDrawer(props: { open: boolean }) {
-
-    const client = useApolloClient()
 
     const { enqueueSnackbar } = useSnackbar()
 
@@ -70,55 +68,13 @@ export default function SearchDrawer(props: { open: boolean }) {
         })
     }, [])
 
-    const resultSet = useRef(false)
-
-    const [isSearching, setIsSearching] = useState(false)
-    const [searchedItems, setSearchedItems] = useState<UserSearch[]>([])
-
-    const [findUserSearchesBySearchQuery] = useLazyQuery<FindUserSearchesBySearchQueryQueryType>(FIND_USER_SEARCHES_BY_SEARCH_QUERY)
-
-    const _findUsersBySearchQuery = useMemo(() => _debounce((searchQuery: string) => {
-        searchUsers(searchQuery)
-    }, 500, { trailing: true }), [])
-
-    const onSearch = (searchQuery: string) => {
-        if (searchQuery.length > 0) {
-            const queryData = client.readQuery<FindUserSearchesBySearchQueryQueryType>({
-                query: FIND_USER_SEARCHES_BY_SEARCH_QUERY,
-                variables: {
-                    searchQuery,
-                },
-            })
-            if (queryData) {
-                resultSet.current = true
-                setSearchedItems(queryData.findUserSearchesBySearchQuery)
-                setIsSearching(false)
-            } else {
-                resultSet.current = false
-                setIsSearching(true)
-                _findUsersBySearchQuery(searchQuery)
-            }
-        } else {
-            resultSet.current = true
-            setSearchedItems([])
-        }
-    }
-
-    const searchUsers = (searchQuery: string) => {
-        findUserSearchesBySearchQuery({
-            variables: {
-                searchQuery,
-            },
-        }).then(findUserSearchesBySearchQuery => {
-            if (findUserSearchesBySearchQuery.data && findUserSearchesBySearchQuery.data.findUserSearchesBySearchQuery) {
-                if (!resultSet.current) {
-                    setSearchedItems(findUserSearchesBySearchQuery.data.findUserSearchesBySearchQuery)
-                }
-            } else {
-                setSearchedItems([])
-            }
-        }).finally(() => setIsSearching(false))
-    }
+    const [onSearch, {
+        searchResults: searchedItems,
+        isSearching,
+    }] = useSearchResults<FindUserSearchesBySearchQueryQueryType, UserSearch>(
+        FIND_USER_SEARCHES_BY_SEARCH_QUERY,
+        queryData => queryData.findUserSearchesBySearchQuery,
+    )
 
     return (
         <InstaSearchDrawer
