@@ -15,6 +15,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import AppDrawer from '../../lib/src/components/AppDrawer'
 import NotificationsDrawer from '../NotificationsDrawer'
 import SearchDrawer from '../SearchDrawer'
+import CreatePostModal from '../CreatePostModal'
 import Chat from '../Chat'
 
 
@@ -121,6 +122,16 @@ export default function SignedInRouter() {
         setIsNotificationsDrawerOpen(false)
     }
 
+    const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false)
+
+    const handleOpenCreatePostModal = () => {
+        setIsCreatePostModalOpen(true)
+    }
+
+    const handleCloseCreatePostModal = () => {
+        setIsCreatePostModalOpen(false)
+    }
+
     return (
         <Box
             component='div'
@@ -136,13 +147,16 @@ export default function SignedInRouter() {
                 photoUrl={authUser.photoUrl}
                 isSearchDrawerOpen={isSearchDrawerOpen}
                 isNotificationsDrawerOpen={isNotificationsDrawerOpen}
-                isCreatingNewPost={false}
+                isCreatingNewPost={isCreatePostModalOpen}
                 isSettingsOpen={false}
                 onOpenSearchDrawer={handleOpenSearchDrawer}
                 onOpenNotificationsDrawer={handleOpenNotificationsDrawer}
-                onOpenCreateNewPost={console.log} />
+                onOpenCreateNewPost={handleOpenCreatePostModal} />
             <NotificationsDrawer open={isNotificationsDrawerOpen} />
             <SearchDrawer open={isSearchDrawerOpen} />
+            <CreatePostModal
+                open={isCreatePostModalOpen}
+                onCloseModal={handleCloseCreatePostModal} />
             <Routes>
                 <Route path='/' element={
                     <div style={{ color: 'white' }}>
