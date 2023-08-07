@@ -61,6 +61,17 @@ export interface Post {
     creator: User
 }
 
+export interface PostDetails {
+    _id: string
+    post: Post
+    liked: boolean
+    saved: boolean
+    commentsCount: number
+    likesCount: number
+    latestLikeUser: Pick<User, '_id' | 'username'> | null
+    latestThreeFollowedLikeUsers: Pick<User, '_id' | 'photoUrl'>[]
+}
+
 export interface Notification {
     _id: string
     type: 'follow' | 'like' | 'comment'
