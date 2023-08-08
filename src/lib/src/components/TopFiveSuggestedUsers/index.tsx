@@ -2,6 +2,7 @@ import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import SuggestedUserListItem from '../SuggestedUserListItem'
+import _range from 'lodash/range'
 
 
 interface User {
@@ -9,7 +10,7 @@ interface User {
     username: string
     firstName: string
     lastName: string
-    photoUrl?: string | null
+    photoUrl: string | null
     following: boolean
     followingLoading: boolean
     followedByUsernames: string[]
@@ -18,11 +19,11 @@ interface User {
 
 interface Props {
     authUser: {
-        id: string | number
+        _id: string | number
         username: string
         firstName: string
         lastName: string
-        photoUrl?: string | null
+        photoUrl: string | null
     }
     users: User[]
     isInitialLoading: boolean
@@ -592,7 +593,7 @@ export default function TopFiveSuggestedUsers(props: Props) {
                                             flexDirection='column'
                                             paddingY='0'
                                         >
-                                            {props.isInitialLoading ? [...Array(5).keys()].map(index => (
+                                            {props.isInitialLoading ? _range(5).map(index => (
                                                 <SuggestedUserListItem
                                                     key={index}
                                                     loading
@@ -601,7 +602,7 @@ export default function TopFiveSuggestedUsers(props: Props) {
                                                 <SuggestedUserListItem
                                                     key={user.id}
                                                     dense
-                                                    authUserId={props.authUser.id}
+                                                    authUserId={props.authUser._id}
                                                     user={user}
                                                     onFollowUser={props.onFollowUser}
                                                     onUnfollowUser={props.onUnfollowUser}

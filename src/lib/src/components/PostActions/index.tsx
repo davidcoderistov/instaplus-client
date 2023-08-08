@@ -21,7 +21,7 @@ interface Props {
 
     onRemovePost(postId: string | number): void
 
-    onCommentOnPost(postId: string | number): void
+    onCommentOnPost?(postId: string | number): void
 }
 
 
@@ -44,7 +44,9 @@ export default function PostActions(props: Props) {
     }
 
     const handleCommentOnPost = () => {
-        props.onCommentOnPost(props.postId)
+        if (props.onCommentOnPost) {
+            props.onCommentOnPost(props.postId)
+        }
     }
 
     return (

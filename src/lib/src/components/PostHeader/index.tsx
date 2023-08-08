@@ -43,7 +43,7 @@ interface StaticProps {
 
 interface LoadingProps {
     loading: true
-    dense?: never
+    dense?: boolean
     user?: never
     post?: never
 
@@ -93,7 +93,9 @@ export default function PostHeader(props: Props) {
 
     const handleGoToPost = () => {
         closeSettingsModal()
-        props.onGoToPost(props.post?.id)
+        if (props.onGoToPost && props.post) {
+            props.onGoToPost(props.post.id)
+        }
     }
 
     const handleViewProfileFromModal = () => {

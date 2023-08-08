@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import SuggestedUserListItem from '../SuggestedUserListItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CircularProgress from '@mui/material/CircularProgress'
+import _range from 'lodash/range'
 
 
 interface User {
@@ -146,7 +147,7 @@ export default function SuggestedUserList(props: Props) {
                                 component='div'
                                 display='block'
                             >
-                                {[...Array(8).keys()].map(index => (
+                                {_range(8).map(index => (
                                     <SuggestedUserListItem
                                         key={index}
                                         loading
