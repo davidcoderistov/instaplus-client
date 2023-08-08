@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import ImagePreview from '../ImagePreview'
 import PostSliderArrow from '../PostSliderArrow'
@@ -18,10 +18,14 @@ interface Props {
 
 export default function PostPreviewSlider(props: Props) {
 
-    const [photos, setPhotos] = useState<Photo[]>(props.photoUrls.map((photoUrl, index) => ({
-        visible: index < 1,
-        photoUrl,
-    })))
+    const [photos, setPhotos] = useState<Photo[]>([])
+
+    useEffect(() => {
+        setPhotos(props.photoUrls.map((photoUrl, index) => ({
+            visible: index < 1,
+            photoUrl,
+        })))
+    }, [props.photoUrls])
 
     const handleSlideLeft = (index: number) => {
         setPhotos(photos => photos.map((photo, i) => ({

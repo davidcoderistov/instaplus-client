@@ -7,13 +7,9 @@ import { Post } from '../../types/Post'
 import { formatNumber } from '../../utils'
 
 
-interface PostI extends Post {
-    commentsCount: number
-}
-
 interface StaticProps {
     loading?: never
-    post: PostI
+    post: Post
 
     onFollowUser(userId: string | number): void
 
@@ -140,8 +136,8 @@ export default function PostCard(props: Props) {
                 >
                     <PostPreviewSlider
                         dense
-                        loading={props.loading}
-                        media={!props.loading ? props.post.media : []}
+                        loading={Boolean(props.loading)}
+                        photoUrls={!props.loading ? props.post.photoUrls : []}
                     />
                 </Box>
                 <Box

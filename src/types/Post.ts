@@ -1,31 +1,25 @@
 import { User } from './User'
 
 
-type PostUser = Pick<User, 'id' | 'username' | 'photoUrl'>
-
-interface PostCreator extends PostUser {
+interface PostCreator extends Pick<User, 'id' | 'username' | 'photoUrl'> {
     following: boolean
     followingLoading: boolean
-}
-
-interface Media {
-    photoUrl: string
-    videoUrl: string | null
 }
 
 export interface Post {
     id: string | number
     description: string | null
     location: string | null
-    media: Media[]
+    photoUrls: string[]
     creator: PostCreator
     isLiked: boolean
     isSaved: boolean
-    lastLikingMutualFollowers: PostUser[] | null
+    lastLikingMutualFollowers: (Pick<User, 'id' | 'username'> & { photoUrl: string })[] | null
     lastLikingUser: {
         id: string | number
         username: string
     } | null
+    commentsCount: number
     likesCount: number
     createdAt: number
 }

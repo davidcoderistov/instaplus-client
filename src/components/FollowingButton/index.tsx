@@ -10,7 +10,7 @@ interface Props {
     user: {
         id: string | number
         username: string
-        photoUrl: string
+        photoUrl: string | null
         followingLoading: boolean
     }
 

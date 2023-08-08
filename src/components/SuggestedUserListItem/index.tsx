@@ -19,7 +19,7 @@ interface StaticProps {
         username: string
         firstName: string
         lastName: string
-        photoUrl?: string | null
+        photoUrl: string | null
         following: boolean
         followingLoading: boolean
         followedByUsernames: string[]
@@ -78,7 +78,7 @@ const SuggestedUserListItem = React.memo((props: Props) => {
     return (
         <ListItem>
             <ListItemAvatar
-                loading={props.loading}
+                loading={Boolean(props.loading)}
                 loader={
                     <Skeleton
                         variant='circular'
@@ -90,9 +90,9 @@ const SuggestedUserListItem = React.memo((props: Props) => {
                 usernames={props.loading ? [] : [props.user.username]}
                 onClick={handleClickUser}
             />
-            <ListItemContent gutters={props.loading}>
+            <ListItemContent gutters={Boolean(props.loading)}>
                 <ListItemTitle
-                    loading={props.loading}
+                    loading={Boolean(props.loading)}
                     loader={
                         <Skeleton
                             variant='rounded'
@@ -108,7 +108,7 @@ const SuggestedUserListItem = React.memo((props: Props) => {
                 />
                 {!props.dense && (
                     <ListItemSubtitle
-                        loading={props.loading}
+                        loading={Boolean(props.loading)}
                         loader={
                             <Skeleton
                                 variant='rounded'

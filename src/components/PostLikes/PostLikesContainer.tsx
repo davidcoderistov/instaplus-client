@@ -3,7 +3,7 @@ import PostLikeAvatars from '../PostLikeAvatars'
 import { formatNumber } from '../../utils'
 
 
-const Typography = (props: { children: string, onClick?(): void }) => {
+const Typography = (props: { children: any, onClick?(): void }) => {
 
     return (
         <Box
