@@ -59,6 +59,7 @@ export interface Post {
     caption: string | null
     location: string | null
     creator: User
+    createdAt: number
 }
 
 export interface PostDetails {

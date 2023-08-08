@@ -21,6 +21,13 @@ export const FIND_FOLLOWED_USERS_POSTS = gql`
                     caption
                     location
                     photoUrls
+                    creator {
+                        _id
+                        firstName
+                        lastName
+                        username
+                        photoUrl
+                    }
                     createdAt
                 }
                 liked
