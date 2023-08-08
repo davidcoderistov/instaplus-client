@@ -83,6 +83,9 @@ const cache = new InMemoryCache({
                         return incoming
                     },
                 },
+                findFollowedUsersPosts: {
+                    keyArgs: false,
+                },
             },
         },
         Chat: {
