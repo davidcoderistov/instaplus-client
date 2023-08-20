@@ -1,33 +1,19 @@
-import { useApolloClient, useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client'
+import { useUpdateFollowingLoadingStatus } from './useUpdateFollowingLoadingStatus'
 import { useFollowUpdateUserConnections } from './useFollowUpdateUserConnections'
 import { useSnackbar } from 'notistack'
-import { gql } from '@apollo/client'
 import { FOLLOW_USER } from '../../graphql/mutations/user'
 import { FollowUserMutationType } from '../../graphql/types/mutations/user'
 
 
 export function useFollowUser() {
 
-    const client = useApolloClient()
-
     const { enqueueSnackbar } = useSnackbar()
 
     const [followUser] = useMutation<FollowUserMutationType>(FOLLOW_USER)
     const updateFollowUserConnections = useFollowUpdateUserConnections()
 
-    const updateFollowingLoadingStatus = (userId: string, followingLoading: boolean) => {
-        client.writeFragment({
-            id: `FollowableUser:${userId}`,
-            fragment: gql`
-                fragment FollowableUser on FollowableUser {
-                    followingLoading @client
-                }
-            `,
-            data: {
-                followingLoading,
-            },
-        })
-    }
+    const updateFollowingLoadingStatus = useUpdateFollowingLoadingStatus()
 
     return (userId: string) => {
         updateFollowingLoadingStatus(userId, true)
