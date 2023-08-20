@@ -1,25 +1,36 @@
-import { useMutation } from '@apollo/client'
+import { useApolloClient, useMutation } from '@apollo/client'
 import { useFollowUpdateUserConnections } from './useFollowUpdateUserConnections'
 import { useSnackbar } from 'notistack'
+import { gql } from '@apollo/client'
 import { FOLLOW_USER } from '../../graphql/mutations/user'
 import { FollowUserMutationType } from '../../graphql/types/mutations/user'
 
 
-interface FollowUserCallbackProps {
-    onStart: () => void
-    onSuccess: () => void
-    onError: () => void
-}
-
 export function useFollowUser() {
+
+    const client = useApolloClient()
 
     const { enqueueSnackbar } = useSnackbar()
 
     const [followUser] = useMutation<FollowUserMutationType>(FOLLOW_USER)
     const updateFollowUserConnections = useFollowUpdateUserConnections()
 
-    return (userId: string, { onStart, onSuccess, onError }: FollowUserCallbackProps) => {
-        onStart()
+    const updateFollowingLoadingStatus = (userId: string, followingLoading: boolean) => {
+        client.writeFragment({
+            id: `FollowableUser:${userId}`,
+            fragment: gql`
+                fragment FollowableUser on FollowableUser {
+                    followingLoading @client
+                }
+            `,
+            data: {
+                followingLoading,
+            },
+        })
+    }
+
+    return (userId: string) => {
+        updateFollowingLoadingStatus(userId, true)
         followUser({
             variables: {
                 followedUserId: userId,
@@ -29,9 +40,8 @@ export function useFollowUser() {
             if (followedUser) {
                 updateFollowUserConnections(followedUser)
             }
-            onSuccess()
+            updateFollowingLoadingStatus(userId, false)
         }).catch(() => {
-            onError()
             enqueueSnackbar('Could not follow user', { variant: 'error' })
         })
     }
