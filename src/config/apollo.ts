@@ -126,6 +126,26 @@ const cache = new InMemoryCache({
                 return undefined
             },
         },
+        FollowableUser: {
+            keyFields: (followableUserStoreObject) => {
+                const followableUser = followableUserStoreObject as unknown as {
+                    __typename: string,
+                    user: { __ref: string }
+                }
+                const parts = followableUser.user.__ref.split(':')
+                if (parts.length > 1) {
+                    return `${followableUser.__typename}:${parts[1]}`
+                }
+                return undefined
+            },
+            fields: {
+                followingLoading: {
+                    read(followingLoading = false) {
+                        return followingLoading
+                    },
+                },
+            },
+        },
     },
 })
 
