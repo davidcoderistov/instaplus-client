@@ -8,6 +8,7 @@ import ListItemActions from '../ListItemActions'
 import Button from '../Button'
 import FollowingButton from '../FollowingButton'
 import Skeleton from '@mui/material/Skeleton'
+import _isEqual from 'lodash/isEqual'
 
 
 interface StaticProps {
@@ -125,6 +126,16 @@ const FollowableUserListItem = React.memo((props: Props) => {
             )}
         </ListItem>
     )
+}, (prevProps, nextProps) => {
+
+    const { user: prevUser, ...prevRest } = prevProps
+    const { user: nextUser, ...nextRest } = nextProps
+
+    const usersEqual = _isEqual(prevUser, nextUser)
+
+    const restPropsEqual = _isEqual(prevRest, nextRest)
+
+    return usersEqual && restPropsEqual
 })
 
 export default FollowableUserListItem
