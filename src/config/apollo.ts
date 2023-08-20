@@ -86,6 +86,9 @@ const cache = new InMemoryCache({
                 findFollowedUsersPosts: {
                     keyArgs: false,
                 },
+                findUsersWhoLikedPost: {
+                    keyArgs: ['postId'],
+                },
             },
         },
         Chat: {
