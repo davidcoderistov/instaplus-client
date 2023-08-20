@@ -98,3 +98,9 @@ export interface UserSearch {
     searchUser: SearchUser | null
     hashtag: Hashtag | null
 }
+
+export interface FollowableUser {
+    user: User
+    following: boolean
+    followingLoading: boolean
+}
