@@ -32,8 +32,40 @@ export function updateFollowingLoadingStatus(options: UpdateFollowingLoadingStat
     }
 }
 
+interface UpdateFollowingStatusOptions {
+    queryData: FindUsersWhoLikedPostQueryType
+    variables: {
+        userId: string
+        following: boolean
+    }
+}
+
+interface UpdateFollowingStatusReturnValue {
+    queryResult: FindUsersWhoLikedPostQueryType
+}
+
+export function updateFollowingStatus(options: UpdateFollowingStatusOptions): UpdateFollowingStatusReturnValue {
+    return {
+        queryResult: {
+            findUsersWhoLikedPost: {
+                ...options.queryData.findUsersWhoLikedPost,
+                data: options.queryData.findUsersWhoLikedPost.data.map(userWhoLikedPost => {
+                    if (userWhoLikedPost.user._id === options.variables.userId) {
+                        return {
+                            ...userWhoLikedPost,
+                            following: options.variables.following,
+                        }
+                    }
+                    return userWhoLikedPost
+                }),
+            },
+        },
+    }
+}
+
 const mutations = {
     updateFollowingLoadingStatus,
+    updateFollowingStatus,
 }
 
 export default mutations
