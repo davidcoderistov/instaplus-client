@@ -50,3 +50,25 @@ export const FIND_FOLLOWED_USERS_POSTS = gql`
         }
     }
 `
+
+export const FIND_USERS_WHO_LIKED_POST = gql`
+    query findUsersWhoLikedPost($cursor: Cursor, $limit: Int!, $postId: String!) {
+        findUsersWhoLikedPost(cursor: $cursor, limit: $limit, postId: $postId) {
+            data {
+                user {
+                    _id
+                    firstName
+                    lastName
+                    username
+                    photoUrl
+                }
+                following
+                followingLoading @client
+            }
+            nextCursor {
+                _id
+                createdAt
+            }
+        }
+    }
+`
