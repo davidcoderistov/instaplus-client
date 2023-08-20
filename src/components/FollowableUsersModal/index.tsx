@@ -8,7 +8,7 @@ interface User {
     username: string
     firstName: string
     lastName: string
-    photoUrl: string
+    photoUrl: string | null
     following: boolean
     followingLoading: boolean
 }
@@ -19,7 +19,6 @@ interface Props {
     onCloseModal: () => void
     authUserId: string | number
     users: User[]
-    isInitialLoading: boolean
     hasMoreUsers: boolean
     onFetchMoreUsers: () => void
     onFollowUser: (userId: string | number) => void
@@ -72,7 +71,6 @@ export default function FollowableUsersModal(props: Props) {
             <FollowableUserList
                 authUserId={props.authUserId}
                 users={props.users}
-                isInitialLoading={props.isInitialLoading}
                 hasMoreUsers={props.hasMoreUsers}
                 onFetchMoreUsers={props.onFetchMoreUsers}
                 onFollowUser={props.onFollowUser}

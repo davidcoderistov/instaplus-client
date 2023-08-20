@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box'
 import FollowableUserListItem from '../FollowableUserListItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import _range from 'lodash/range'
 
 
 interface User {
@@ -8,7 +9,7 @@ interface User {
     username: string
     firstName: string
     lastName: string
-    photoUrl: string
+    photoUrl: string | null
     following: boolean
     followingLoading: boolean
 }
@@ -40,7 +41,7 @@ export default function FollowableUserList(props: Props) {
                     component='div'
                     display='block'
                 >
-                    {[...Array(5).keys()].map(index => (
+                    {_range(5).map(index => (
                         <FollowableUserListItem
                             key={index}
                             loading />
@@ -79,8 +80,6 @@ export default function FollowableUserList(props: Props) {
                                     key={user.id}
                                     authUserId={props.authUserId}
                                     user={user}
-                                    following={user.following}
-                                    followingLoading={user.followingLoading}
                                     onFollowUser={props.onFollowUser}
                                     onUnfollowUser={props.onUnfollowUser}
                                     onClickUser={props.onClickUser}
