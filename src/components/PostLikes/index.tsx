@@ -5,6 +5,7 @@ import { useFollowUser, useUnfollowUser } from '../../hooks/graphql'
 import { FIND_USERS_WHO_LIKED_POST } from '../../graphql/queries/post'
 import { FindUsersWhoLikedPostQueryType } from '../../graphql/types/queries/post'
 import FollowableUsersModal from '../../lib/src/components/FollowableUsersModal'
+import _differenceBy from 'lodash/differenceBy'
 
 
 interface Props {
@@ -64,7 +65,11 @@ export default function PostLikes(props: Props) {
                             ...fetchMoreResult.findUsersWhoLikedPost,
                             data: [
                                 ...existing.findUsersWhoLikedPost.data,
-                                ...fetchMoreResult.findUsersWhoLikedPost.data,
+                                ..._differenceBy(
+                                    fetchMoreResult.findUsersWhoLikedPost.data,
+                                    existing.findUsersWhoLikedPost.data,
+                                    'user._id',
+                                ),
                             ],
                         },
                     }
