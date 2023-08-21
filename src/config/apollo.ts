@@ -149,6 +149,15 @@ const cache = new InMemoryCache({
                 },
             },
         },
+        PostDetails: {
+            fields: {
+                latestTwoLikeUsers: {
+                    merge(_, incoming) {
+                        return incoming
+                    },
+                },
+            },
+        },
     },
 })
 
