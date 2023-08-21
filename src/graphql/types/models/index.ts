@@ -6,6 +6,12 @@ export interface User {
     photoUrl: string | null
 }
 
+export interface FollowableUser {
+    user: User
+    following: boolean
+    followingLoading: boolean
+}
+
 export interface AuthUser {
     user: User
     accessToken: string
@@ -58,7 +64,7 @@ export interface Post {
     photoUrls: string[]
     caption: string | null
     location: string | null
-    creator: User
+    creator: FollowableUser
     createdAt: number
 }
 
@@ -69,7 +75,7 @@ export interface PostDetails {
     saved: boolean
     commentsCount: number
     likesCount: number
-    latestLikeUser: Pick<User, '_id' | 'username'> | null
+    latestTwoLikeUsers: Pick<User, '_id' | 'username'>[]
     latestThreeFollowedLikeUsers: Pick<User, '_id' | 'photoUrl'>[]
 }
 
@@ -97,10 +103,4 @@ export interface SearchUser {
 export interface UserSearch {
     searchUser: SearchUser | null
     hashtag: Hashtag | null
-}
-
-export interface FollowableUser {
-    user: User
-    following: boolean
-    followingLoading: boolean
 }

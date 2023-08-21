@@ -9,11 +9,14 @@ export const CREATE_POST = gql`
             location
             photoUrls
             creator {
-                _id
-                firstName
-                lastName
-                username
-                photoUrl
+                user {
+                    _id
+                    firstName
+                    lastName
+                    username
+                    photoUrl
+                }
+                following
             }
         }
     }

@@ -22,11 +22,14 @@ export const FIND_FOLLOWED_USERS_POSTS = gql`
                     location
                     photoUrls
                     creator {
-                        _id
-                        firstName
-                        lastName
-                        username
-                        photoUrl
+                        user {
+                            _id
+                            firstName
+                            lastName
+                            username
+                            photoUrl
+                        }
+                        following
                     }
                     createdAt
                 }
@@ -34,7 +37,7 @@ export const FIND_FOLLOWED_USERS_POSTS = gql`
                 saved
                 commentsCount
                 likesCount
-                latestLikeUser {
+                latestTwoLikeUsers {
                     _id
                     username
                 }
