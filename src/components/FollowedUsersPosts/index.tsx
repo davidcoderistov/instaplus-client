@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
 import { useAuthUser } from '../../hooks/misc'
-import { useLikePost, useUnlikePost } from '../../hooks/graphql'
+import { useLikePost, useUnlikePost, useSavePost, useUnsavePost } from '../../hooks/graphql'
 import { FIND_FOLLOWED_USERS_POSTS } from '../../graphql/queries/post'
 import { FindFollowedUsersPostsQueryType } from '../../graphql/types/queries/post'
 import { Post } from '../../lib/src/types/Post'
@@ -87,6 +87,18 @@ export default function FollowedUsersPosts() {
 
     const handleUnlikePost = (postId: string | number) => {
         unlikePost(postId as string)
+    }
+
+    const savePost = useSavePost()
+
+    const handleSavePost = (postId: string | number) => {
+        savePost(postId as string)
+    }
+
+    const unsavePost = useUnsavePost()
+
+    const handleUnsavePost = (postId: string | number) => {
+        unsavePost(postId as string)
     }
 
     return (
@@ -179,8 +191,8 @@ export default function FollowedUsersPosts() {
                                                 onUnfollowUser={console.log}
                                                 onLikePost={handleLikePost}
                                                 onUnlikePost={handleUnlikePost}
-                                                onSavePost={console.log}
-                                                onRemovePost={console.log}
+                                                onSavePost={handleSavePost}
+                                                onRemovePost={handleUnsavePost}
                                                 onCommentOnPost={console.log}
                                                 onViewPostLikes={handleViewPostLikes}
                                                 onViewPost={console.log}
