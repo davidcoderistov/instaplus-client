@@ -21,3 +21,19 @@ export const CREATE_POST = gql`
         }
     }
 `
+
+export const LIKE_POST = gql`
+    mutation likePost($postId: String!) {
+        likePost(postId: $postId) {
+            _id
+        }
+    }
+`
+
+export const UNLIKE_POST = gql`
+    mutation unlikePost($postId: String!) {
+        unlikePost(postId: $postId) {
+            _id
+        }
+    }
+`
