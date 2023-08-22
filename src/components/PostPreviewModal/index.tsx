@@ -21,6 +21,8 @@ interface Props {
     commentsLoading: boolean
     hasMoreComments: boolean
     isPostingComment: boolean
+    viewingPostLikes: boolean
+    viewingCommentLikes: boolean
 
     onFollowUser(userId: string | number): void
 
@@ -64,13 +66,13 @@ export default function PostPreviewModal(props: Props) {
     const postRef = useRef<Node | null>(null)
 
     const closeModal = () => {
-        if (!settingsModalOpenRef.current && !unfollowUserModalRef.current) {
+        if (!settingsModalOpenRef.current && !unfollowUserModalRef.current && !props.viewingPostLikes && !props.viewingCommentLikes) {
             props.onClose()
         }
     }
 
     useEffect(() => {
-        const handleKeyPress = (event: React.KeyboardEvent) => {
+        const handleKeyPress = (event: any) => {
             if (event.key === 'Escape') {
                 closeModal()
             }
@@ -220,8 +222,8 @@ export default function PostPreviewModal(props: Props) {
                                     }}
                                 >
                                     <PostPreviewSlider
-                                        loading={props.postLoading || !props.post || props.post.media.length < 1}
-                                        media={props.post ? props.post.media : []}
+                                        loading={props.postLoading || !props.post || props.post.photoUrls.length < 1}
+                                        photoUrls={props.post ? props.post.photoUrls : []}
                                     />
                                     <PostPreview
                                         post={props.post}

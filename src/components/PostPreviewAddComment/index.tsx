@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useRef, forwardRef } from 'react'
+import React, { forwardRef, useCallback, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import InputBase from '@mui/material/InputBase'
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
+import EmojiPicker, { EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react'
 import Button from '../Button'
 import { useClickOutside } from '../../hooks'
 
@@ -10,8 +10,8 @@ const EmojiPickerMemo = React.memo((props: { onEmojiClick(data: EmojiClickData):
 
     return (
         <EmojiPicker
-            theme='dark'
-            emojiStyle='native'
+            theme={Theme.DARK}
+            emojiStyle={EmojiStyle.NATIVE}
             skinTonesDisabled
             searchDisabled
             previewConfig={{ showPreview: false }}
@@ -26,7 +26,7 @@ interface Props {
     isPostingComment: boolean
     disabled?: boolean
     isReplying: boolean
-    replyingUsername?: string
+    replyingUsername?: string | null
 
     onPostComment(comment: string): void
 
