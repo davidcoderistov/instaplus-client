@@ -100,3 +100,25 @@ export const FIND_COMMENTS_FOR_POST = gql`
         }
     }
 `
+
+export const FIND_USERS_WHO_LIKED_COMMENT = gql`
+    query findUsersWhoLikedComment($commentId: String!, $cursor: Cursor, $limit: Int!) {
+        findUsersWhoLikedComment(commentId: $commentId, cursor: $cursor, limit: $limit) {
+            data {
+                user {
+                    _id
+                    firstName
+                    lastName
+                    username
+                    photoUrl
+                }
+                following
+                followingLoading @client
+            }
+            nextCursor {
+                _id
+                createdAt
+            }
+        }
+    }
+`

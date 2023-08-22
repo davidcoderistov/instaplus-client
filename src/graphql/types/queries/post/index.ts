@@ -26,3 +26,10 @@ export interface FindCommentsForPost {
         count: number
     }
 }
+
+export interface FindUsersWhoLikedCommentQueryType {
+    findUsersWhoLikedComment: {
+        nextCursor: NextCursor | null
+        data: FollowableUser[]
+    }
+}
