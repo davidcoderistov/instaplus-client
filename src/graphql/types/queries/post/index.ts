@@ -1,4 +1,4 @@
-import { Hashtag, PostDetails, FollowableUser } from '../../models'
+import { Hashtag, PostDetails, FollowableUser, Comment } from '../../models'
 import { NextCursor } from '../../../../types'
 
 
@@ -17,5 +17,12 @@ export interface FindUsersWhoLikedPostQueryType {
     findUsersWhoLikedPost: {
         nextCursor: NextCursor | null
         data: FollowableUser[]
+    }
+}
+
+export interface FindCommentsForPost {
+    findCommentsForPost: {
+        data: Comment[]
+        count: number
     }
 }

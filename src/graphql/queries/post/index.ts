@@ -75,3 +75,28 @@ export const FIND_USERS_WHO_LIKED_POST = gql`
         }
     }
 `
+
+export const FIND_COMMENTS_FOR_POST = gql`
+    query findCommentsForPost($postId: String!, $offset: Int!, $limit: Int!) {
+        findCommentsForPost(postId: $postId, offset: $offset, limit: $limit) {
+            data {
+                _id
+                text
+                creator {
+                    _id
+                    username
+                    photoUrl
+                }
+                postId
+                liked
+                likesCount
+                repliesCount
+                replies @client
+                showReplies @client
+                repliesLoading @client
+                createdAt
+            }
+            count
+        }
+    }
+`
