@@ -29,8 +29,32 @@ export function addLikingUser(options: AddLikingUserOptions): AddLikingUserRetur
     }
 }
 
+interface RemoveLikingUserOptions {
+    queryData: FindUsersWhoLikedCommentQueryType
+    variables: {
+        userId: string
+    }
+}
+
+interface RemoveLikingUserReturnValue {
+    queryResult: FindUsersWhoLikedCommentQueryType
+}
+
+export function removeLikingUser(options: RemoveLikingUserOptions): RemoveLikingUserReturnValue {
+    return {
+        queryResult: {
+            findUsersWhoLikedComment: {
+                ...options.queryData.findUsersWhoLikedComment,
+                data: options.queryData.findUsersWhoLikedComment.data.filter(userWhoLikedComment =>
+                    userWhoLikedComment.user._id !== options.variables.userId),
+            },
+        },
+    }
+}
+
 const mutations = {
     addLikingUser,
+    removeLikingUser,
 }
 
 export default mutations
