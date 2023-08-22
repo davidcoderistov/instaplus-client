@@ -1,6 +1,13 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
-import { useLikePost, useUnlikePost, useSavePost, useUnsavePost } from '../../hooks/graphql'
+import {
+    useLikePost,
+    useUnlikePost,
+    useSavePost,
+    useUnsavePost,
+    useLikeComment,
+    useUnlikeComment,
+} from '../../hooks/graphql'
 import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
 import { FindCommentsForPost } from '../../graphql/types/queries/post'
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
@@ -133,6 +140,18 @@ export default function PostModal(props: Props) {
         setViewCommentLikesCommentId(null)
     }
 
+    const likeComment = useLikeComment()
+
+    const handleLikeComment = (commentId: string | number) => {
+        likeComment(commentId as string)
+    }
+
+    const unlikeComment = useUnlikeComment()
+
+    const handleUnlikeComment = (commentId: string | number) => {
+        unlikeComment(commentId as string)
+    }
+
     return (
         <>
             <PostPreviewModal
@@ -158,8 +177,8 @@ export default function PostModal(props: Props) {
                 onViewUser={console.log}
                 onViewCommentLikes={handleViewCommentLikes}
                 onReplyToComment={console.log}
-                onLikeComment={console.log}
-                onUnlikeComment={console.log}
+                onLikeComment={handleLikeComment}
+                onUnlikeComment={handleUnlikeComment}
                 onViewReplies={console.log}
                 onHideReplies={console.log}
                 onPostComment={console.log} />
