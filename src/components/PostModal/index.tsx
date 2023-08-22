@@ -5,6 +5,7 @@ import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
 import { FindCommentsForPost } from '../../graphql/types/queries/post'
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
 import PostLikes from '../PostLikes'
+import CommentLikes from '../CommentLikes'
 import { Post } from '../../lib/src/types/Post'
 import { Comment } from '../../lib/src/types/Comment'
 
@@ -122,6 +123,16 @@ export default function PostModal(props: Props) {
         unsavePost(postId as string)
     }
 
+    const [viewCommentLikesCommentId, setViewCommentLikesCommentId] = useState<string | null>(null)
+
+    const handleViewCommentLikes = (commentId: string) => {
+        setViewCommentLikesCommentId(commentId)
+    }
+
+    const handleCloseCommentLikesModal = () => {
+        setViewCommentLikesCommentId(null)
+    }
+
     return (
         <>
             <PostPreviewModal
@@ -133,7 +144,7 @@ export default function PostModal(props: Props) {
                 commentsLoading={commentsForPost.loading || moreCommentsLoading}
                 hasMoreComments={hasMoreComments}
                 viewingPostLikes={Boolean(viewPostLikesPostId)}
-                viewingCommentLikes={false}
+                viewingCommentLikes={Boolean(viewCommentLikesCommentId)}
                 isPostingComment={false}
                 onFollowUser={console.log}
                 onUnfollowUser={console.log}
@@ -145,7 +156,7 @@ export default function PostModal(props: Props) {
                 onViewPost={console.log}
                 onFetchMoreComments={handleFetchMoreComments}
                 onViewUser={console.log}
-                onViewCommentLikes={console.log}
+                onViewCommentLikes={handleViewCommentLikes}
                 onReplyToComment={console.log}
                 onLikeComment={console.log}
                 onUnlikeComment={console.log}
@@ -155,6 +166,9 @@ export default function PostModal(props: Props) {
             <PostLikes
                 postId={viewPostLikesPostId}
                 onCloseModal={handleClosePostLikesModal} />
+            <CommentLikes
+                commentId={viewCommentLikesCommentId}
+                onCloseModal={handleCloseCommentLikesModal} />
         </>
     )
 }
