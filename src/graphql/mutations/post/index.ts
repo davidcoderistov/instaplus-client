@@ -37,3 +37,19 @@ export const UNLIKE_POST = gql`
         }
     }
 `
+
+export const SAVE_POST = gql`
+    mutation savePost($postId: String!) {
+        savePost(postId: $postId) {
+            _id
+        }
+    }
+`
+
+export const UNSAVE_POST = gql`
+    mutation unsavePost($postId: String!) {
+        unsavePost(postId: $postId) {
+            _id
+        }
+    }
+`
