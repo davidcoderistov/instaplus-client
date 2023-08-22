@@ -17,6 +17,7 @@ import NotificationsDrawer from '../NotificationsDrawer'
 import SearchDrawer from '../SearchDrawer'
 import CreatePostModal from '../CreatePostModal'
 import Chat from '../Chat'
+import FollowedUsersPosts from '../FollowedUsersPosts'
 
 
 export default function SignedInRouter() {
@@ -158,11 +159,7 @@ export default function SignedInRouter() {
                 open={isCreatePostModalOpen}
                 onCloseModal={handleCloseCreatePostModal} />
             <Routes>
-                <Route path='/' element={
-                    <div style={{ color: 'white' }}>
-                        Home
-                    </div>
-                } />
+                <Route path='/' element={<FollowedUsersPosts />} />
                 <Route path='/explore' element={
                     <div style={{ color: 'white' }}>
                         Explore
