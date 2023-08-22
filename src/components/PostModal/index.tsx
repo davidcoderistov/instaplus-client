@@ -4,6 +4,7 @@ import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
 import { FindCommentsForPost } from '../../graphql/types/queries/post'
 import { gql } from '@apollo/client'
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
+import PostLikes from '../PostLikes'
 import { PostDetails } from '../../graphql/types/models'
 import { Post } from '../../lib/src/types/Post'
 import { Comment } from '../../lib/src/types/Comment'
@@ -152,32 +153,49 @@ export default function PostModal(props: Props) {
         }
     }
 
+    const [viewPostLikesPostId, setViewPostLikesPostId] = useState<string | null>(null)
+
+    const handleViewPostLikes = (postId: string) => {
+        setViewPostLikesPostId(postId)
+    }
+
+    const handleClosePostLikesModal = () => {
+        setViewPostLikesPostId(null)
+    }
+
     return (
-        <PostPreviewModal
-            open={true}
-            onClose={props.onClose}
-            post={post}
-            postLoading={false}
-            comments={comments}
-            commentsLoading={commentsForPost.loading || moreCommentsLoading}
-            hasMoreComments={hasMoreComments}
-            isPostingComment={false}
-            onFollowUser={console.log}
-            onUnfollowUser={console.log}
-            onLikePost={console.log}
-            onUnlikePost={console.log}
-            onSavePost={console.log}
-            onRemovePost={console.log}
-            onViewPostLikes={console.log}
-            onViewPost={console.log}
-            onFetchMoreComments={handleFetchMoreComments}
-            onViewUser={console.log}
-            onViewCommentLikes={console.log}
-            onReplyToComment={console.log}
-            onLikeComment={console.log}
-            onUnlikeComment={console.log}
-            onViewReplies={console.log}
-            onHideReplies={console.log}
-            onPostComment={console.log} />
+        <>
+            <PostPreviewModal
+                open={true}
+                onClose={props.onClose}
+                post={post}
+                postLoading={false}
+                comments={comments}
+                commentsLoading={commentsForPost.loading || moreCommentsLoading}
+                hasMoreComments={hasMoreComments}
+                viewingPostLikes={Boolean(viewPostLikesPostId)}
+                viewingCommentLikes={false}
+                isPostingComment={false}
+                onFollowUser={console.log}
+                onUnfollowUser={console.log}
+                onLikePost={console.log}
+                onUnlikePost={console.log}
+                onSavePost={console.log}
+                onRemovePost={console.log}
+                onViewPostLikes={handleViewPostLikes}
+                onViewPost={console.log}
+                onFetchMoreComments={handleFetchMoreComments}
+                onViewUser={console.log}
+                onViewCommentLikes={console.log}
+                onReplyToComment={console.log}
+                onLikeComment={console.log}
+                onUnlikeComment={console.log}
+                onViewReplies={console.log}
+                onHideReplies={console.log}
+                onPostComment={console.log} />
+            <PostLikes
+                postId={viewPostLikesPostId}
+                onCloseModal={handleClosePostLikesModal} />
+        </>
     )
 }
