@@ -53,3 +53,19 @@ export const UNSAVE_POST = gql`
         }
     }
 `
+
+export const LIKE_COMMENT = gql`
+    mutation likeComment($commentId: String!) {
+        likeComment(commentId: $commentId) {
+            _id
+        }
+    }
+`
+
+export const UNLIKE_COMMENT = gql`
+    mutation unlikeComment($commentId: String!) {
+        unlikeComment(commentId: $commentId) {
+            _id
+        }
+    }
+`
