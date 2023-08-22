@@ -48,8 +48,8 @@ interface StaticProps {
 interface LoadingProps {
     loading: true
     comment?: never
-    condensed?: never
-    dense?: never
+    condensed?: boolean
+    dense?: boolean
 
     onViewUser?(): never
 
@@ -97,16 +97,22 @@ const PostComment = React.memo((props: Props) => {
                 verticalAlign: 'baseline',
             }}
         >
-            <PostBaseComment
-                loading={props.loading}
-                comment={props.comment}
-                condensed={props.condensed}
-                dense={props.dense}
-                onViewUser={props.onViewUser}
-                onViewCommentLikes={props.onViewCommentLikes}
-                onReplyToComment={props.onReplyToComment}
-                onLikeComment={props.onLikeComment}
-                onUnlikeComment={props.onUnlikeComment} />
+            {props.loading ? (
+                <PostBaseComment
+                    condensed={props.condensed}
+                    dense={props.dense}
+                    loading />
+            ) : (
+                <PostBaseComment
+                    comment={props.comment}
+                    condensed={props.condensed}
+                    dense={props.dense}
+                    onViewUser={props.onViewUser}
+                    onViewCommentLikes={props.onViewCommentLikes}
+                    onReplyToComment={props.onReplyToComment}
+                    onLikeComment={props.onLikeComment}
+                    onUnlikeComment={props.onUnlikeComment} />
+            )}
             {!props.loading && !props.condensed && props.comment.repliesCount > 0 && (
                 <Box
                     component='div'

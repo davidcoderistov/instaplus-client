@@ -222,6 +222,7 @@ export default function PostPreview(props: Props) {
                         )}
                         {!props.postLoading && props.post && (
                             <PostLikes
+                                postId={props.post.id}
                                 likingUsers={props.post.lastLikingMutualFollowers}
                                 likingUser={props.post.lastLikingUser}
                                 likesCount={props.post.likesCount}

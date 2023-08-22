@@ -4,6 +4,7 @@ import PostComment from '../PostComment'
 import CircularProgress from '@mui/material/CircularProgress'
 import { Post } from '../../types/Post'
 import { Comment } from '../../types/Comment'
+import _range from 'lodash/range'
 
 
 interface Props {
@@ -55,9 +56,24 @@ export default function PostComments(props: Props) {
                     isLiked: false,
                     likesCount: 0,
                     repliesCount: 0,
+                    replies: [],
                     showReplies: false,
                     repliesLoading: false,
                     createdAt: props.post.createdAt,
+                }}
+                onViewUser={() => {
+                }}
+                onViewCommentLikes={() => {
+                }}
+                onReplyToComment={() => {
+                }}
+                onLikeComment={() => {
+                }}
+                onUnlikeComment={() => {
+                }}
+                onViewReplies={() => {
+                }}
+                onHideReplies={() => {
                 }}
             />
         )
@@ -204,7 +220,7 @@ export default function PostComments(props: Props) {
                         verticalAlign: 'baseline',
                     }}
                 >
-                    {props.postLoading || (props.commentsLoading && props.comments.length < 1) ? [...Array(props.dense ? 8 : 9).keys()].map(index => (
+                    {props.postLoading || (props.commentsLoading && props.comments.length < 1) ? _range(props.dense ? 8 : 9).map(index => (
                         <PostComment
                             key={index}
                             dense={props.dense}

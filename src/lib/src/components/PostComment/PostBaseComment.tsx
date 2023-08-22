@@ -39,8 +39,8 @@ interface StaticProps {
 interface LoadingProps {
     loading: true
     comment?: never
-    condensed?: never
-    dense?: never
+    condensed?: boolean
+    dense?: boolean
 
     onViewUser?(): never
 
@@ -111,7 +111,7 @@ export default function PostBaseComment(props: Props) {
                 overflow='visible'
                 paddingTop='12px'
                 paddingBottom='0'
-                paddingx='0'
+                paddingX='0'
                 width='auto'
                 marginRight='-2px'
                 marginTop='-5px'
