@@ -92,6 +92,9 @@ const cache = new InMemoryCache({
                 findCommentsForPost: {
                     keyArgs: ['postId'],
                 },
+                findUsersWhoLikedComment: {
+                    keyArgs: ['commentId'],
+                },
             },
         },
         Chat: {
