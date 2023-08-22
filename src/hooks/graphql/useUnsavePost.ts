@@ -18,7 +18,8 @@ export function useUnsavePost() {
             },
         }).then(() => {
             // TODO: Remove post from user favorites
-        }).catch(console.log)
+        }).catch(() => {
+        })
     }, 500, { trailing: true }), [])
 
     return (postId: string) => {

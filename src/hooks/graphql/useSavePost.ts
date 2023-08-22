@@ -18,7 +18,8 @@ export function useSavePost() {
             },
         }).then(() => {
             // TODO: Add post to user favorites
-        }).catch(console.log)
+        }).catch(() => {
+        })
     }, 500, { trailing: true }), [])
 
     return (postId: string) => {

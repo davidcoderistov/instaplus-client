@@ -41,7 +41,8 @@ export function useUnlikePost() {
             },
         }).then(() => {
             removeLikingUser(postId)
-        }).catch(console.log)
+        }).catch(() => {
+        })
     }, 500, { trailing: true }), [])
 
     return (postId: string) => {

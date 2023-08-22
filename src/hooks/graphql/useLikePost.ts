@@ -47,7 +47,8 @@ export function useLikePost() {
             },
         }).then(() => {
             addLikingUser(postId)
-        }).catch(console.log)
+        }).catch(() => {
+        })
     }, 500, { trailing: true }), [])
 
     return (postId: string) => {
