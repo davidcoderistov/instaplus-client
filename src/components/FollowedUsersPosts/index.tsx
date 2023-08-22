@@ -10,6 +10,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import PostCard from '../../lib/src/components/PostCard'
 import TopFiveSuggestedUsers from '../../lib/src/components/TopFiveSuggestedUsers'
 import PostLikes from '../PostLikes'
+import PostModal from '../PostModal'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import _range from 'lodash/range'
 
@@ -67,14 +68,14 @@ export default function FollowedUsersPosts() {
         return false
     }, [followedUsersPosts.loading, followedUsersPosts.error, followedUsersPosts.data])
 
-    const [selectedPostId, setSelectedPostId] = useState<string | null>(null)
+    const [viewPostLikesPostId, setViewPostLikesPostId] = useState<string | null>(null)
 
     const handleViewPostLikes = (postId: string) => {
-        setSelectedPostId(postId)
+        setViewPostLikesPostId(postId)
     }
 
     const handleClosePostLikesModal = () => {
-        setSelectedPostId(null)
+        setViewPostLikesPostId(null)
     }
 
     const likePost = useLikePost()
@@ -99,6 +100,16 @@ export default function FollowedUsersPosts() {
 
     const handleUnsavePost = (postId: string | number) => {
         unsavePost(postId as string)
+    }
+
+    const [viewPostId, setViewPostId] = useState<string | null>(null)
+
+    const handleViewPost = (postId: string) => {
+        setViewPostId(postId)
+    }
+
+    const handleClosePostModal = () => {
+        setViewPostId(null)
     }
 
     return (
@@ -193,10 +204,10 @@ export default function FollowedUsersPosts() {
                                                 onUnlikePost={handleUnlikePost}
                                                 onSavePost={handleSavePost}
                                                 onRemovePost={handleUnsavePost}
-                                                onCommentOnPost={console.log}
+                                                onCommentOnPost={handleViewPost}
                                                 onViewPostLikes={handleViewPostLikes}
                                                 onViewPost={console.log}
-                                                onViewPostComments={console.log}
+                                                onViewPostComments={handleViewPost}
                                                 onViewUser={console.log}
                                             />
                                         ))}
@@ -217,8 +228,13 @@ export default function FollowedUsersPosts() {
                 </Box>
             </Box>
             <PostLikes
-                postId={selectedPostId}
+                postId={viewPostLikesPostId}
                 onCloseModal={handleClosePostLikesModal} />
+            {viewPostId && (
+                <PostModal
+                    postId={viewPostId}
+                    onClose={handleClosePostModal} />
+            )}
         </Box>
     )
 }
