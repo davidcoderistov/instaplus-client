@@ -25,7 +25,7 @@ export function useUnsavePost() {
         client.cache.updateFragment({
             id: `PostDetails:${postId}`,
             fragment: gql`
-                fragment PostDetails on PostDetails {
+                fragment UnsavePostDetails on PostDetails {
                     saved
                 }
             `,

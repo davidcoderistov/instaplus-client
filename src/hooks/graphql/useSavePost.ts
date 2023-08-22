@@ -25,7 +25,7 @@ export function useSavePost() {
         client.cache.updateFragment({
             id: `PostDetails:${postId}`,
             fragment: gql`
-                fragment PostDetails on PostDetails {
+                fragment SavePostDetails on PostDetails {
                     saved
                 }
             `,

@@ -54,7 +54,7 @@ export function useLikePost() {
         client.cache.updateFragment({
             id: `PostDetails:${postId}`,
             fragment: gql`
-                fragment PostDetails on PostDetails {
+                fragment LikePostDetails on PostDetails {
                     liked
                     likesCount
                     latestTwoLikeUsers {

@@ -48,7 +48,7 @@ export function useUnlikePost() {
         client.cache.updateFragment({
             id: `PostDetails:${postId}`,
             fragment: gql`
-                fragment PostDetails on PostDetails {
+                fragment UnlikePostDetails on PostDetails {
                     liked
                     likesCount
                     latestTwoLikeUsers {
