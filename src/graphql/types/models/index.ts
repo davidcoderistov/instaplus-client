@@ -104,3 +104,17 @@ export interface UserSearch {
     searchUser: SearchUser | null
     hashtag: Hashtag | null
 }
+
+export interface Comment {
+    _id: string
+    text: string
+    creator: Pick<User, '_id' | 'username' | 'photoUrl'>
+    postId: string
+    liked: boolean
+    likesCount: number
+    repliesCount: number
+    replies: Comment[]
+    showReplies: boolean
+    repliesLoading: boolean
+    createdAt: number
+}
