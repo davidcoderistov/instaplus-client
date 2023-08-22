@@ -89,6 +89,9 @@ const cache = new InMemoryCache({
                 findUsersWhoLikedPost: {
                     keyArgs: ['postId'],
                 },
+                findCommentsForPost: {
+                    keyArgs: ['postId'],
+                },
             },
         },
         Chat: {
@@ -154,6 +157,25 @@ const cache = new InMemoryCache({
                 latestTwoLikeUsers: {
                     merge(_, incoming) {
                         return incoming
+                    },
+                },
+            },
+        },
+        Comment: {
+            fields: {
+                showReplies: {
+                    read(showReplies = false) {
+                        return showReplies
+                    },
+                },
+                repliesLoading: {
+                    read(repliesLoading = false) {
+                        return repliesLoading
+                    },
+                },
+                replies: {
+                    read(replies = []) {
+                        return replies
                     },
                 },
             },
