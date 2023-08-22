@@ -1,95 +1,30 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useQuery, useApolloClient } from '@apollo/client'
+import { useQuery } from '@apollo/client'
+import { useLikePost, useUnlikePost, useSavePost, useUnsavePost } from '../../hooks/graphql'
 import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
 import { FindCommentsForPost } from '../../graphql/types/queries/post'
-import { gql } from '@apollo/client'
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
 import PostLikes from '../PostLikes'
-import { PostDetails } from '../../graphql/types/models'
 import { Post } from '../../lib/src/types/Post'
 import { Comment } from '../../lib/src/types/Comment'
 
 
 interface Props {
     postId: string
+    post?: Post | null
 
     onClose(): void
 }
 
 export default function PostModal(props: Props) {
 
-    const client = useApolloClient()
-
     const [post, setPost] = useState<Post | null>(null)
 
     useEffect(() => {
-        const postDetails: PostDetails | null = client.readFragment({
-            id: `PostDetails:${props.postId}`,
-            fragment: gql`
-                fragment PostDetails on PostDetails {
-                    _id
-                    post {
-                        _id
-                        caption
-                        location
-                        photoUrls
-                        creator {
-                            user {
-                                _id
-                                firstName
-                                lastName
-                                username
-                                photoUrl
-                            }
-                            following
-                        }
-                        createdAt
-                    }
-                    liked
-                    saved
-                    commentsCount
-                    likesCount
-                    latestTwoLikeUsers {
-                        _id
-                        username
-                    }
-                    latestThreeFollowedLikeUsers {
-                        _id
-                        photoUrl
-                    }
-                }
-            `,
-        })
-        if (postDetails) {
-            setPost({
-                id: postDetails._id,
-                description: postDetails.post.caption,
-                location: postDetails.post.location,
-                photoUrls: postDetails.post.photoUrls,
-                creator: {
-                    id: postDetails.post.creator.user._id,
-                    username: postDetails.post.creator.user.username,
-                    photoUrl: postDetails.post.creator.user.photoUrl,
-                    following: postDetails.post.creator.following,
-                    followingLoading: postDetails.post.creator.followingLoading,
-                },
-                isLiked: postDetails.liked,
-                isSaved: postDetails.saved,
-                likesCount: postDetails.likesCount,
-                commentsCount: postDetails.commentsCount,
-                lastLikingUser: postDetails.latestTwoLikeUsers.length > 0 ? {
-                    id: postDetails.latestTwoLikeUsers[0]._id,
-                    username: postDetails.latestTwoLikeUsers[0].username,
-                } : null,
-                lastLikingMutualFollowers: postDetails.latestThreeFollowedLikeUsers.map(user => ({
-                    id: user._id,
-                    username: user._id,
-                    photoUrl: user.photoUrl as string,
-                })),
-                createdAt: postDetails.post.createdAt,
-            })
+        if (props.post) {
+            setPost(props.post)
         }
-    }, [props.postId])
+    }, [props.post])
 
     const commentsForPost = useQuery<FindCommentsForPost>(FIND_COMMENTS_FOR_POST, {
         variables: {
@@ -163,6 +98,30 @@ export default function PostModal(props: Props) {
         setViewPostLikesPostId(null)
     }
 
+    const likePost = useLikePost()
+
+    const handleLikePost = (postId: string | number) => {
+        likePost(postId as string)
+    }
+
+    const unlikePost = useUnlikePost()
+
+    const handleUnlikePost = (postId: string | number) => {
+        unlikePost(postId as string)
+    }
+
+    const savePost = useSavePost()
+
+    const handleSavePost = (postId: string | number) => {
+        savePost(postId as string)
+    }
+
+    const unsavePost = useUnsavePost()
+
+    const handleUnsavePost = (postId: string | number) => {
+        unsavePost(postId as string)
+    }
+
     return (
         <>
             <PostPreviewModal
@@ -178,10 +137,10 @@ export default function PostModal(props: Props) {
                 isPostingComment={false}
                 onFollowUser={console.log}
                 onUnfollowUser={console.log}
-                onLikePost={console.log}
-                onUnlikePost={console.log}
-                onSavePost={console.log}
-                onRemovePost={console.log}
+                onLikePost={handleLikePost}
+                onUnlikePost={handleUnlikePost}
+                onSavePost={handleSavePost}
+                onRemovePost={handleUnsavePost}
                 onViewPostLikes={handleViewPostLikes}
                 onViewPost={console.log}
                 onFetchMoreComments={handleFetchMoreComments}

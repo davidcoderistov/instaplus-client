@@ -112,6 +112,13 @@ export default function FollowedUsersPosts() {
         setViewPostId(null)
     }
 
+    const viewPost: Post | null = useMemo(() => {
+        if (viewPostId) {
+            return posts.find(post => post.id === viewPostId) ?? null
+        }
+        return null
+    }, [viewPostId, posts])
+
     return (
         <Box
             id='followedUsersPostsContainer'
@@ -233,6 +240,7 @@ export default function FollowedUsersPosts() {
             {viewPostId && (
                 <PostModal
                     postId={viewPostId}
+                    post={viewPost}
                     onClose={handleClosePostModal} />
             )}
         </Box>
