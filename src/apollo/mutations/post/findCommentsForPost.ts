@@ -47,8 +47,44 @@ export function updateComment({
     }
 }
 
+interface ViewCommentRepliesOptions {
+    queryData: FindCommentsForPostQueryType
+    variables: {
+        commentId: string
+        fetchMoreCommentReplies(): void
+    }
+}
+
+interface ViewCommentRepliesReturnValue {
+    queryResult: FindCommentsForPostQueryType
+}
+
+export function viewCommentReplies({
+                                       queryData,
+                                       variables: { commentId, fetchMoreCommentReplies },
+                                   }: ViewCommentRepliesOptions): ViewCommentRepliesReturnValue {
+    return updateComment({
+        queryData,
+        variables: {
+            commentId,
+            updateCb(comment: Comment): Comment {
+                const shouldFetch = comment.showReplies || comment.replies.length < 1
+                if (shouldFetch) {
+                    fetchMoreCommentReplies()
+                }
+                return {
+                    ...comment,
+                    repliesLoading: shouldFetch,
+                    showReplies: true,
+                }
+            },
+        },
+    })
+}
+
 const mutations = {
     updateComment,
+    viewCommentReplies,
 }
 
 export default mutations
