@@ -54,6 +54,28 @@ export const UNSAVE_POST = gql`
     }
 `
 
+export const CREATE_COMMENT = gql`
+    mutation createComment($postId: String!, $replyCommentId: String, $text: String!) {
+        createComment(postId: $postId, replyCommentId: $replyCommentId, text: $text) {
+            _id
+            text
+            creator {
+                _id
+                username
+                photoUrl
+            }
+            postId
+            liked
+            likesCount
+            repliesCount
+            replies @client
+            showReplies @client
+            repliesLoading @client
+            createdAt
+        }
+    }
+`
+
 export const LIKE_COMMENT = gql`
     mutation likeComment($commentId: String!) {
         likeComment(commentId: $commentId) {
