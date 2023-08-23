@@ -122,3 +122,28 @@ export const FIND_USERS_WHO_LIKED_COMMENT = gql`
         }
     }
 `
+
+export const FIND_COMMENT_REPLIES = gql`
+    query findCommentReplies($commentId: String!, $offset: Int!, $limit: Int!) {
+        findCommentReplies(commentId: $commentId, offset: $offset, limit: $limit) {
+            data {
+                _id
+                text
+                creator {
+                    _id
+                    username
+                    photoUrl
+                }
+                postId
+                liked
+                likesCount
+                repliesCount
+                replies @client
+                showReplies @client
+                repliesLoading @client
+                createdAt
+            }
+            count
+        }
+    }
+`

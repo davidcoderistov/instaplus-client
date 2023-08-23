@@ -20,7 +20,7 @@ export interface FindUsersWhoLikedPostQueryType {
     }
 }
 
-export interface FindCommentsForPost {
+export interface FindCommentsForPostQueryType {
     findCommentsForPost: {
         data: Comment[]
         count: number
@@ -31,5 +31,12 @@ export interface FindUsersWhoLikedCommentQueryType {
     findUsersWhoLikedComment: {
         nextCursor: NextCursor | null
         data: FollowableUser[]
+    }
+}
+
+export interface FindCommentRepliesQueryType {
+    findCommentReplies: {
+        data: Comment[]
+        count: number
     }
 }
