@@ -9,7 +9,7 @@ import {
     useUnlikeComment,
 } from '../../hooks/graphql'
 import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
-import { FindCommentsForPost } from '../../graphql/types/queries/post'
+import { FindCommentsForPostQueryType } from '../../graphql/types/queries/post'
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
 import PostLikes from '../PostLikes'
 import CommentLikes from '../CommentLikes'
@@ -34,7 +34,7 @@ export default function PostModal(props: Props) {
         }
     }, [props.post])
 
-    const commentsForPost = useQuery<FindCommentsForPost>(FIND_COMMENTS_FOR_POST, {
+    const commentsForPost = useQuery<FindCommentsForPostQueryType>(FIND_COMMENTS_FOR_POST, {
         variables: {
             postId: props.postId,
             offset: 0,
@@ -80,7 +80,7 @@ export default function PostModal(props: Props) {
                 variables: {
                     offset: commentsForPost.data.findCommentsForPost.data.length,
                 },
-                updateQuery(existing: FindCommentsForPost, { fetchMoreResult }: { fetchMoreResult: FindCommentsForPost }) {
+                updateQuery(existing: FindCommentsForPostQueryType, { fetchMoreResult }: { fetchMoreResult: FindCommentsForPostQueryType }) {
                     return {
                         ...existing,
                         findCommentsForPost: {
