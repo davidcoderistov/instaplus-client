@@ -17,6 +17,32 @@ const updateOne = (comments: Comment[], commentId: string, updateCb: (comment: C
     })
 }
 
+interface AddCommentOptions {
+    queryData: FindCommentsForPostQueryType
+    variables: {
+        comment: Comment
+    }
+}
+
+interface AddCommentReturnValue {
+    queryResult: FindCommentsForPostQueryType
+}
+
+export function addComment({
+                               queryData,
+                               variables: { comment },
+                           }: AddCommentOptions): AddCommentReturnValue {
+    return {
+        queryResult: {
+            findCommentsForPost: {
+                ...queryData.findCommentsForPost,
+                data: [...queryData.findCommentsForPost.data, comment],
+                count: queryData.findCommentsForPost.count + 1,
+            },
+        },
+    }
+}
+
 interface UpdateCommentOptions {
     queryData: FindCommentsForPostQueryType
     variables: {
@@ -144,6 +170,7 @@ export function hideCommentReplies({
 }
 
 const mutations = {
+    addComment,
     updateComment,
     viewCommentReplies,
     addCommentReplies,
