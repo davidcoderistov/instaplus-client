@@ -52,6 +52,7 @@ export default function PostModal(props: Props) {
                     photoUrl: commentForPost.creator.photoUrl,
                 },
                 body: commentForPost.text,
+                postId: commentForPost.postId,
                 isLiked: commentForPost.liked,
                 likesCount: commentForPost.likesCount,
                 repliesCount: commentForPost.repliesCount,
@@ -142,14 +143,14 @@ export default function PostModal(props: Props) {
 
     const likeComment = useLikeComment()
 
-    const handleLikeComment = (commentId: string | number) => {
-        likeComment(commentId as string)
+    const handleLikeComment = (commentId: string | number, postId: string | number) => {
+        likeComment(commentId as string, postId as string)
     }
 
     const unlikeComment = useUnlikeComment()
 
-    const handleUnlikeComment = (commentId: string | number) => {
-        unlikeComment(commentId as string)
+    const handleUnlikeComment = (commentId: string | number, postId: string | number) => {
+        unlikeComment(commentId as string, postId as string)
     }
 
     return (
