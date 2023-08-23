@@ -183,6 +183,9 @@ const cache = new InMemoryCache({
                     read(replies = []) {
                         return replies
                     },
+                    merge(_, incoming) {
+                        return incoming
+                    },
                 },
             },
         },
