@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useQuery } from '@apollo/client'
+import { useQuery, useLazyQuery } from '@apollo/client'
 import {
     useLikePost,
     useUnlikePost,
@@ -10,11 +10,15 @@ import {
 } from '../../hooks/graphql'
 import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
 import { FindCommentsForPostQueryType } from '../../graphql/types/queries/post'
+import { FIND_COMMENT_REPLIES } from '../../graphql/queries/post'
+import { FindCommentRepliesQueryType } from '../../graphql/types/queries/post'
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
+import findCommentsForPostMutations from '../../apollo/mutations/post/findCommentsForPost'
 import PostLikes from '../PostLikes'
 import CommentLikes from '../CommentLikes'
+import { Comment } from '../../graphql/types/models'
 import { Post } from '../../lib/src/types/Post'
-import { Comment } from '../../lib/src/types/Comment'
+import { Comment as IComment } from '../../lib/src/types/Comment'
 
 
 interface Props {
@@ -42,25 +46,29 @@ export default function PostModal(props: Props) {
         },
     })
 
-    const comments: Comment[] = useMemo(() => {
+    const transformComment = (comment: Comment): IComment => {
+        return {
+            id: comment._id,
+            creator: {
+                id: comment.creator._id,
+                username: comment.creator.username,
+                photoUrl: comment.creator.photoUrl,
+            },
+            body: comment.text,
+            postId: comment.postId,
+            isLiked: comment.liked,
+            likesCount: comment.likesCount,
+            repliesCount: comment.repliesCount,
+            replies: comment.replies.map(transformComment),
+            showReplies: comment.showReplies,
+            repliesLoading: comment.repliesLoading,
+            createdAt: comment.createdAt,
+        }
+    }
+
+    const comments: IComment[] = useMemo(() => {
         if (!commentsForPost.loading && !commentsForPost.error && commentsForPost.data) {
-            return commentsForPost.data.findCommentsForPost.data.map(commentForPost => ({
-                id: commentForPost._id,
-                creator: {
-                    id: commentForPost.creator._id,
-                    username: commentForPost.creator.username,
-                    photoUrl: commentForPost.creator.photoUrl,
-                },
-                body: commentForPost.text,
-                postId: commentForPost.postId,
-                isLiked: commentForPost.liked,
-                likesCount: commentForPost.likesCount,
-                repliesCount: commentForPost.repliesCount,
-                replies: [],
-                showReplies: commentForPost.showReplies,
-                repliesLoading: commentForPost.repliesLoading,
-                createdAt: commentForPost.createdAt,
-            }))
+            return commentsForPost.data.findCommentsForPost.data.map(transformComment)
         }
         return []
     }, [commentsForPost.loading, commentsForPost.error, commentsForPost.data])
@@ -153,6 +161,42 @@ export default function PostModal(props: Props) {
         unlikeComment(commentId as string, postId as string)
     }
 
+    const [findCommentReplies, { data: commentReplies }] = useLazyQuery<FindCommentRepliesQueryType>(FIND_COMMENT_REPLIES)
+
+    const fetchMoreCommentReplies = (commentId: string) => {
+        findCommentReplies({
+            variables: {
+                commentId,
+                offset: commentReplies ? commentReplies.findCommentReplies.data.length : 0,
+                limit: 5,
+            },
+        }).then(({ data }) => {
+            if (data) {
+                commentsForPost.updateQuery((findCommentsForPost) =>
+                    findCommentsForPostMutations.addCommentReplies({
+                        queryData: findCommentsForPost,
+                        variables: {
+                            commentId,
+                            replies: data.findCommentReplies.data,
+                        },
+                    }).queryResult)
+            }
+        })
+    }
+
+    const handleViewReplies = (commentId: string) => {
+        commentsForPost.updateQuery((findCommentsForPost) =>
+            findCommentsForPostMutations.viewCommentReplies({
+                queryData: findCommentsForPost,
+                variables: {
+                    commentId,
+                    fetchMoreCommentReplies() {
+                        fetchMoreCommentReplies(commentId)
+                    },
+                },
+            }).queryResult)
+    }
+
     return (
         <>
             <PostPreviewModal
@@ -180,7 +224,7 @@ export default function PostModal(props: Props) {
                 onReplyToComment={console.log}
                 onLikeComment={handleLikeComment}
                 onUnlikeComment={handleUnlikeComment}
-                onViewReplies={console.log}
+                onViewReplies={handleViewReplies}
                 onHideReplies={console.log}
                 onPostComment={console.log} />
             <PostLikes
