@@ -5,6 +5,7 @@ export interface Comment {
     id: string | number
     creator: Pick<User, 'id' | 'username' | 'photoUrl'>
     body: string
+    postId: string | number
     isLiked: boolean
     likesCount: number
     repliesCount: number
