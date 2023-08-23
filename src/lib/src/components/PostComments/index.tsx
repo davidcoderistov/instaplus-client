@@ -23,9 +23,9 @@ interface Props {
 
     onReplyToComment(commentId: string | number, username: string): void
 
-    onLikeComment(commentId: string | number): void
+    onLikeComment(commentId: string | number, postId: string | number): void
 
-    onUnlikeComment(commentId: string | number): void
+    onUnlikeComment(commentId: string | number, postId: string | number): void
 
     onViewReplies(commentId: string | number): void
 
@@ -53,6 +53,7 @@ export default function PostComments(props: Props) {
                     id: 'post-description-comment',
                     creator: props.post.creator,
                     body: props.post.description,
+                    postId: props.post.id,
                     isLiked: false,
                     likesCount: 0,
                     repliesCount: 0,

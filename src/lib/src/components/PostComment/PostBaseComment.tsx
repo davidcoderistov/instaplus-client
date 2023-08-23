@@ -14,6 +14,7 @@ interface Comment {
     id: string | number
     creator: Creator
     body: string
+    postId: string | number
     isLiked: boolean
     likesCount: number
     createdAt: number
@@ -31,9 +32,9 @@ interface StaticProps {
 
     onReplyToComment(commentId: string | number, username: string): void
 
-    onLikeComment(commentId: string | number): void
+    onLikeComment(commentId: string | number, postId: string | number): void
 
-    onUnlikeComment(commentId: string | number): void
+    onUnlikeComment(commentId: string | number, postId: string | number): void
 }
 
 interface LoadingProps {
@@ -82,9 +83,9 @@ export default function PostBaseComment(props: Props) {
     const handleClickLikeComment = () => {
         if (!props.loading) {
             if (props.comment.isLiked) {
-                props.onUnlikeComment(props.comment.id)
+                props.onUnlikeComment(props.comment.id, props.comment.postId)
             } else {
-                props.onLikeComment(props.comment.id)
+                props.onLikeComment(props.comment.id, props.comment.postId)
             }
         }
     }
