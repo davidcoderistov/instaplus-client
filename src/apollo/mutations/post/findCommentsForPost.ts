@@ -82,9 +82,42 @@ export function viewCommentReplies({
     })
 }
 
+interface AddCommentRepliesOptions {
+    queryData: FindCommentsForPostQueryType
+    variables: {
+        commentId: string
+        replies: Comment[]
+    }
+}
+
+interface AddCommentRepliesReturnValue {
+    queryResult: FindCommentsForPostQueryType
+}
+
+export function addCommentReplies({
+                                      queryData,
+                                      variables: { commentId, replies },
+                                  }: AddCommentRepliesOptions): AddCommentRepliesReturnValue {
+    return updateComment({
+        queryData,
+        variables: {
+            commentId,
+            updateCb(comment: Comment): Comment {
+                return {
+                    ...comment,
+                    repliesLoading: false,
+                    showReplies: true,
+                    replies: [...comment.replies, ...replies],
+                }
+            },
+        },
+    })
+}
+
 const mutations = {
     updateComment,
     viewCommentReplies,
+    addCommentReplies,
 }
 
 export default mutations
