@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { useQuery, useLazyQuery } from '@apollo/client'
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
+import { useSnackbar } from 'notistack'
 import {
     useLikePost,
     useUnlikePost,
@@ -12,6 +13,8 @@ import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
 import { FindCommentsForPostQueryType } from '../../graphql/types/queries/post'
 import { FIND_COMMENT_REPLIES } from '../../graphql/queries/post'
 import { FindCommentRepliesQueryType } from '../../graphql/types/queries/post'
+import { CREATE_COMMENT } from '../../graphql/mutations/post'
+import { CreateCommentMutationType } from '../../graphql/types/mutations/post'
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
 import findCommentsForPostMutations from '../../apollo/mutations/post/findCommentsForPost'
 import PostLikes from '../PostLikes'
@@ -211,6 +214,89 @@ export default function PostModal(props: Props) {
             }).queryResult)
     }
 
+    const handleReplyToComment = (postId: string, comment: string, commentId: string) => {
+        postComment(postId, comment, commentId)
+    }
+
+    const handlePostComment = (postId: string, comment: string) => {
+        postComment(postId, comment, null)
+    }
+
+    const findCommentById = (comments: Comment[], commentId: string): Comment | null => {
+        for (const comment of comments) {
+            if (comment._id === commentId) {
+                return comment
+            }
+            if (comment.replies.length > 0) {
+                const foundInReply = findCommentById(comment.replies, commentId)
+                if (foundInReply !== null) {
+                    return foundInReply
+                }
+            }
+        }
+        return null
+    }
+
+    const { enqueueSnackbar } = useSnackbar()
+
+    const [createComment, { loading: isPostingComment }] = useMutation<CreateCommentMutationType>(CREATE_COMMENT)
+
+    const postComment = (postId: string, comment: string, commentId: string | null) => {
+        createComment({
+            variables: {
+                postId,
+                text: comment,
+                replyCommentId: commentId,
+            },
+        }).then(({ data }) => {
+            if (data) {
+                const createComment = {
+                    ...data.createComment,
+                    replies: [],
+                    showReplies: false,
+                    repliesLoading: false,
+                }
+                if (commentId) {
+                    if (commentsForPost.data) {
+                        const comment = findCommentById(commentsForPost.data.findCommentsForPost.data, commentId)
+                        if (comment) {
+                            const hasNoReplies = comment.repliesCount < 1
+                            const repliesFetched = repliesCountRef.current.has(commentId) && (repliesCountRef.current.get(commentId) as number) >= comment.repliesCount
+                            commentsForPost.updateQuery((findCommentsForPost) =>
+                                findCommentsForPostMutations.updateComment({
+                                    queryData: findCommentsForPost,
+                                    variables: {
+                                        commentId,
+                                        updateCb(comment: Comment): Comment {
+                                            return {
+                                                ...comment,
+                                                repliesCount: comment.repliesCount + 1,
+                                                ...hasNoReplies && { showReplies: true },
+                                                ...(hasNoReplies || repliesFetched) && { replies: [...comment.replies, createComment] },
+                                            }
+                                        },
+                                    },
+                                }).queryResult)
+                        }
+                    }
+                } else {
+                    if (commentsForPost.data) {
+                        if (commentsForPost.data.findCommentsForPost.data.length >= commentsForPost.data.findCommentsForPost.count) {
+                            // TODO: Maybe implement scroll to bottom
+                            commentsForPost.updateQuery((findCommentsForPost) =>
+                                findCommentsForPostMutations.addComment({
+                                    queryData: findCommentsForPost,
+                                    variables: { comment: createComment },
+                                }).queryResult)
+                        }
+                    }
+                }
+            }
+        }).catch(() => {
+            enqueueSnackbar('Comment could not be posted', { variant: 'error' })
+        })
+    }
+
     return (
         <>
             <PostPreviewModal
@@ -223,7 +309,7 @@ export default function PostModal(props: Props) {
                 hasMoreComments={hasMoreComments}
                 viewingPostLikes={Boolean(viewPostLikesPostId)}
                 viewingCommentLikes={Boolean(viewCommentLikesCommentId)}
-                isPostingComment={false}
+                isPostingComment={isPostingComment}
                 onFollowUser={console.log}
                 onUnfollowUser={console.log}
                 onLikePost={handleLikePost}
@@ -235,12 +321,12 @@ export default function PostModal(props: Props) {
                 onFetchMoreComments={handleFetchMoreComments}
                 onViewUser={console.log}
                 onViewCommentLikes={handleViewCommentLikes}
-                onReplyToComment={console.log}
+                onReplyToComment={handleReplyToComment}
                 onLikeComment={handleLikeComment}
                 onUnlikeComment={handleUnlikeComment}
                 onViewReplies={handleViewReplies}
                 onHideReplies={handleHideReplies}
-                onPostComment={console.log} />
+                onPostComment={handlePostComment} />
             <PostLikes
                 postId={viewPostLikesPostId}
                 onCloseModal={handleClosePostLikesModal} />
