@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useQuery, useLazyQuery } from '@apollo/client'
 import {
     useLikePost,
@@ -161,17 +161,21 @@ export default function PostModal(props: Props) {
         unlikeComment(commentId as string, postId as string)
     }
 
-    const [findCommentReplies, { data: commentReplies }] = useLazyQuery<FindCommentRepliesQueryType>(FIND_COMMENT_REPLIES)
+    const [findCommentReplies] = useLazyQuery<FindCommentRepliesQueryType>(FIND_COMMENT_REPLIES)
+
+    const repliesCountRef = useRef<Map<string, number>>(new Map())
 
     const fetchMoreCommentReplies = (commentId: string) => {
         findCommentReplies({
             variables: {
                 commentId,
-                offset: commentReplies ? commentReplies.findCommentReplies.data.length : 0,
+                offset: repliesCountRef.current.has(commentId) ? repliesCountRef.current.get(commentId) : 0,
                 limit: 5,
             },
         }).then(({ data }) => {
             if (data) {
+                repliesCountRef.current.set(commentId,
+                    repliesCountRef.current.has(commentId) ? repliesCountRef.current.get(commentId) as number + 5 : 5)
                 commentsForPost.updateQuery((findCommentsForPost) =>
                     findCommentsForPostMutations.addCommentReplies({
                         queryData: findCommentsForPost,

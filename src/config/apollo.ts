@@ -95,9 +95,6 @@ const cache = new InMemoryCache({
                 findUsersWhoLikedComment: {
                     keyArgs: ['commentId'],
                 },
-                findCommentReplies: {
-                    keyArgs: ['commentId'],
-                },
             },
         },
         Chat: {
