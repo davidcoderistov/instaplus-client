@@ -114,10 +114,40 @@ export function addCommentReplies({
     })
 }
 
+interface HideCommentRepliesOptions {
+    queryData: FindCommentsForPostQueryType
+    variables: {
+        commentId: string
+    }
+}
+
+interface HideCommentRepliesReturnValue {
+    queryResult: FindCommentsForPostQueryType
+}
+
+export function hideCommentReplies({
+                                       queryData,
+                                       variables: { commentId },
+                                   }: HideCommentRepliesOptions): HideCommentRepliesReturnValue {
+    return updateComment({
+        queryData,
+        variables: {
+            commentId,
+            updateCb(comment: Comment): Comment {
+                return {
+                    ...comment,
+                    showReplies: false,
+                }
+            },
+        },
+    })
+}
+
 const mutations = {
     updateComment,
     viewCommentReplies,
     addCommentReplies,
+    hideCommentReplies,
 }
 
 export default mutations
