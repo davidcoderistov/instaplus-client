@@ -197,6 +197,16 @@ export default function PostModal(props: Props) {
             }).queryResult)
     }
 
+    const handleHideReplies = (commentId: string) => {
+        commentsForPost.updateQuery((findCommentsForPost) =>
+            findCommentsForPostMutations.hideCommentReplies({
+                queryData: findCommentsForPost,
+                variables: {
+                    commentId,
+                },
+            }).queryResult)
+    }
+
     return (
         <>
             <PostPreviewModal
@@ -225,7 +235,7 @@ export default function PostModal(props: Props) {
                 onLikeComment={handleLikeComment}
                 onUnlikeComment={handleUnlikeComment}
                 onViewReplies={handleViewReplies}
-                onHideReplies={console.log}
+                onHideReplies={handleHideReplies}
                 onPostComment={console.log} />
             <PostLikes
                 postId={viewPostLikesPostId}
