@@ -44,7 +44,7 @@ interface Props {
 
     onViewCommentLikes(commentId: string | number): void
 
-    onReplyToComment(commentId: string | number, comment: string): void
+    onReplyToComment(postId: string | number, comment: string, commentId: string | number): void
 
     onLikeComment(commentId: string | number, postId: string | number): void
 
@@ -54,7 +54,7 @@ interface Props {
 
     onHideReplies(commentId: string | number): void
 
-    onPostComment(comment: string): void
+    onPostComment(postId: string | number, comment: string): void
 
     onOpenSettingsModal?(): void
 
@@ -114,12 +114,13 @@ export default function PostPreview(props: Props) {
     }
 
     const handlePostComment = (comment: string) => {
+        const postId = (props.post as Post).id
         if (replyingCommentId) {
-            props.onReplyToComment(replyingCommentId, comment)
+            props.onReplyToComment(postId, comment, replyingCommentId)
             setReplyingCommentId(null)
             setReplyingUsername(null)
         } else {
-            props.onPostComment(comment)
+            props.onPostComment(postId, comment)
         }
     }
 

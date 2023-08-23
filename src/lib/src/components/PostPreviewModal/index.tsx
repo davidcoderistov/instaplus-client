@@ -48,7 +48,7 @@ interface Props {
 
     onViewCommentLikes(commentId: string | number): void
 
-    onReplyToComment(commentId: string | number, comment: string): void
+    onReplyToComment(postId: string | number, comment: string, commentId: string | number): void
 
     onLikeComment(commentId: string | number, postId: string | number): void
 
@@ -58,7 +58,7 @@ interface Props {
 
     onHideReplies(commentId: string | number): void
 
-    onPostComment(comment: string): void
+    onPostComment(postId: string | number, comment: string): void
 }
 
 export default function PostPreviewModal(props: Props) {
