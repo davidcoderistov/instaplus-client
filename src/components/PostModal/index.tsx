@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
-import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
+import { useState, useEffect, useMemo } from 'react'
+import { useQuery, useLazyQuery, useMutation, useApolloClient } from '@apollo/client'
 import { useSnackbar } from 'notistack'
 import {
     useLikePost,
@@ -22,6 +22,7 @@ import CommentLikes from '../CommentLikes'
 import { Comment } from '../../graphql/types/models'
 import { Post } from '../../lib/src/types/Post'
 import { Comment as IComment } from '../../lib/src/types/Comment'
+import _differenceBy from 'lodash/differenceBy'
 
 
 interface Props {
@@ -164,31 +165,82 @@ export default function PostModal(props: Props) {
         unlikeComment(commentId as string, postId as string)
     }
 
-    const [findCommentReplies] = useLazyQuery<FindCommentRepliesQueryType>(FIND_COMMENT_REPLIES)
+    const client = useApolloClient()
 
-    const repliesCountRef = useRef<Map<string, number>>(new Map())
+    const [findCommentReplies, { fetchMore: _fetchMoreCommentReplies }] = useLazyQuery<FindCommentRepliesQueryType>(FIND_COMMENT_REPLIES)
 
     const fetchMoreCommentReplies = (commentId: string) => {
-        findCommentReplies({
+        const commentReplies: FindCommentRepliesQueryType | null = client.cache.readQuery({
+            query: FIND_COMMENT_REPLIES,
             variables: {
                 commentId,
-                offset: repliesCountRef.current.has(commentId) ? repliesCountRef.current.get(commentId) : 0,
-                limit: 5,
             },
-        }).then(({ data }) => {
-            if (data) {
-                repliesCountRef.current.set(commentId,
-                    repliesCountRef.current.has(commentId) ? repliesCountRef.current.get(commentId) as number + 5 : 5)
-                commentsForPost.updateQuery((findCommentsForPost) =>
-                    findCommentsForPostMutations.addCommentReplies({
-                        queryData: findCommentsForPost,
-                        variables: {
-                            commentId,
-                            replies: data.findCommentReplies.data,
-                        },
-                    }).queryResult)
-            }
         })
+        if (commentReplies) {
+            _fetchMoreCommentReplies({
+                variables: {
+                    commentId,
+                    offset: commentReplies.findCommentReplies.data.length,
+                    limit: 5,
+                },
+                updateQuery(existing: FindCommentRepliesQueryType, { fetchMoreResult }: { fetchMoreResult: FindCommentRepliesQueryType }) {
+                    return {
+                        ...existing,
+                        findCommentReplies: {
+                            ...fetchMoreResult.findCommentReplies,
+                            data: [
+                                ...existing.findCommentReplies.data,
+                                ..._differenceBy(
+                                    fetchMoreResult.findCommentReplies.data.map(comment => ({
+                                        ...comment,
+                                        showReplies: false,
+                                        repliesLoading: false,
+                                        replies: [],
+                                    })),
+                                    existing.findCommentReplies.data,
+                                    '_id',
+                                ),
+                            ],
+                        },
+                    }
+                },
+            }).then(({ data }) => {
+                if (data) {
+                    commentsForPost.updateQuery((findCommentsForPost) =>
+                        findCommentsForPostMutations.addCommentReplies({
+                            queryData: findCommentsForPost,
+                            variables: {
+                                commentId,
+                                replies: data.findCommentReplies.data.map(comment => ({
+                                    ...comment,
+                                    showReplies: false,
+                                    repliesLoading: false,
+                                    replies: [],
+                                })),
+                            },
+                        }).queryResult)
+                }
+            })
+        } else {
+            findCommentReplies({
+                variables: {
+                    commentId,
+                    offset: 0,
+                    limit: 5,
+                },
+            }).then(({ data }) => {
+                if (data) {
+                    commentsForPost.updateQuery((findCommentsForPost) =>
+                        findCommentsForPostMutations.addCommentReplies({
+                            queryData: findCommentsForPost,
+                            variables: {
+                                commentId,
+                                replies: data.findCommentReplies.data,
+                            },
+                        }).queryResult)
+                }
+            })
+        }
     }
 
     const handleViewReplies = (commentId: string) => {
@@ -260,8 +312,6 @@ export default function PostModal(props: Props) {
                     if (commentsForPost.data) {
                         const comment = findCommentById(commentsForPost.data.findCommentsForPost.data, commentId)
                         if (comment) {
-                            const hasNoReplies = comment.repliesCount < 1
-                            const repliesFetched = repliesCountRef.current.has(commentId) && (repliesCountRef.current.get(commentId) as number) >= comment.repliesCount
                             commentsForPost.updateQuery((findCommentsForPost) =>
                                 findCommentsForPostMutations.updateComment({
                                     queryData: findCommentsForPost,
@@ -270,9 +320,9 @@ export default function PostModal(props: Props) {
                                         updateCb(comment: Comment): Comment {
                                             return {
                                                 ...comment,
+                                                showReplies: true,
                                                 repliesCount: comment.repliesCount + 1,
-                                                ...hasNoReplies && { showReplies: true },
-                                                ...(hasNoReplies || repliesFetched) && { replies: [...comment.replies, createComment] },
+                                                replies: [...comment.replies, createComment],
                                             }
                                         },
                                     },
