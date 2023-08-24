@@ -1,5 +1,7 @@
 import { FindCommentsForPostQueryType } from '../../../graphql/types/queries/post'
 import { Comment } from '../../../graphql/types/models'
+import _sortBy from 'lodash/sortBy'
+import _differenceBy from 'lodash/differenceBy'
 
 
 const updateOne = (comments: Comment[], commentId: string, updateCb: (comment: Comment) => Comment): Comment[] => {
@@ -133,7 +135,14 @@ export function addCommentReplies({
                     ...comment,
                     repliesLoading: false,
                     showReplies: true,
-                    replies: [...comment.replies, ...replies],
+                    replies: _sortBy([
+                        ..._differenceBy(
+                            comment.replies,
+                            replies,
+                            '_id',
+                        ),
+                        ...replies,
+                    ], 'createdAt'),
                 }
             },
         },
