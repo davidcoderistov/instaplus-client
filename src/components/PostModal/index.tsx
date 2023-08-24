@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
-import { useSnackbar } from 'notistack'
+import { useQuery } from '@apollo/client'
 import {
     useLikePost,
     useUnlikePost,
@@ -13,10 +12,7 @@ import {
 } from '../../hooks/graphql'
 import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
 import { FindCommentsForPostQueryType } from '../../graphql/types/queries/post'
-import { CREATE_COMMENT } from '../../graphql/mutations/post'
-import { CreateCommentMutationType } from '../../graphql/types/mutations/post'
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
-import findCommentsForPostMutations from '../../apollo/mutations/post/findCommentsForPost'
 import PostLikes from '../PostLikes'
 import CommentLikes from '../CommentLikes'
 import { Comment } from '../../graphql/types/models'
