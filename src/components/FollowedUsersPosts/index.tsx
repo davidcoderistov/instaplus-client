@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
 import { useAuthUser } from '../../hooks/misc'
-import { useLikePost, useUnlikePost, useSavePost, useUnsavePost } from '../../hooks/graphql'
+import { useLikePost, useUnlikePost, useSavePost, useUnsavePost, usePostLikes } from '../../hooks/graphql'
 import { FIND_FOLLOWED_USERS_POSTS } from '../../graphql/queries/post'
 import { FindFollowedUsersPostsQueryType } from '../../graphql/types/queries/post'
 import { Post } from '../../lib/src/types/Post'
@@ -68,15 +68,7 @@ export default function FollowedUsersPosts() {
         return false
     }, [followedUsersPosts.loading, followedUsersPosts.error, followedUsersPosts.data])
 
-    const [viewPostLikesPostId, setViewPostLikesPostId] = useState<string | null>(null)
-
-    const handleViewPostLikes = (postId: string) => {
-        setViewPostLikesPostId(postId)
-    }
-
-    const handleClosePostLikesModal = () => {
-        setViewPostLikesPostId(null)
-    }
+    const { viewPostLikesPostId, onViewPostLikes, onClosePostLikes } = usePostLikes()
 
     const likePost = useLikePost()
 
@@ -212,7 +204,7 @@ export default function FollowedUsersPosts() {
                                                 onSavePost={handleSavePost}
                                                 onRemovePost={handleUnsavePost}
                                                 onCommentOnPost={handleViewPost}
-                                                onViewPostLikes={handleViewPostLikes}
+                                                onViewPostLikes={onViewPostLikes}
                                                 onViewPost={console.log}
                                                 onViewPostComments={handleViewPost}
                                                 onViewUser={console.log}
@@ -236,7 +228,7 @@ export default function FollowedUsersPosts() {
             </Box>
             <PostLikes
                 postId={viewPostLikesPostId}
-                onCloseModal={handleClosePostLikesModal} />
+                onCloseModal={onClosePostLikes} />
             {viewPostId && (
                 <PostModal
                     postId={viewPostId}
