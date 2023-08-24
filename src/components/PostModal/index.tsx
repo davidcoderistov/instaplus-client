@@ -1,5 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
-import { useQuery } from '@apollo/client'
+import { useState, useEffect } from 'react'
 import {
     useLikePost,
     useUnlikePost,
@@ -9,15 +8,12 @@ import {
     useUnlikeComment,
     useCommentReplies,
     usePostComment,
+    useCommentsForPost,
 } from '../../hooks/graphql'
-import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
-import { FindCommentsForPostQueryType } from '../../graphql/types/queries/post'
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
 import PostLikes from '../PostLikes'
 import CommentLikes from '../CommentLikes'
-import { Comment } from '../../graphql/types/models'
 import { Post } from '../../lib/src/types/Post'
-import { Comment as IComment } from '../../lib/src/types/Comment'
 
 
 interface Props {
@@ -37,72 +33,12 @@ export default function PostModal(props: Props) {
         }
     }, [props.post])
 
-    const commentsForPost = useQuery<FindCommentsForPostQueryType>(FIND_COMMENTS_FOR_POST, {
-        variables: {
-            postId: props.postId,
-            offset: 0,
-            limit: 10,
-        },
-    })
-
-    const transformComment = (comment: Comment): IComment => {
-        return {
-            id: comment._id,
-            creator: {
-                id: comment.creator._id,
-                username: comment.creator.username,
-                photoUrl: comment.creator.photoUrl,
-            },
-            body: comment.text,
-            postId: comment.postId,
-            isLiked: comment.liked,
-            likesCount: comment.likesCount,
-            repliesCount: comment.repliesCount,
-            replies: comment.replies.map(transformComment),
-            showReplies: comment.showReplies,
-            repliesLoading: comment.repliesLoading,
-            createdAt: comment.createdAt,
-        }
-    }
-
-    const comments: IComment[] = useMemo(() => {
-        if (!commentsForPost.loading && !commentsForPost.error && commentsForPost.data) {
-            return commentsForPost.data.findCommentsForPost.data.map(transformComment)
-        }
-        return []
-    }, [commentsForPost.loading, commentsForPost.error, commentsForPost.data])
-
-    const hasMoreComments = useMemo(() => {
-        if (!commentsForPost.loading && !commentsForPost.error && commentsForPost.data) {
-            return commentsForPost.data.findCommentsForPost.data.length < commentsForPost.data.findCommentsForPost.count
-        }
-        return false
-    }, [commentsForPost.loading, commentsForPost.error, commentsForPost.data])
-
-    const [moreCommentsLoading, setMoreCommentsLoading] = useState(false)
-
-    const handleFetchMoreComments = () => {
-        if (commentsForPost.data) {
-            setMoreCommentsLoading(true)
-            commentsForPost.fetchMore({
-                variables: {
-                    offset: commentsForPost.data.findCommentsForPost.data.length,
-                },
-                updateQuery(existing: FindCommentsForPostQueryType, { fetchMoreResult }: { fetchMoreResult: FindCommentsForPostQueryType }) {
-                    return {
-                        ...existing,
-                        findCommentsForPost: {
-                            ...existing.findCommentsForPost,
-                            data: [
-                                ...existing.findCommentsForPost.data,
-                                ...fetchMoreResult.findCommentsForPost.data,
-                            ],
-                        },
-                    }
-                },
-            }).catch(console.log).finally(() => setMoreCommentsLoading(false))
-        }
-    }
+    const {
+        comments,
+        commentsLoading,
+        hasMoreComments,
+        onFetchMoreComments,
+    } = useCommentsForPost(props.postId)
 
     const [viewPostLikesPostId, setViewPostLikesPostId] = useState<string | null>(null)
 
@@ -172,7 +108,7 @@ export default function PostModal(props: Props) {
                 post={post}
                 postLoading={false}
                 comments={comments}
-                commentsLoading={commentsForPost.loading || moreCommentsLoading}
+                commentsLoading={commentsLoading}
                 hasMoreComments={hasMoreComments}
                 viewingPostLikes={Boolean(viewPostLikesPostId)}
                 viewingCommentLikes={Boolean(viewCommentLikesCommentId)}
@@ -185,7 +121,7 @@ export default function PostModal(props: Props) {
                 onRemovePost={handleUnsavePost}
                 onViewPostLikes={handleViewPostLikes}
                 onViewPost={console.log}
-                onFetchMoreComments={handleFetchMoreComments}
+                onFetchMoreComments={onFetchMoreComments}
                 onViewUser={console.log}
                 onViewCommentLikes={handleViewCommentLikes}
                 onReplyToComment={onReplyToComment}
