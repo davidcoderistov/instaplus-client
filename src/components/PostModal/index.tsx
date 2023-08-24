@@ -46,41 +46,17 @@ export default function PostModal(props: Props) {
 
     const likePost = useLikePost()
 
-    const handleLikePost = (postId: string | number) => {
-        likePost(postId as string)
-    }
-
     const unlikePost = useUnlikePost()
-
-    const handleUnlikePost = (postId: string | number) => {
-        unlikePost(postId as string)
-    }
 
     const savePost = useSavePost()
 
-    const handleSavePost = (postId: string | number) => {
-        savePost(postId as string)
-    }
-
     const unsavePost = useUnsavePost()
-
-    const handleUnsavePost = (postId: string | number) => {
-        unsavePost(postId as string)
-    }
 
     const { viewCommentLikesCommentId, onViewCommentLikes, onCloseCommentLikes } = useCommentLikes()
 
     const likeComment = useLikeComment()
 
-    const handleLikeComment = (commentId: string | number, postId: string | number) => {
-        likeComment(commentId as string, postId as string)
-    }
-
     const unlikeComment = useUnlikeComment()
-
-    const handleUnlikeComment = (commentId: string | number, postId: string | number) => {
-        unlikeComment(commentId as string, postId as string)
-    }
 
     const { onViewReplies, onHideReplies } = useCommentReplies(props.postId)
 
@@ -101,18 +77,18 @@ export default function PostModal(props: Props) {
                 isPostingComment={isPostingComment}
                 onFollowUser={console.log}
                 onUnfollowUser={console.log}
-                onLikePost={handleLikePost}
-                onUnlikePost={handleUnlikePost}
-                onSavePost={handleSavePost}
-                onRemovePost={handleUnsavePost}
+                onLikePost={likePost}
+                onUnlikePost={unlikePost}
+                onSavePost={savePost}
+                onRemovePost={unsavePost}
                 onViewPostLikes={onViewPostLikes}
                 onViewPost={console.log}
                 onFetchMoreComments={onFetchMoreComments}
                 onViewUser={console.log}
                 onViewCommentLikes={onViewCommentLikes}
                 onReplyToComment={onReplyToComment}
-                onLikeComment={handleLikeComment}
-                onUnlikeComment={handleUnlikeComment}
+                onLikeComment={likeComment}
+                onUnlikeComment={unlikeComment}
                 onViewReplies={onViewReplies}
                 onHideReplies={onHideReplies}
                 onPostComment={onPostComment} />

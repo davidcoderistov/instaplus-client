@@ -72,27 +72,11 @@ export default function FollowedUsersPosts() {
 
     const likePost = useLikePost()
 
-    const handleLikePost = (postId: string | number) => {
-        likePost(postId as string)
-    }
-
     const unlikePost = useUnlikePost()
-
-    const handleUnlikePost = (postId: string | number) => {
-        unlikePost(postId as string)
-    }
 
     const savePost = useSavePost()
 
-    const handleSavePost = (postId: string | number) => {
-        savePost(postId as string)
-    }
-
     const unsavePost = useUnsavePost()
-
-    const handleUnsavePost = (postId: string | number) => {
-        unsavePost(postId as string)
-    }
 
     const [viewPostId, setViewPostId] = useState<string | null>(null)
 
@@ -199,10 +183,10 @@ export default function FollowedUsersPosts() {
                                                 post={post}
                                                 onFollowUser={console.log}
                                                 onUnfollowUser={console.log}
-                                                onLikePost={handleLikePost}
-                                                onUnlikePost={handleUnlikePost}
-                                                onSavePost={handleSavePost}
-                                                onRemovePost={handleUnsavePost}
+                                                onLikePost={likePost}
+                                                onUnlikePost={unlikePost}
+                                                onSavePost={savePost}
+                                                onRemovePost={unsavePost}
                                                 onCommentOnPost={handleViewPost}
                                                 onViewPostLikes={onViewPostLikes}
                                                 onViewPost={console.log}
