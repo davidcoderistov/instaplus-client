@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useApolloClient, useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
 import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
@@ -8,30 +9,30 @@ import { Comment } from '../../graphql/types/models'
 import findCommentsForPostMutations from '../../apollo/mutations/post/findCommentsForPost'
 
 
+const findCommentById = (comments: Comment[], commentId: string): Comment | null => {
+    for (const comment of comments) {
+        if (comment._id === commentId) {
+            return comment
+        }
+        if (comment.replies.length > 0) {
+            const foundInReply = findCommentById(comment.replies, commentId)
+            if (foundInReply !== null) {
+                return foundInReply
+            }
+        }
+    }
+    return null
+}
+
 export function usePostComment() {
 
     const client = useApolloClient()
 
     const { enqueueSnackbar } = useSnackbar()
 
-    const findCommentById = (comments: Comment[], commentId: string): Comment | null => {
-        for (const comment of comments) {
-            if (comment._id === commentId) {
-                return comment
-            }
-            if (comment.replies.length > 0) {
-                const foundInReply = findCommentById(comment.replies, commentId)
-                if (foundInReply !== null) {
-                    return foundInReply
-                }
-            }
-        }
-        return null
-    }
-
     const [createComment, { loading: isPostingComment }] = useMutation<CreateCommentMutationType>(CREATE_COMMENT)
 
-    const postComment = (postId: string, comment: string, commentId: string | null) => {
+    const postComment = useCallback((postId: string, comment: string, commentId: string | null) => {
         createComment({
             variables: {
                 postId,
@@ -99,15 +100,19 @@ export function usePostComment() {
         }).catch(() => {
             enqueueSnackbar('Comment could not be posted', { variant: 'error' })
         })
-    }
+    }, [])
+
+    const onReplyToComment = useCallback((postId: string, comment: string, commentId: string) => {
+        postComment(postId, comment, commentId)
+    }, [postComment])
+
+    const onPostComment = useCallback((postId: string, comment: string) => {
+        postComment(postId, comment, null)
+    }, [postComment])
 
     return {
         isPostingComment,
-        onReplyToComment: (postId: string, comment: string, commentId: string) => {
-            postComment(postId, comment, commentId)
-        },
-        onPostComment: (postId: string, comment: string) => {
-            postComment(postId, comment, null)
-        },
+        onReplyToComment,
+        onPostComment,
     }
 }
