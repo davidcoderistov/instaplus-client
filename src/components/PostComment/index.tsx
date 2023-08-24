@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import PostBaseComment from './PostBaseComment'
 import { formatNumber } from '../../utils'
+import _isEqual from 'lodash/isEqual'
 
 
 interface Creator {
@@ -233,6 +234,16 @@ const PostComment = React.memo((props: Props) => {
             )}
         </Box>
     )
+}, (prevProps, nextProps) => {
+
+    const { comment: prevComment, ...prevRest } = prevProps
+    const { comment: nextComment, ...nextRest } = nextProps
+
+    const commentsEqual = _isEqual(prevComment, nextComment)
+
+    const restPropsEqual = _isEqual(prevRest, nextRest)
+
+    return commentsEqual && restPropsEqual
 })
 
 export default PostComment
