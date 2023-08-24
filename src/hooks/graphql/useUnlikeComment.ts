@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useCallback } from 'react'
 import { useMutation, useApolloClient } from '@apollo/client'
 import { useAuthUser } from '../misc'
 import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
@@ -47,7 +47,7 @@ export function useUnlikeComment() {
         })
     }, 500, { trailing: true }), [])
 
-    return (commentId: string, postId: string) => {
+    return useCallback((commentId: string, postId: string) => {
         client.cache.updateQuery({
             query: FIND_COMMENTS_FOR_POST,
             variables: {
@@ -72,5 +72,5 @@ export function useUnlikeComment() {
         })
         removeLikingUser(commentId)
         _unlikeComment(commentId)
-    }
+    }, [])
 }
