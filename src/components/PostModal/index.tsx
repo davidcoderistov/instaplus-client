@@ -9,6 +9,7 @@ import {
     useCommentReplies,
     usePostComment,
     useCommentsForPost,
+    usePostLikes,
 } from '../../hooks/graphql'
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
 import PostLikes from '../PostLikes'
@@ -40,15 +41,7 @@ export default function PostModal(props: Props) {
         onFetchMoreComments,
     } = useCommentsForPost(props.postId)
 
-    const [viewPostLikesPostId, setViewPostLikesPostId] = useState<string | null>(null)
-
-    const handleViewPostLikes = (postId: string) => {
-        setViewPostLikesPostId(postId)
-    }
-
-    const handleClosePostLikesModal = () => {
-        setViewPostLikesPostId(null)
-    }
+    const { viewPostLikesPostId, onViewPostLikes, onClosePostLikes } = usePostLikes()
 
     const likePost = useLikePost()
 
@@ -119,7 +112,7 @@ export default function PostModal(props: Props) {
                 onUnlikePost={handleUnlikePost}
                 onSavePost={handleSavePost}
                 onRemovePost={handleUnsavePost}
-                onViewPostLikes={handleViewPostLikes}
+                onViewPostLikes={onViewPostLikes}
                 onViewPost={console.log}
                 onFetchMoreComments={onFetchMoreComments}
                 onViewUser={console.log}
@@ -132,7 +125,7 @@ export default function PostModal(props: Props) {
                 onPostComment={onPostComment} />
             <PostLikes
                 postId={viewPostLikesPostId}
-                onCloseModal={handleClosePostLikesModal} />
+                onCloseModal={onClosePostLikes} />
             <CommentLikes
                 commentId={viewCommentLikesCommentId}
                 onCloseModal={handleCloseCommentLikesModal} />
