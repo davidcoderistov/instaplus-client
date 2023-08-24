@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
+    useFollowUser,
+    useUnfollowUser,
     useLikePost,
     useUnlikePost,
     useSavePost,
@@ -42,6 +44,10 @@ export default function PostModal(props: Props) {
         onFetchMoreComments,
     } = useCommentsForPost(props.postId)
 
+    const followUser = useFollowUser()
+
+    const unfollowUser = useUnfollowUser()
+
     const { viewPostLikesPostId, onViewPostLikes, onClosePostLikes } = usePostLikes()
 
     const likePost = useLikePost()
@@ -79,8 +85,8 @@ export default function PostModal(props: Props) {
                 viewingPostLikes={Boolean(viewPostLikesPostId)}
                 viewingCommentLikes={Boolean(viewCommentLikesCommentId)}
                 isPostingComment={isPostingComment}
-                onFollowUser={console.log}
-                onUnfollowUser={console.log}
+                onFollowUser={followUser}
+                onUnfollowUser={unfollowUser}
                 onLikePost={likePost}
                 onUnlikePost={unlikePost}
                 onSavePost={savePost}
