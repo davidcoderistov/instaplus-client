@@ -40,3 +40,7 @@ export interface FindCommentRepliesQueryType {
         count: number
     }
 }
+
+export interface FindPostDetailsByIdQueryType {
+    findPostDetailsById: PostDetails | null
+}

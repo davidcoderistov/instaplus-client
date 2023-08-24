@@ -147,3 +147,40 @@ export const FIND_COMMENT_REPLIES = gql`
         }
     }
 `
+
+export const FIND_POST_DETAILS_BY_ID = gql`
+    query findPostDetailsById($postId: String!) {
+        findPostDetailsById(postId: $postId) {
+            _id
+            post {
+                _id
+                caption
+                location
+                photoUrls
+                creator {
+                    user {
+                        _id
+                        firstName
+                        lastName
+                        username
+                        photoUrl
+                    }
+                    following
+                }
+                createdAt
+            }
+            liked
+            saved
+            commentsCount
+            likesCount
+            latestTwoLikeUsers {
+                _id
+                username
+            }
+            latestThreeFollowedLikeUsers {
+                _id
+                photoUrl
+            }
+        }
+    }
+`
