@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
     useLikePost,
     useUnlikePost,
@@ -62,6 +62,10 @@ export default function PostModal(props: Props) {
 
     const { isPostingComment, onReplyToComment, onPostComment } = usePostComment()
 
+    const handleViewUser = useCallback(() => {
+        // TODO: Implement method
+    }, [])
+
     return (
         <>
             <PostPreviewModal
@@ -84,7 +88,7 @@ export default function PostModal(props: Props) {
                 onViewPostLikes={onViewPostLikes}
                 onViewPost={console.log}
                 onFetchMoreComments={onFetchMoreComments}
-                onViewUser={console.log}
+                onViewUser={handleViewUser}
                 onViewCommentLikes={onViewCommentLikes}
                 onReplyToComment={onReplyToComment}
                 onLikeComment={likeComment}
