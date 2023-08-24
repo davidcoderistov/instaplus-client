@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useQuery, useLazyQuery, useMutation, useApolloClient } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
 import {
     useLikePost,
@@ -8,11 +8,10 @@ import {
     useUnsavePost,
     useLikeComment,
     useUnlikeComment,
+    useCommentReplies,
 } from '../../hooks/graphql'
 import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
 import { FindCommentsForPostQueryType } from '../../graphql/types/queries/post'
-import { FIND_COMMENT_REPLIES } from '../../graphql/queries/post'
-import { FindCommentRepliesQueryType } from '../../graphql/types/queries/post'
 import { CREATE_COMMENT } from '../../graphql/mutations/post'
 import { CreateCommentMutationType } from '../../graphql/types/mutations/post'
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
@@ -22,7 +21,6 @@ import CommentLikes from '../CommentLikes'
 import { Comment } from '../../graphql/types/models'
 import { Post } from '../../lib/src/types/Post'
 import { Comment as IComment } from '../../lib/src/types/Comment'
-import _differenceBy from 'lodash/differenceBy'
 
 
 interface Props {
@@ -165,106 +163,7 @@ export default function PostModal(props: Props) {
         unlikeComment(commentId as string, postId as string)
     }
 
-    const client = useApolloClient()
-
-    const [findCommentReplies, { fetchMore: _fetchMoreCommentReplies }] = useLazyQuery<FindCommentRepliesQueryType>(FIND_COMMENT_REPLIES)
-
-    const fetchMoreCommentReplies = (commentId: string) => {
-        const commentReplies: FindCommentRepliesQueryType | null = client.cache.readQuery({
-            query: FIND_COMMENT_REPLIES,
-            variables: {
-                commentId,
-            },
-        })
-        if (commentReplies) {
-            _fetchMoreCommentReplies({
-                variables: {
-                    commentId,
-                    offset: commentReplies.findCommentReplies.data.length,
-                    limit: 5,
-                },
-                updateQuery(existing: FindCommentRepliesQueryType, { fetchMoreResult }: { fetchMoreResult: FindCommentRepliesQueryType }) {
-                    return {
-                        ...existing,
-                        findCommentReplies: {
-                            ...fetchMoreResult.findCommentReplies,
-                            data: [
-                                ...existing.findCommentReplies.data,
-                                ..._differenceBy(
-                                    fetchMoreResult.findCommentReplies.data.map(comment => ({
-                                        ...comment,
-                                        showReplies: false,
-                                        repliesLoading: false,
-                                        replies: [],
-                                    })),
-                                    existing.findCommentReplies.data,
-                                    '_id',
-                                ),
-                            ],
-                        },
-                    }
-                },
-            }).then(({ data }) => {
-                if (data) {
-                    commentsForPost.updateQuery((findCommentsForPost) =>
-                        findCommentsForPostMutations.addCommentReplies({
-                            queryData: findCommentsForPost,
-                            variables: {
-                                commentId,
-                                replies: data.findCommentReplies.data.map(comment => ({
-                                    ...comment,
-                                    showReplies: false,
-                                    repliesLoading: false,
-                                    replies: [],
-                                })),
-                            },
-                        }).queryResult)
-                }
-            })
-        } else {
-            findCommentReplies({
-                variables: {
-                    commentId,
-                    offset: 0,
-                    limit: 5,
-                },
-            }).then(({ data }) => {
-                if (data) {
-                    commentsForPost.updateQuery((findCommentsForPost) =>
-                        findCommentsForPostMutations.addCommentReplies({
-                            queryData: findCommentsForPost,
-                            variables: {
-                                commentId,
-                                replies: data.findCommentReplies.data,
-                            },
-                        }).queryResult)
-                }
-            })
-        }
-    }
-
-    const handleViewReplies = (commentId: string) => {
-        commentsForPost.updateQuery((findCommentsForPost) =>
-            findCommentsForPostMutations.viewCommentReplies({
-                queryData: findCommentsForPost,
-                variables: {
-                    commentId,
-                    fetchMoreCommentReplies() {
-                        fetchMoreCommentReplies(commentId)
-                    },
-                },
-            }).queryResult)
-    }
-
-    const handleHideReplies = (commentId: string) => {
-        commentsForPost.updateQuery((findCommentsForPost) =>
-            findCommentsForPostMutations.hideCommentReplies({
-                queryData: findCommentsForPost,
-                variables: {
-                    commentId,
-                },
-            }).queryResult)
-    }
+    const { onViewReplies, onHideReplies } = useCommentReplies(props.postId)
 
     const handleReplyToComment = (postId: string, comment: string, commentId: string) => {
         postComment(postId, comment, commentId)
@@ -374,8 +273,8 @@ export default function PostModal(props: Props) {
                 onReplyToComment={handleReplyToComment}
                 onLikeComment={handleLikeComment}
                 onUnlikeComment={handleUnlikeComment}
-                onViewReplies={handleViewReplies}
-                onHideReplies={handleHideReplies}
+                onViewReplies={onViewReplies}
+                onHideReplies={onHideReplies}
                 onPostComment={handlePostComment} />
             <PostLikes
                 postId={viewPostLikesPostId}
