@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box'
 import PostActionsLikeButton from '../PostActionsLikeButton'
 import PostActionsCommentButton from '../PostActionsCommentButton'
+import PostActionsViewButton from '../PostActionsViewButton'
 import PostActionsSaveButton from '../PostActionsSaveButton'
 
 
@@ -22,6 +23,8 @@ interface Props {
     onRemovePost(postId: string | number): void
 
     onCommentOnPost?(postId: string | number): void
+
+    onViewPost?(postId: string | number): void
 }
 
 
@@ -46,6 +49,12 @@ export default function PostActions(props: Props) {
     const handleCommentOnPost = () => {
         if (props.onCommentOnPost) {
             props.onCommentOnPost(props.postId)
+        }
+    }
+
+    const handleViewPost = () => {
+        if (props.onViewPost) {
+            props.onViewPost(props.postId)
         }
     }
 
@@ -85,6 +94,14 @@ export default function PostActions(props: Props) {
             >
                 <PostActionsCommentButton onClick={handleCommentOnPost} />
             </Box>
+            {Boolean(props.onViewPost) && (
+                <Box
+                    component='span'
+                    display='inline-block'
+                >
+                    <PostActionsViewButton onClick={handleViewPost} />
+                </Box>
+            )}
             <Box
                 component='span'
                 display='inline-block'

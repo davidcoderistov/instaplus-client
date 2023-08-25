@@ -189,6 +189,7 @@ export default function PostCard(props: Props) {
                                     onSavePost={props.onSavePost}
                                     onRemovePost={props.onRemovePost}
                                     onCommentOnPost={props.onCommentOnPost}
+                                    onViewPost={props.onViewPost}
                                 />
                             )}
                             {!props.loading && (
