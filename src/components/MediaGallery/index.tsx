@@ -1,21 +1,19 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import Box from '@mui/material/Box'
 import MediaItem from '../MediaItem'
+import _range from 'lodash/range'
 
 
-interface MediaItem {
+interface IMediaItem {
     id: string | number
     photoUrl: string | null
-    multiple?: true
-    video?: true
-    reel?: true
-    viewsCount?: number | string
+    multiple: boolean
     showComments?: true
     commentsCount?: number | string
 }
 
 interface Props {
-    items: MediaItem[]
+    items: IMediaItem[]
 
     onClick(id: string | number): void
 }
@@ -23,7 +21,7 @@ interface Props {
 export default function MediaGallery({ items, onClick }: Props) {
 
     const chunkedItems = useMemo(() => {
-        const chunkedItems: MediaItem[][] = []
+        const chunkedItems: IMediaItem[][] = []
         for (let i = 0; i < items.length; i += 3) {
             chunkedItems.push(items.slice(i, i + 3))
         }
@@ -75,9 +73,9 @@ export default function MediaGallery({ items, onClick }: Props) {
                                     '@media (min-width: 736px)': { marginBottom: '4PX' },
                                 }}
                             >
-                                {[...Array(3).keys()].map(itemIndex => (
+                                {_range(3).map(itemIndex => (
                                     <Box
-                                        key={itemIndex < itemsChunk.length ? isNaN(itemsChunk[itemIndex].id) ? itemsChunk[itemIndex].id : itemsChunk[itemIndex].id * 100 : index * chunkedItems.length + itemIndex}
+                                        key={itemIndex < itemsChunk.length ? itemsChunk[itemIndex].id : index * chunkedItems.length + itemIndex}
                                         component='div'
                                         flex='1 0 0%'
                                         display='block'
@@ -93,9 +91,6 @@ export default function MediaGallery({ items, onClick }: Props) {
                                                 id={itemsChunk[itemIndex].id}
                                                 photoUrl={itemsChunk[itemIndex].photoUrl}
                                                 multiple={itemsChunk[itemIndex].multiple}
-                                                video={itemsChunk[itemIndex].video}
-                                                reel={itemsChunk[itemIndex].reel}
-                                                viewsCount={itemsChunk[itemIndex].viewsCount}
                                                 showComments={itemsChunk[itemIndex].showComments}
                                                 commentsCount={itemsChunk[itemIndex].commentsCount}
                                                 onClick={onClick}
