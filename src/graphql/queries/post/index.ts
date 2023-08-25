@@ -184,3 +184,12 @@ export const FIND_POST_DETAILS_BY_ID = gql`
         }
     }
 `
+
+export const FIND_POSTS_FOR_USER = gql`
+    query findPostsForUser($userId: String!, $limit: Int!) {
+        findPostsForUser(userId: $userId, limit: $limit) {
+            _id
+            photoUrls
+        }
+    }
+`

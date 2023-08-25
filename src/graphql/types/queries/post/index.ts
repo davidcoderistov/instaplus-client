@@ -1,4 +1,4 @@
-import { Hashtag, PostDetails, FollowableUser, Comment } from '../../models'
+import { Hashtag, PostDetails, FollowableUser, Comment, Post } from '../../models'
 import { NextCursor } from '../../../../types'
 
 
@@ -43,4 +43,8 @@ export interface FindCommentRepliesQueryType {
 
 export interface FindPostDetailsByIdQueryType {
     findPostDetailsById: PostDetails | null
+}
+
+export interface FindPostsForUserQueryType {
+    findPostsForUser: Pick<Post, '_id' | 'photoUrls'>[]
 }
