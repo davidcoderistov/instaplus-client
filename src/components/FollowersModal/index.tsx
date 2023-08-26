@@ -43,10 +43,13 @@ export default function FollowersModal(props: Props) {
     }, [findFollowersForUser.loading, findFollowersForUser.error, findFollowersForUser.data])
 
     const hasMoreUsers = useMemo(() => {
-        if (!findFollowersForUser.loading && !findFollowersForUser.error && findFollowersForUser.data) {
+        if (findFollowersForUser.loading) {
+            return true
+        } else if (!findFollowersForUser.error && findFollowersForUser.data) {
             return Boolean(findFollowersForUser.data.findFollowersForUser.nextCursor)
+        } else {
+            return false
         }
-        return false
     }, [findFollowersForUser.loading, findFollowersForUser.error, findFollowersForUser.data])
 
     const handleFetchMoreUsers = () => {

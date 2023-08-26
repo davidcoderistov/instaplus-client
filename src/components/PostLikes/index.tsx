@@ -43,10 +43,13 @@ export default function PostLikes(props: Props) {
     }, [findUsersWhoLikedPost.loading, findUsersWhoLikedPost.error, findUsersWhoLikedPost.data])
 
     const hasMoreUsers = useMemo(() => {
-        if (!findUsersWhoLikedPost.loading && !findUsersWhoLikedPost.error && findUsersWhoLikedPost.data) {
+        if (findUsersWhoLikedPost.loading) {
+            return true
+        } else if (!findUsersWhoLikedPost.error && findUsersWhoLikedPost.data) {
             return Boolean(findUsersWhoLikedPost.data.findUsersWhoLikedPost.nextCursor)
+        } else {
+            return false
         }
-        return false
     }, [findUsersWhoLikedPost.loading, findUsersWhoLikedPost.error, findUsersWhoLikedPost.data])
 
     const handleFetchMoreUsers = () => {
