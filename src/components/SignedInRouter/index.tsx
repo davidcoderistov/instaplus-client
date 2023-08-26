@@ -19,6 +19,7 @@ import CreatePostModal from '../CreatePostModal'
 import Chat from '../Chat'
 import FollowedUsersPosts from '../FollowedUsersPosts'
 import PostView from '../PostView'
+import UserDetails from '../UserDetails'
 
 
 export default function SignedInRouter() {
@@ -176,6 +177,9 @@ export default function SignedInRouter() {
                 } />
                 <Route path='/post/:postId' element={
                     <PostView />
+                } />
+                <Route path='/user/:userId' element={
+                    <UserDetails />
                 } />
                 <Route path='/profile' element={
                     <div style={{ color: 'white' }}>
