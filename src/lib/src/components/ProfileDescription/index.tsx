@@ -6,16 +6,15 @@ import Button from '../Button'
 import { formatNumber } from '../../utils'
 
 
-interface Props {
-    loading?: boolean
+interface StaticProps {
+    loading?: never
     profile?: boolean
     user: {
         id: string | number
         firstName: string
         lastName: string
         username: string
-        photoUrl?: string | null
-        description: string | null
+        photoUrl: string | null
         following: boolean
         followingLoading: boolean
     }
@@ -38,32 +37,67 @@ interface Props {
     onViewFollowing(userId: string | number): void
 }
 
+interface LoadingProps {
+    loading: true
+    profile?: never
+    user?: never
+    postsCount?: never
+    followersCount?: never
+    followingCount?: never
+    mutualFollowersCount?: never
+    mutualFollowersUsernames?: never
+
+    onFollowUser?: never
+
+    onUnfollowUser?: never
+
+    onMessageUser?: never
+
+    onEditUserProfile?: never
+
+    onViewFollowers?: never
+
+    onViewFollowing?: never
+}
+
+type Props = StaticProps | LoadingProps
+
 export default function ProfileDescription(props: Props) {
 
     const handleFollowUser = () => {
-        if (props.onFollowUser) {
+        if (!props.loading && props.onFollowUser) {
             props.onFollowUser(props.user.id)
         }
     }
 
     const handleUnfollowUser = () => {
-        if (props.onUnfollowUser) {
+        if (!props.loading && props.onUnfollowUser) {
             props.onUnfollowUser(props.user.id)
         }
     }
 
     const handleMessageUser = () => {
-        if (props.onMessageUser) {
+        if (!props.loading && props.onMessageUser) {
             props.onMessageUser(props.user.id)
         }
     }
 
     const handleViewFollowers = () => {
-        props.onViewFollowers(props.user.id)
+        if (!props.loading && props.onViewFollowers && props.followersCount > 0) {
+            props.onViewFollowers(props.user.id)
+        }
     }
 
     const handleViewFollowing = () => {
-        props.onViewFollowing(props.user.id)
+        if (!props.loading && props.onViewFollowing && props.followingCount > 0) {
+            props.onViewFollowing(props.user.id)
+        }
+    }
+
+    const handleEditUserProfile = () => {
+        if (!props.loading && props.onEditUserProfile) {
+            props.onEditUserProfile()
+        }
     }
 
     return (
@@ -73,6 +107,7 @@ export default function ProfileDescription(props: Props) {
             alignItems='stretch'
             flexDirection='row'
             position='relative'
+            minWidth='745px'
         >
             <Box
                 component='div'
@@ -224,7 +259,7 @@ export default function ProfileDescription(props: Props) {
                                         contained
                                         variant='secondary'
                                         text='Edit Profile'
-                                        onClick={props.onEditUserProfile}
+                                        onClick={handleEditUserProfile}
                                     />
                                 </>
                             ) : (
@@ -310,7 +345,7 @@ export default function ProfileDescription(props: Props) {
                         ) : (
                             <Box
                                 component='div'
-                                sx={{ cursor: 'pointer' }}
+                                sx={{ cursor: props.followersCount > 0 ? 'pointer' : 'default' }}
                                 onClick={handleViewFollowers}
                             >
                                 <Box
@@ -340,7 +375,7 @@ export default function ProfileDescription(props: Props) {
                         ) : (
                             <Box
                                 component='div'
-                                sx={{ cursor: 'pointer' }}
+                                sx={{ cursor: props.followingCount > 0 ? 'pointer' : 'default' }}
                                 onClick={handleViewFollowing}
                             >
                                 <Box
@@ -421,20 +456,6 @@ export default function ProfileDescription(props: Props) {
                             )}
                         </Box>
                     </Box>
-                    {!props.loading && props.user.description && (
-                        <Box
-                            component='div'
-                            display='block'
-                            color='#F5F5F5'
-                            fontWeight='400'
-                            margin='0'
-                            fontSize='14px'
-                            lineHeight='18px'
-                            sx={{ whiteSpace: 'pre-wrap' }}
-                        >
-                            {props.user.description}
-                        </Box>
-                    )}
                     {!props.loading && props.mutualFollowersCount > 0 && !props.profile && (
                         <Box
                             component='span'
