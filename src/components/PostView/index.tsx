@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react'
 import { useQuery } from '@apollo/client'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
     useCommentLikes,
     useCommentReplies,
@@ -18,6 +18,8 @@ import {
 } from '../../hooks/graphql'
 import { FIND_POST_DETAILS_BY_ID } from '../../graphql/queries/post'
 import { FindPostDetailsByIdQueryType } from '../../graphql/types/queries/post'
+import { FIND_POSTS_FOR_USER } from '../../graphql/queries/post'
+import { FindPostsForUserQueryType } from '../../graphql/types/queries/post'
 import Box from '@mui/material/Box'
 import PostPreviewSlider from '../../lib/src/components/PostPreviewSlider'
 import PostPreview from '../../lib/src/components/PostPreview'
@@ -28,8 +30,6 @@ import { Post } from '../../lib/src/types/Post'
 
 
 export default function PostView() {
-
-    const c = true
 
     const { postId } = useParams()
 
@@ -103,6 +103,31 @@ export default function PostView() {
     const handleViewUser = useCallback(() => {
         // TODO: Implement method
     }, [])
+
+    const findPostsForUser = useQuery<FindPostsForUserQueryType>(FIND_POSTS_FOR_USER, {
+        variables: {
+            userId: post?.creator.id,
+            limit: 6,
+        },
+        skip: Boolean(!post),
+    })
+
+    const posts = useMemo(() => {
+        if (!findPostsForUser.loading && !findPostsForUser.error && findPostsForUser.data) {
+            return findPostsForUser.data.findPostsForUser.map(postForUser => ({
+                id: postForUser._id,
+                photoUrl: postForUser.photoUrls[0],
+                multiple: postForUser.photoUrls.length > 1,
+            }))
+        }
+        return []
+    }, [findPostsForUser.loading, findPostsForUser.error, findPostsForUser.data])
+
+    const navigate = useNavigate()
+
+    const handleClickPost = (postId: string) => {
+        navigate(`/post/${postId}`)
+    }
 
     return (
         <Box
@@ -208,7 +233,7 @@ export default function PostView() {
                             </Box>
                         </Box>
                     </Box>
-                    {c && (
+                    {!findPostDetailsById.loading && post && !findPostsForUser.loading && posts.length > 0 && (
                         <>
                             <Box
                                 component='div'
@@ -267,14 +292,13 @@ export default function PostView() {
                                         component='span'
                                         color='#F5F5F5'
                                         sx={{ cursor: 'pointer' }}
-                                    >random</Box>
+                                    >{post.creator.username}</Box>
                                     </Box>
                                 </Box>
                                 <Box
                                     component='div'
                                 >
-                                    <MediaGallery items={[]} onClick={() => {
-                                    }} />
+                                    <MediaGallery items={posts} onClick={handleClickPost} />
                                 </Box>
                             </Box>
                         </>
