@@ -18,6 +18,7 @@ import SearchDrawer from '../SearchDrawer'
 import CreatePostModal from '../CreatePostModal'
 import Chat from '../Chat'
 import FollowedUsersPosts from '../FollowedUsersPosts'
+import PostView from '../PostView'
 
 
 export default function SignedInRouter() {
@@ -172,6 +173,9 @@ export default function SignedInRouter() {
                 } />
                 <Route path='/chat' element={
                     <Chat />
+                } />
+                <Route path='/post/:postId' element={
+                    <PostView />
                 } />
                 <Route path='/profile' element={
                     <div style={{ color: 'white' }}>
