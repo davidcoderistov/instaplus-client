@@ -16,3 +16,10 @@ export interface FindFollowersForUserQueryType {
         nextCursor: NextCursor
     }
 }
+
+export interface FindFollowingForUserQueryType {
+    findFollowingForUser: {
+        data: FollowableUser[]
+        nextCursor: NextCursor
+    }
+}

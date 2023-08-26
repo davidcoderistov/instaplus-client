@@ -57,3 +57,25 @@ export const FIND_FOLLOWERS_FOR_USER = gql`
         }
     }
 `
+
+export const FIND_FOLLOWING_FOR_USER = gql`
+    query findFollowingForUser($cursor: Cursor, $limit: Int!, $userId: String!) {
+        findFollowingForUser(cursor: $cursor, limit: $limit, userId: $userId) {
+            data {
+                user {
+                    _id
+                    firstName
+                    lastName
+                    username
+                    photoUrl
+                }
+                following
+                followingLoading @client
+            }
+            nextCursor {
+                _id
+                createdAt
+            }
+        }
+    }
+`
