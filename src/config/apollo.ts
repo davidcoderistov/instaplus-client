@@ -98,6 +98,12 @@ const cache = new InMemoryCache({
                 findCommentReplies: {
                     keyArgs: ['commentId'],
                 },
+                findFollowersForUser: {
+                    keyArgs: ['userId'],
+                },
+                findFollowingForUser: {
+                    keyArgs: ['userId'],
+                },
             },
         },
         Chat: {
