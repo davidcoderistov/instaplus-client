@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useFollowUser, useUnfollowUser } from '../../hooks/graphql'
-import { useAuthUser } from '../../hooks/misc'
+import { useAuthUser, useUserDetailsNavigation } from '../../hooks/misc'
 import { useQuery } from '@apollo/client'
 import { FIND_FOLLOWING_FOR_USER } from '../../graphql/queries/user'
 import { FindFollowingForUserQueryType } from '../../graphql/types/queries/user'
@@ -93,10 +92,10 @@ export default function FollowingModal(props: Props) {
         unfollowUser(userId as string)
     }
 
-    const navigate = useNavigate()
+    const navigate = useUserDetailsNavigation()
 
     const handleClickUser = (userId: string | number) => {
-        navigate(`/user/${userId}`)
+        navigate(userId)
     }
 
     return (

@@ -1,7 +1,15 @@
 import { useState, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
-import { useAuthUser } from '../../hooks/misc'
-import { useLikePost, useUnlikePost, useSavePost, useUnsavePost, usePostLikes } from '../../hooks/graphql'
+import { useAuthUser, usePostViewNavigation, useUserDetailsNavigation } from '../../hooks/misc'
+import {
+    useFollowUser,
+    useUnfollowUser,
+    useLikePost,
+    useUnlikePost,
+    useSavePost,
+    useUnsavePost,
+    usePostLikes,
+} from '../../hooks/graphql'
 import { FIND_FOLLOWED_USERS_POSTS } from '../../graphql/queries/post'
 import { FindFollowedUsersPostsQueryType } from '../../graphql/types/queries/post'
 import { Post } from '../../lib/src/types/Post'
@@ -68,6 +76,10 @@ export default function FollowedUsersPosts() {
         return false
     }, [followedUsersPosts.loading, followedUsersPosts.error, followedUsersPosts.data])
 
+    const followUser = useFollowUser()
+
+    const unfollowUser = useUnfollowUser()
+
     const { viewPostLikesPostId, onViewPostLikes, onClosePostLikes } = usePostLikes()
 
     const likePost = useLikePost()
@@ -94,6 +106,18 @@ export default function FollowedUsersPosts() {
         }
         return null
     }, [viewPostId, posts])
+
+    const navigateToPostView = usePostViewNavigation()
+
+    const handlePostView = (postId: string | number) => {
+        navigateToPostView(postId)
+    }
+
+    const navigateToUserDetails = useUserDetailsNavigation()
+
+    const handleViewUser = (userId: string | number) => {
+        navigateToUserDetails(userId)
+    }
 
     return (
         <Box
@@ -181,17 +205,17 @@ export default function FollowedUsersPosts() {
                                             <PostCard
                                                 key={post.id}
                                                 post={post}
-                                                onFollowUser={console.log}
-                                                onUnfollowUser={console.log}
+                                                onFollowUser={followUser}
+                                                onUnfollowUser={unfollowUser}
                                                 onLikePost={likePost}
                                                 onUnlikePost={unlikePost}
                                                 onSavePost={savePost}
                                                 onRemovePost={unsavePost}
                                                 onCommentOnPost={handleViewPost}
                                                 onViewPostLikes={onViewPostLikes}
-                                                onViewPost={console.log}
+                                                onViewPost={handlePostView}
                                                 onViewPostComments={handleViewPost}
-                                                onViewUser={console.log}
+                                                onViewUser={handleViewUser}
                                             />
                                         ))}
                                     </InfiniteScroll>

@@ -1,6 +1,7 @@
 import { useMemo, useCallback } from 'react'
 import { useQuery } from '@apollo/client'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import { usePostViewNavigation } from '../../hooks/misc'
 import {
     useCommentLikes,
     useCommentReplies,
@@ -123,10 +124,10 @@ export default function PostView() {
         return []
     }, [findPostsForUser.loading, findPostsForUser.error, findPostsForUser.data])
 
-    const navigate = useNavigate()
+    const navigate = usePostViewNavigation()
 
     const handleClickPost = (postId: string) => {
-        navigate(`/post/${postId}`)
+        navigate(postId)
     }
 
     return (

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuthUser } from '../../hooks/misc'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
@@ -41,6 +41,11 @@ export default function UserDetails() {
     const handleCloseFollowingModal = () => {
         setViewFollowingUserId(null)
     }
+
+    useEffect(() => {
+        setViewFollowersUserId(null)
+        setViewFollowingUserId(null)
+    }, [userId])
 
     return (
         <Box

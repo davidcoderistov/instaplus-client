@@ -1,5 +1,5 @@
 import { useMemo, useCallback } from 'react'
-import { useAuthUser } from '../../hooks/misc'
+import { useAuthUser, useUserDetailsNavigation } from '../../hooks/misc'
 import { useQuery } from '@apollo/client'
 import { useFollowUser, useUnfollowUser } from '../../hooks/graphql'
 import { FIND_USERS_WHO_LIKED_POST } from '../../graphql/queries/post'
@@ -93,8 +93,11 @@ export default function PostLikes(props: Props) {
         unfollowUser(userId as string)
     }, [])
 
+    const navigateToUserDetails = useUserDetailsNavigation()
+
     const handleClickUser = useCallback((userId: string | number) => {
-        // TODO: Implement method
+        props.onCloseModal()
+        navigateToUserDetails(userId)
     }, [])
 
     return (
