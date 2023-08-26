@@ -35,3 +35,25 @@ export const FIND_USER_DETAILS = gql`
         }
     }
 `
+
+export const FIND_FOLLOWERS_FOR_USER = gql`
+    query findFollowersForUser($cursor: Cursor, $limit: Int!, $userId: String!) {
+        findFollowersForUser(cursor: $cursor, limit: $limit, userId: $userId) {
+            data {
+                user {
+                    _id
+                    firstName
+                    lastName
+                    username
+                    photoUrl
+                }
+                following
+                followingLoading @client
+            }
+            nextCursor {
+                _id
+                createdAt
+            }
+        }
+    }
+`

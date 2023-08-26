@@ -1,4 +1,5 @@
-import { User, UserDetails } from '../../models'
+import { User, UserDetails, FollowableUser } from '../../models'
+import { NextCursor } from '../../../../types'
 
 
 export interface FindUsersBySearchQueryQueryType {
@@ -7,4 +8,11 @@ export interface FindUsersBySearchQueryQueryType {
 
 export interface FindUserDetailsQueryType {
     findUserDetails: UserDetails
+}
+
+export interface FindFollowersForUserQueryType {
+    findFollowersForUser: {
+        data: FollowableUser[]
+        nextCursor: NextCursor
+    }
 }
