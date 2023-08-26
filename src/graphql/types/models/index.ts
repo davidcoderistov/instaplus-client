@@ -118,3 +118,12 @@ export interface Comment {
     repliesLoading: boolean
     createdAt: number
 }
+
+export interface UserDetails {
+    followableUser: FollowableUser
+    postsCount: number
+    followingCount: number
+    followersCount: number
+    mutualFollowersCount: number
+    latestTwoMutualFollowersUsernames: string[]
+}
