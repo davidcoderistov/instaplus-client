@@ -132,7 +132,6 @@ export default function PostView() {
 
     return (
         <Box
-            id='followedUsersPostsContainer'
             component='div'
             minHeight='100vh'
             width='100%'
