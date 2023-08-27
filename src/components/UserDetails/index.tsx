@@ -448,6 +448,7 @@ export default function UserDetails() {
                                     alignSelf='auto'
                                     justifyContent='flex-start'
                                     marginBottom='8px'
+                                    marginTop='56px'
                                     flexGrow='0'
                                     sx={{
                                         overflowY: 'visible',
