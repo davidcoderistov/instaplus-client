@@ -19,8 +19,8 @@ import {
 } from '../../hooks/graphql'
 import { FIND_POST_DETAILS_BY_ID } from '../../graphql/queries/post'
 import { FindPostDetailsByIdQueryType } from '../../graphql/types/queries/post'
-import { FIND_POSTS_FOR_USER } from '../../graphql/queries/post'
-import { FindPostsForUserQueryType } from '../../graphql/types/queries/post'
+import { FIND_LATEST_POSTS_FOR_USER } from '../../graphql/queries/post'
+import { FindLatestPostsForUserQueryType } from '../../graphql/types/queries/post'
 import Box from '@mui/material/Box'
 import PostPreviewSlider from '../../lib/src/components/PostPreviewSlider'
 import PostPreview from '../../lib/src/components/PostPreview'
@@ -105,7 +105,7 @@ export default function PostView() {
         // TODO: Implement method
     }, [])
 
-    const findPostsForUser = useQuery<FindPostsForUserQueryType>(FIND_POSTS_FOR_USER, {
+    const findLatestPostsForUser = useQuery<FindLatestPostsForUserQueryType>(FIND_LATEST_POSTS_FOR_USER, {
         variables: {
             userId: post?.creator.id,
             limit: 6,
@@ -114,15 +114,15 @@ export default function PostView() {
     })
 
     const posts = useMemo(() => {
-        if (!findPostsForUser.loading && !findPostsForUser.error && findPostsForUser.data) {
-            return findPostsForUser.data.findPostsForUser.map(postForUser => ({
+        if (!findLatestPostsForUser.loading && !findLatestPostsForUser.error && findLatestPostsForUser.data) {
+            return findLatestPostsForUser.data.findLatestPostsForUser.map(postForUser => ({
                 id: postForUser._id,
                 photoUrl: postForUser.photoUrls[0],
                 multiple: postForUser.photoUrls.length > 1,
             }))
         }
         return []
-    }, [findPostsForUser.loading, findPostsForUser.error, findPostsForUser.data])
+    }, [findLatestPostsForUser.loading, findLatestPostsForUser.error, findLatestPostsForUser.data])
 
     const navigate = usePostViewNavigation()
 
@@ -234,7 +234,7 @@ export default function PostView() {
                             </Box>
                         </Box>
                     </Box>
-                    {!findPostDetailsById.loading && post && !findPostsForUser.loading && posts.length > 0 && (
+                    {!findPostDetailsById.loading && post && !findLatestPostsForUser.loading && posts.length > 0 && (
                         <>
                             <Box
                                 component='div'

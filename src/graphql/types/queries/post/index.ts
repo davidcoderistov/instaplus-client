@@ -45,6 +45,6 @@ export interface FindPostDetailsByIdQueryType {
     findPostDetailsById: PostDetails | null
 }
 
-export interface FindPostsForUserQueryType {
-    findPostsForUser: Pick<Post, '_id' | 'photoUrls'>[]
+export interface FindLatestPostsForUserQueryType {
+    findLatestPostsForUser: Pick<Post, '_id' | 'photoUrls'>[]
 }
