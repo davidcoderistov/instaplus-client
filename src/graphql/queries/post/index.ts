@@ -193,3 +193,15 @@ export const FIND_LATEST_POSTS_FOR_USER = gql`
         }
     }
 `
+
+export const FIND_POSTS_FOR_USER = gql`
+    query findPostsForUser($userId: String!, $offset: Int!, $limit: Int!) {
+        findPostsForUser(userId: $userId, offset: $offset, limit: $limit) {
+            data {
+                _id
+                photoUrls
+            }
+            count
+        }
+    }
+`

@@ -48,3 +48,10 @@ export interface FindPostDetailsByIdQueryType {
 export interface FindLatestPostsForUserQueryType {
     findLatestPostsForUser: Pick<Post, '_id' | 'photoUrls'>[]
 }
+
+export interface FindPostsForUserQueryType {
+    findPostsForUser: {
+        data: Pick<Post, '_id' | 'photoUrls'>[]
+        count: number
+    }
+}
