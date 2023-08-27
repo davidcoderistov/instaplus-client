@@ -104,6 +104,12 @@ const cache = new InMemoryCache({
                 findFollowingForUser: {
                     keyArgs: ['userId'],
                 },
+                findPostsForUser: {
+                    keyArgs: ['userId'],
+                },
+                findSavedPostsForUser: {
+                    keyArgs: false,
+                },
             },
         },
         Chat: {
