@@ -182,9 +182,7 @@ export default function SignedInRouter() {
                     <UserDetails />
                 } />
                 <Route path='/profile' element={
-                    <div style={{ color: 'white' }}>
-                        Profile
-                    </div>
+                    <UserDetails />
                 } />
                 <Route path='*' element={
                     <Navigate to='/' replace />

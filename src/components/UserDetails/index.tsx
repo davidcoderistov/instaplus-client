@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuthUser } from '../../hooks/misc'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import { FIND_USER_DETAILS } from '../../graphql/queries/user'
 import { FindUserDetailsQueryType } from '../../graphql/types/queries/user'
@@ -14,7 +14,11 @@ export default function UserDetails() {
 
     const [authUser] = useAuthUser()
 
-    const { userId } = useParams()
+    const location = useLocation()
+    const isProfileView = location.pathname === '/profile'
+
+    const params = useParams()
+    const userId = isProfileView ? authUser._id : params.userId
 
     const findUserDetails = useQuery<FindUserDetailsQueryType>(FIND_USER_DETAILS, { variables: { userId } })
 
@@ -45,7 +49,7 @@ export default function UserDetails() {
     useEffect(() => {
         setViewFollowersUserId(null)
         setViewFollowingUserId(null)
-    }, [userId])
+    }, [location])
 
     return (
         <Box
@@ -93,7 +97,7 @@ export default function UserDetails() {
                             margin='0 auto'
                         >
                             <ProfileDescription
-                                profile={authUser._id === userId}
+                                profile={isProfileView}
                                 user={{
                                     id: findUserDetails.data.findUserDetails.followableUser.user._id,
                                     firstName: findUserDetails.data.findUserDetails.followableUser.user.firstName,
