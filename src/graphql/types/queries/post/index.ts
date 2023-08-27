@@ -55,3 +55,10 @@ export interface FindPostsForUserQueryType {
         count: number
     }
 }
+
+export interface FindSavedPostsForUserQueryType {
+    findSavedPostsForUser: {
+        data: Pick<Post, '_id' | 'photoUrls'>[]
+        nextCursor: NextCursor | null
+    }
+}

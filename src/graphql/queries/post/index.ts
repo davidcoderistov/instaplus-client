@@ -205,3 +205,18 @@ export const FIND_POSTS_FOR_USER = gql`
         }
     }
 `
+
+export const FIND_SAVED_POSTS_FOR_USER = gql`
+    query findSavedPostsForUser($cursor: Cursor, $limit: Int!) {
+        findSavedPostsForUser(cursor: $cursor, limit: $limit) {
+            data {
+                _id
+                photoUrls
+            }
+            nextCursor {
+                _id
+                createdAt
+            }
+        }
+    }
+`
