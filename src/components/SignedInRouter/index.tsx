@@ -20,6 +20,7 @@ import Chat from '../Chat'
 import FollowedUsersPosts from '../FollowedUsersPosts'
 import PostView from '../PostView'
 import UserDetails from '../UserDetails'
+import HashtagPosts from '../HashtagPosts'
 
 
 export default function SignedInRouter() {
@@ -166,6 +167,9 @@ export default function SignedInRouter() {
                     <div style={{ color: 'white' }}>
                         Explore
                     </div>
+                } />
+                <Route path='/explore/tags/:name' element={
+                    <HashtagPosts />
                 } />
                 <Route path='/reels' element={
                     <div style={{ color: 'white' }}>
