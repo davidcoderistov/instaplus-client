@@ -45,6 +45,8 @@ interface StaticProps {
     onViewReplies(commentId: string | number): void
 
     onHideReplies(commentId: string | number): void
+
+    onViewHashtag?(name: string): void
 }
 
 interface LoadingProps {
@@ -66,6 +68,8 @@ interface LoadingProps {
     onViewReplies?(): never
 
     onHideReplies?(): never
+
+    onViewHashtag?(): never
 }
 
 type Props = StaticProps | LoadingProps
@@ -113,7 +117,8 @@ const PostComment = React.memo((props: Props) => {
                     onViewCommentLikes={props.onViewCommentLikes}
                     onReplyToComment={props.onReplyToComment}
                     onLikeComment={props.onLikeComment}
-                    onUnlikeComment={props.onUnlikeComment} />
+                    onUnlikeComment={props.onUnlikeComment}
+                    onViewHashtag={props.onViewHashtag} />
             )}
             {!props.loading && !props.condensed && props.comment.repliesCount > 0 && (
                 <Box
@@ -227,7 +232,8 @@ const PostComment = React.memo((props: Props) => {
                                 onLikeComment={props.onLikeComment}
                                 onUnlikeComment={props.onUnlikeComment}
                                 onViewReplies={props.onViewReplies}
-                                onHideReplies={props.onHideReplies} />
+                                onHideReplies={props.onHideReplies}
+                                onViewHashtag={props.onViewHashtag} />
                         ))}
                     </Box>
                 </Box>

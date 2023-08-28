@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Skeleton from '@mui/material/Skeleton'
+import PostDescription from '../PostDescription'
 import { getTimeElapsed, formatNumber } from '../../utils'
 
 
@@ -35,6 +36,8 @@ interface StaticProps {
     onLikeComment(commentId: string | number, postId: string | number): void
 
     onUnlikeComment(commentId: string | number, postId: string | number): void
+
+    onViewHashtag?(name: string): void
 }
 
 interface LoadingProps {
@@ -52,6 +55,8 @@ interface LoadingProps {
     onLikeComment?(): never
 
     onUnlikeComment?(): never
+
+    onViewHashtag?(): never
 }
 
 type Props = StaticProps | LoadingProps
@@ -87,6 +92,12 @@ export default function PostBaseComment(props: Props) {
             } else {
                 props.onLikeComment(props.comment.id, props.comment.postId)
             }
+        }
+    }
+
+    const handleClickHashtag = (name: string) => {
+        if (!props.loading && props.onViewHashtag) {
+            props.onViewHashtag(name)
         }
     }
 
@@ -304,7 +315,11 @@ export default function PostBaseComment(props: Props) {
                                     fontSize='14px'
                                     lineHeight='18px'
                                 >
-                                    {props.comment.body}
+                                    {props.condensed ? (
+                                        <PostDescription
+                                            description={props.comment.body}
+                                            onClick={handleClickHashtag} />
+                                    ) : props.comment.body}
                                 </Box>
                             )}
                             <Box

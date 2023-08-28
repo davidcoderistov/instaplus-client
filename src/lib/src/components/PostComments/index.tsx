@@ -30,6 +30,8 @@ interface Props {
     onViewReplies(commentId: string | number): void
 
     onHideReplies(commentId: string | number): void
+
+    onViewHashtag?(name: string): void
 }
 
 export default function PostComments(props: Props) {
@@ -76,6 +78,7 @@ export default function PostComments(props: Props) {
                 }}
                 onHideReplies={() => {
                 }}
+                onViewHashtag={props.onViewHashtag}
             />
         )
     }, [commentsLoading, props.post])
@@ -240,7 +243,7 @@ export default function PostComments(props: Props) {
                                     onUnlikeComment={props.onUnlikeComment}
                                     onViewReplies={props.onViewReplies}
                                     onHideReplies={props.onHideReplies}
-                                />
+                                    onViewHashtag={props.onViewHashtag} />
                             ))}
                             {((commentsLoading && props.comments.length > 0) || props.hasMoreComments) && (
                                 <Box

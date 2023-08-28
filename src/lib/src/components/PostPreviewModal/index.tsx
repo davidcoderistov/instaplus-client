@@ -58,6 +58,8 @@ interface Props {
 
     onHideReplies(commentId: string | number): void
 
+    onViewHashtag?(name: string): void
+
     onPostComment(postId: string | number, comment: string): void
 }
 
@@ -249,6 +251,7 @@ export default function PostPreviewModal(props: Props) {
                                         onUnlikeComment={props.onUnlikeComment}
                                         onViewReplies={props.onViewReplies}
                                         onHideReplies={props.onHideReplies}
+                                        onViewHashtag={props.onViewHashtag}
                                         onPostComment={props.onPostComment}
                                         onOpenSettingsModal={handleOpenSettingsModal}
                                         onCloseSettingsModal={handleCloseSettingsModal}
