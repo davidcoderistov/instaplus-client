@@ -12,7 +12,7 @@ import DiscardChangesModal from '../DiscardChangesModal'
 interface IHashtag {
     _id: string | number
     name: string
-    postIds: string[]
+    postsCount: number
 }
 
 interface Props {

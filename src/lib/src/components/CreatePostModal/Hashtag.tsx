@@ -8,7 +8,7 @@ import { formatNumber } from '../../utils'
 interface IHashtag {
     _id: string | number
     name: string
-    postIds: string[]
+    postsCount: number
 }
 
 interface Props {
@@ -23,8 +23,6 @@ export default function Hashtag(props: Props) {
     const handleClick = () => {
         props.onClick(props.hashtag)
     }
-
-    const postsCount = props.hashtag.postIds.length
 
     return (
         <ListItem
@@ -42,7 +40,7 @@ export default function Hashtag(props: Props) {
                 <ListItemSubtitle
                     loading={false}
                     loader={null}
-                    subtitle={`${formatNumber(postsCount)} ${postsCount > 1 ? 'posts' : 'post'}`}
+                    subtitle={`${formatNumber(props.hashtag.postsCount)} ${props.hashtag.postsCount > 1 ? 'posts' : 'post'}`}
                 />
             </ListItemContent>
         </ListItem>
