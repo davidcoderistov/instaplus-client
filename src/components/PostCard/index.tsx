@@ -3,6 +3,7 @@ import PostHeader from '../PostHeader'
 import PostPreviewSlider from '../PostPreviewSlider'
 import PostActions from '../PostActions'
 import PostLikes from '../PostLikes'
+import PostDescription from '../PostDescription'
 import { Post } from '../../types/Post'
 import { formatNumber } from '../../utils'
 
@@ -32,6 +33,8 @@ interface StaticProps {
     onViewPostComments(postId: string | number): void
 
     onViewUser(userId: string | number): void
+
+    onViewHashtag?(name: string): void
 }
 
 interface LoadingProps {
@@ -59,6 +62,8 @@ interface LoadingProps {
     onViewPostComments?(): never
 
     onViewUser?(): never
+
+    onViewHashtag?(): never
 }
 
 type Props = StaticProps | LoadingProps
@@ -74,6 +79,12 @@ export default function PostCard(props: Props) {
     const handleViewPostComments = () => {
         if (!props.loading) {
             props.onViewPostComments(props.post.id)
+        }
+    }
+
+    const handleClickHashtag = (name: string) => {
+        if (!props.loading && props.onViewHashtag) {
+            props.onViewHashtag(name)
         }
     }
 
@@ -287,7 +298,9 @@ export default function PostCard(props: Props) {
                                             fontSize='14px'
                                             lineHeight='14px'
                                         >
-                                            {props.post.description}
+                                            <PostDescription
+                                                description={props.post.description}
+                                                onClick={handleClickHashtag} />
                                         </Box>
                                     </Box>
                                 </Box>
