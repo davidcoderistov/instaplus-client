@@ -1,4 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useUserDetailsNavigation, usePostViewNavigation } from '../../hooks/misc'
+import { useLazyQuery } from '@apollo/client'
+import { FIND_POST_DETAILS_BY_ID } from '../../graphql/queries/post'
+import { FindPostDetailsByIdQueryType } from '../../graphql/types/queries/post'
 import {
     useFollowUser,
     useUnfollowUser,
@@ -31,11 +35,47 @@ export default function PostModal(props: Props) {
 
     const [post, setPost] = useState<Post | null>(null)
 
+    const [findPostDetailsById, { data }] = useLazyQuery<FindPostDetailsByIdQueryType>(FIND_POST_DETAILS_BY_ID)
+
     useEffect(() => {
         if (props.post) {
             setPost(props.post)
+        } else {
+            findPostDetailsById({ variables: { postId: props.postId } })
         }
-    }, [props.post])
+    }, [props.post, props.postId, findPostDetailsById])
+
+    useEffect(() => {
+        if (data && data.findPostDetailsById) {
+            setPost({
+                id: data.findPostDetailsById._id,
+                description: data.findPostDetailsById.post.caption,
+                location: data.findPostDetailsById.post.location,
+                photoUrls: data.findPostDetailsById.post.photoUrls,
+                creator: {
+                    id: data.findPostDetailsById.post.creator.user._id,
+                    username: data.findPostDetailsById.post.creator.user.username,
+                    photoUrl: data.findPostDetailsById.post.creator.user.photoUrl,
+                    following: true,
+                    followingLoading: false,
+                },
+                isLiked: data.findPostDetailsById.liked,
+                isSaved: data.findPostDetailsById.saved,
+                likesCount: data.findPostDetailsById.likesCount,
+                commentsCount: data.findPostDetailsById.commentsCount,
+                lastLikingUser: data.findPostDetailsById.latestTwoLikeUsers.length > 0 ? {
+                    id: data.findPostDetailsById.latestTwoLikeUsers[0]._id,
+                    username: data.findPostDetailsById.latestTwoLikeUsers[0].username,
+                } : null,
+                lastLikingMutualFollowers: data.findPostDetailsById.latestThreeFollowedLikeUsers.map(user => ({
+                    id: user._id,
+                    username: user._id,
+                    photoUrl: user.photoUrl as string,
+                })),
+                createdAt: data.findPostDetailsById.post.createdAt,
+            })
+        }
+    }, [data])
 
     const {
         comments,
@@ -68,9 +108,19 @@ export default function PostModal(props: Props) {
 
     const { isPostingComment, onReplyToComment, onPostComment } = usePostComment()
 
-    const handleViewUser = useCallback(() => {
-        // TODO: Implement method
+    const navigateToUserDetails = useUserDetailsNavigation()
+
+    const handleViewUser = useCallback((userId: string | number) => {
+        props.onClose()
+        navigateToUserDetails(userId)
     }, [])
+
+    const navigateToPostView = usePostViewNavigation()
+
+    const handleViewPost = (postId: string | number) => {
+        props.onClose()
+        navigateToPostView(postId)
+    }
 
     return (
         <>
@@ -92,7 +142,7 @@ export default function PostModal(props: Props) {
                 onSavePost={savePost}
                 onRemovePost={unsavePost}
                 onViewPostLikes={onViewPostLikes}
-                onViewPost={console.log}
+                onViewPost={handleViewPost}
                 onFetchMoreComments={onFetchMoreComments}
                 onViewUser={handleViewUser}
                 onViewCommentLikes={onViewCommentLikes}
