@@ -219,6 +219,7 @@ export default function PostPreview(props: Props) {
                                 onSavePost={props.onSavePost}
                                 onRemovePost={props.onRemovePost}
                                 onCommentOnPost={handleCommentOnPost}
+                                onViewPost={props.onViewPost}
                             />
                         )}
                         {!props.postLoading && props.post && (
