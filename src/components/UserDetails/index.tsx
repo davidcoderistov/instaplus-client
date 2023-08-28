@@ -15,6 +15,7 @@ import ProfileDescription from '../../lib/src/components/ProfileDescription'
 import FollowersModal from '../FollowersModal'
 import FollowingModal from '../FollowingModal'
 import MediaGallery from '../../lib/src/components/MediaGallery'
+import PostModal from '../PostModal'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import _range from 'lodash/range'
 import _differenceBy from 'lodash/differenceBy'
@@ -303,6 +304,16 @@ export default function UserDetails() {
         }
     }
 
+    const [viewPostId, setViewPostId] = useState<string | null>(null)
+
+    const handleViewPost = (postId: string) => {
+        setViewPostId(postId)
+    }
+
+    const handleClosePostModal = () => {
+        setViewPostId(null)
+    }
+
     return (
         <Box
             id='postsContainer'
@@ -432,7 +443,7 @@ export default function UserDetails() {
                             >
                                 <MediaGallery
                                     items={posts}
-                                    onClick={console.log} />
+                                    onClick={handleViewPost} />
                             </InfiniteScroll>
                             {emptyPosts && (
                                 <Box
@@ -567,6 +578,12 @@ export default function UserDetails() {
             <FollowingModal
                 userId={viewFollowingUserId}
                 onCloseModal={handleCloseFollowingModal} />
+            {viewPostId && (
+                <PostModal
+                    postId={viewPostId}
+                    post={null}
+                    onClose={handleClosePostModal} />
+            )}
         </Box>
     )
 }
