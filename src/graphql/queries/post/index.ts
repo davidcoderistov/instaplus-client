@@ -6,7 +6,7 @@ export const FIND_HASHTAGS_BY_SEARCH_QUERY = gql`
         findHashtagsBySearchQuery(searchQuery: $searchQuery) {
             _id
             name
-            postIds
+            postsCount
         }
     }
 `

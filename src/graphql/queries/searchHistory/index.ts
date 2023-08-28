@@ -21,7 +21,7 @@ export const FIND_USER_SEARCHES_BY_SEARCH_QUERY = gql`
             hashtag {
                 _id
                 name
-                postIds
+                postsCount
             }
         }
     }
@@ -47,7 +47,7 @@ export const FIND_SEARCH_HISTORY = gql`
             hashtag {
                 _id
                 name
-                postIds
+                postsCount
             }
         }
     }

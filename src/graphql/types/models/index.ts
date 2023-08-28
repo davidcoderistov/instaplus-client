@@ -91,7 +91,7 @@ export interface Notification {
 export interface Hashtag {
     _id: string
     name: string
-    postIds: string[]
+    postsCount: number
 }
 
 export interface SearchUser {
