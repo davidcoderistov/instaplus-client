@@ -220,3 +220,15 @@ export const FIND_SAVED_POSTS_FOR_USER = gql`
         }
     }
 `
+
+export const FIND_POSTS_FOR_HASHTAG = gql`
+    query findPostsForHashtag($name: String!, $offset: Int!, $limit: Int!) {
+        findPostsForHashtag(name: $name, offset: $offset, limit: $limit) {
+            data {
+                _id
+                photoUrls
+            }
+            count
+        }
+    }
+`

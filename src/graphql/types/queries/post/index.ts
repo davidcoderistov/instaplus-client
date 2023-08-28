@@ -62,3 +62,10 @@ export interface FindSavedPostsForUserQueryType {
         nextCursor: NextCursor | null
     }
 }
+
+export interface FindPostsForHashtagQueryType {
+    findPostsForHashtag: {
+        data: Pick<Post, '_id' | 'photoUrls'>[]
+        count: number
+    }
+}
