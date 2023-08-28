@@ -21,6 +21,7 @@ import PostLikes from '../PostLikes'
 import PostModal from '../PostModal'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import _range from 'lodash/range'
+import _differenceBy from 'lodash/differenceBy'
 
 
 export default function FollowedUsersPosts() {
@@ -75,6 +76,35 @@ export default function FollowedUsersPosts() {
         }
         return false
     }, [followedUsersPosts.loading, followedUsersPosts.error, followedUsersPosts.data])
+
+    const handleFetchMorePosts = () => {
+        if (followedUsersPosts.data && followedUsersPosts.data.findFollowedUsersPosts.nextCursor) {
+            followedUsersPosts.fetchMore({
+                variables: {
+                    cursor: {
+                        _id: followedUsersPosts.data.findFollowedUsersPosts.nextCursor._id,
+                        createdAt: followedUsersPosts.data.findFollowedUsersPosts.nextCursor.createdAt,
+                    },
+                },
+                updateQuery(existing: FindFollowedUsersPostsQueryType, { fetchMoreResult }: { fetchMoreResult: FindFollowedUsersPostsQueryType }) {
+                    return {
+                        ...existing,
+                        findFollowedUsersPosts: {
+                            ...fetchMoreResult.findFollowedUsersPosts,
+                            data: [
+                                ...existing.findFollowedUsersPosts.data,
+                                ..._differenceBy(
+                                    fetchMoreResult.findFollowedUsersPosts.data,
+                                    existing.findFollowedUsersPosts.data,
+                                    '_id',
+                                ),
+                            ],
+                        },
+                    }
+                },
+            }).catch(console.log)
+        }
+    }
 
     const followUser = useFollowUser()
 
@@ -175,7 +205,7 @@ export default function FollowedUsersPosts() {
                                         loading />
                                 )) : (
                                     <InfiniteScroll
-                                        next={() => console.log('fetch more')}
+                                        next={handleFetchMorePosts}
                                         style={{ overflow: 'hidden' }}
                                         hasMore={hasMorePosts}
                                         scrollableTarget='followedUsersPostsContainer'
