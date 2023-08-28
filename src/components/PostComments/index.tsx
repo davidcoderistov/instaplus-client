@@ -100,7 +100,7 @@ export default function PostComments(props: Props) {
                 overflowY: 'auto',
             }}
         >
-            {!commentsLoading && !props.hasMoreComments && props.comments.length < 1 ? (
+            {(props.post ? !commentsLoading && !props.hasMoreComments && props.comments.length < 1 && !props.post.description : !commentsLoading && !props.hasMoreComments && props.comments.length < 1) ? (
                 <Box
                     component='div'
                     height='100%'
