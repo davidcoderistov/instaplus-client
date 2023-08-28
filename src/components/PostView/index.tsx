@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react'
 import { useQuery } from '@apollo/client'
 import { useParams } from 'react-router-dom'
-import { usePostViewNavigation } from '../../hooks/misc'
+import { useUserDetailsNavigation, usePostViewNavigation } from '../../hooks/misc'
 import {
     useCommentLikes,
     useCommentReplies,
@@ -101,8 +101,10 @@ export default function PostView() {
 
     const { isPostingComment, onReplyToComment, onPostComment } = usePostComment()
 
-    const handleViewUser = useCallback(() => {
-        // TODO: Implement method
+    const navigateToUserDetails = useUserDetailsNavigation()
+
+    const handleViewUser = useCallback((userId: string | number) => {
+        navigateToUserDetails(userId)
     }, [])
 
     const findLatestPostsForUser = useQuery<FindLatestPostsForUserQueryType>(FIND_LATEST_POSTS_FOR_USER, {
@@ -220,7 +222,8 @@ export default function PostView() {
                                     onSavePost={savePost}
                                     onRemovePost={unsavePost}
                                     onViewPostLikes={onViewPostLikes}
-                                    onViewPost={console.log}
+                                    onViewPost={() => {
+                                    }}
                                     onFetchMoreComments={onFetchMoreComments}
                                     onViewUser={handleViewUser}
                                     onViewCommentLikes={onViewCommentLikes}
