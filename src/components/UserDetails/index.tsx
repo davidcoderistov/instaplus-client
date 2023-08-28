@@ -273,33 +273,33 @@ export default function UserDetails() {
                         }
                     },
                 }).catch(console.log)
-            } else {
-                if (savedPostsForUser.data && savedPostsForUser.data.findSavedPostsForUser.nextCursor) {
-                    savedPostsForUser.fetchMore({
-                        variables: {
-                            cursor: {
-                                _id: savedPostsForUser.data.findSavedPostsForUser.nextCursor._id,
-                                createdAt: savedPostsForUser.data.findSavedPostsForUser.nextCursor.createdAt,
+            }
+        } else {
+            if (savedPostsForUser.data && savedPostsForUser.data.findSavedPostsForUser.nextCursor) {
+                savedPostsForUser.fetchMore({
+                    variables: {
+                        cursor: {
+                            _id: savedPostsForUser.data.findSavedPostsForUser.nextCursor._id,
+                            createdAt: savedPostsForUser.data.findSavedPostsForUser.nextCursor.createdAt,
+                        },
+                    },
+                    updateQuery(existing: FindSavedPostsForUserQueryType, { fetchMoreResult }: { fetchMoreResult: FindSavedPostsForUserQueryType }) {
+                        return {
+                            ...existing,
+                            findSavedPostsForUser: {
+                                ...fetchMoreResult.findSavedPostsForUser,
+                                data: [
+                                    ...existing.findSavedPostsForUser.data,
+                                    ..._differenceBy(
+                                        fetchMoreResult.findSavedPostsForUser.data,
+                                        existing.findSavedPostsForUser.data,
+                                        '_id',
+                                    ),
+                                ],
                             },
-                        },
-                        updateQuery(existing: FindSavedPostsForUserQueryType, { fetchMoreResult }: { fetchMoreResult: FindSavedPostsForUserQueryType }) {
-                            return {
-                                ...existing,
-                                findSavedPostsForUser: {
-                                    ...fetchMoreResult.findSavedPostsForUser,
-                                    data: [
-                                        ...existing.findSavedPostsForUser.data,
-                                        ..._differenceBy(
-                                            fetchMoreResult.findSavedPostsForUser.data,
-                                            existing.findSavedPostsForUser.data,
-                                            '_id',
-                                        ),
-                                    ],
-                                },
-                            }
-                        },
-                    }).catch(console.log)
-                }
+                        }
+                    },
+                }).catch(console.log)
             }
         }
     }
