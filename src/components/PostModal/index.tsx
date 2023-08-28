@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useUserDetailsNavigation, usePostViewNavigation } from '../../hooks/misc'
+import { useUserDetailsNavigation, useHashtagNavigation, usePostViewNavigation } from '../../hooks/misc'
 import { useLazyQuery } from '@apollo/client'
 import { FIND_POST_DETAILS_BY_ID } from '../../graphql/queries/post'
 import { FindPostDetailsByIdQueryType } from '../../graphql/types/queries/post'
@@ -115,6 +115,13 @@ export default function PostModal(props: Props) {
         navigateToUserDetails(userId)
     }, [])
 
+    const navigateToHashtag = useHashtagNavigation()
+
+    const handleViewHashtag = useCallback((name: string) => {
+        props.onClose()
+        navigateToHashtag(name)
+    }, [])
+
     const navigateToPostView = usePostViewNavigation()
 
     const handleViewPost = (postId: string | number) => {
@@ -151,6 +158,7 @@ export default function PostModal(props: Props) {
                 onUnlikeComment={unlikeComment}
                 onViewReplies={onViewReplies}
                 onHideReplies={onHideReplies}
+                onViewHashtag={handleViewHashtag}
                 onPostComment={onPostComment} />
             <PostLikes
                 postId={viewPostLikesPostId}

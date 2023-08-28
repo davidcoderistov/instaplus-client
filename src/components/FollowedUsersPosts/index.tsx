@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
-import { useAuthUser, usePostViewNavigation, useUserDetailsNavigation } from '../../hooks/misc'
+import { useAuthUser, usePostViewNavigation, useUserDetailsNavigation, useHashtagNavigation } from '../../hooks/misc'
 import {
     useFollowUser,
     useUnfollowUser,
@@ -149,6 +149,12 @@ export default function FollowedUsersPosts() {
         navigateToUserDetails(userId)
     }
 
+    const navigateToHashtag = useHashtagNavigation()
+
+    const handleViewHashtag = (name: string) => {
+        navigateToHashtag(name)
+    }
+
     return (
         <Box
             id='followedUsersPostsContainer'
@@ -246,6 +252,7 @@ export default function FollowedUsersPosts() {
                                                 onViewPost={handlePostView}
                                                 onViewPostComments={handleViewPost}
                                                 onViewUser={handleViewUser}
+                                                onViewHashtag={handleViewHashtag}
                                             />
                                         ))}
                                     </InfiniteScroll>

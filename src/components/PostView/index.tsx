@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react'
 import { useQuery } from '@apollo/client'
 import { useParams } from 'react-router-dom'
-import { useUserDetailsNavigation, usePostViewNavigation } from '../../hooks/misc'
+import { useUserDetailsNavigation, useHashtagNavigation, usePostViewNavigation } from '../../hooks/misc'
 import {
     useCommentLikes,
     useCommentReplies,
@@ -105,6 +105,12 @@ export default function PostView() {
 
     const handleViewUser = useCallback((userId: string | number) => {
         navigateToUserDetails(userId)
+    }, [])
+
+    const navigateToHashtag = useHashtagNavigation()
+
+    const handleViewHashtag = useCallback((name: string) => {
+        navigateToHashtag(name)
     }, [])
 
     const findLatestPostsForUser = useQuery<FindLatestPostsForUserQueryType>(FIND_LATEST_POSTS_FOR_USER, {
@@ -232,6 +238,7 @@ export default function PostView() {
                                     onUnlikeComment={unlikeComment}
                                     onViewReplies={onViewReplies}
                                     onHideReplies={onHideReplies}
+                                    onViewHashtag={handleViewHashtag}
                                     onPostComment={onPostComment} />
                             </Box>
                         </Box>
