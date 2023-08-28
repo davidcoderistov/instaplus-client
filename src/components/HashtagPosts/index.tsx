@@ -7,6 +7,7 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import MediaGallery from '../../lib/src/components/MediaGallery'
 import PostModal from '../PostModal'
+import DataFallback from '../DataFallback'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import _range from 'lodash/range'
 
@@ -44,6 +45,16 @@ export default function HashtagPosts() {
     const hasMorePosts = useMemo(() => {
         if (!findPostsForHashtag.loading && !findPostsForHashtag.error && findPostsForHashtag.data) {
             return findPostsForHashtag.data.findPostsForHashtag.data.length < findPostsForHashtag.data.findPostsForHashtag.count
+        }
+        return false
+    }, [findPostsForHashtag.loading, findPostsForHashtag.error, findPostsForHashtag.data])
+
+    const hasNoPosts = useMemo(() => {
+        if (findPostsForHashtag.error) {
+            return true
+        }
+        if (!findPostsForHashtag.loading && findPostsForHashtag.data) {
+            return findPostsForHashtag.data.findPostsForHashtag.data.length < 1
         }
         return false
     }, [findPostsForHashtag.loading, findPostsForHashtag.error, findPostsForHashtag.data])
@@ -146,6 +157,21 @@ export default function HashtagPosts() {
                             items={posts}
                             onClick={handleViewPost} />
                     </InfiniteScroll>
+                    {hasNoPosts && (
+                        <Box
+                            component='div'
+                            width='100%'
+                            height='100%'
+                            display='flex'
+                            flexDirection='column'
+                            justifyContent='center'
+                            alignItems='center'
+                        >
+                            <DataFallback
+                                title='No posts yet'
+                                subtitle={`When there are posts tagged with #${name}, you'll see them here.`} />
+                        </Box>
+                    )}
                 </Box>
             </Box>
             {viewPostId && (
