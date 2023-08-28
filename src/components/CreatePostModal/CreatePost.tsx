@@ -10,7 +10,7 @@ import UserAvatar from './UserAvatar'
 interface IHashtag {
     _id: string | number
     name: string
-    postIds: string[]
+    postsCount: number
 }
 
 interface Props {

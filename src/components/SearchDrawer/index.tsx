@@ -22,7 +22,7 @@ interface User {
 interface Hashtag {
     _id: string | number
     name: string
-    postIds: string[]
+    postsCount: number
 }
 
 interface SearchUser {

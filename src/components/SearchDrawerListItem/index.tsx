@@ -22,7 +22,7 @@ interface User {
 interface Hashtag {
     _id: string | number
     name: string
-    postIds: string[]
+    postsCount: number
 }
 
 interface SearchUser {
@@ -87,8 +87,8 @@ const SearchDrawerListItem = React.memo((props: Props) => {
                 return followedBy ? `${user} • ${followedBy}` : user
             } else {
                 const hashtag = props.item.hashtag as Hashtag
-                if (hashtag.postIds.length > 0) {
-                    return `${formatNumber(hashtag.postIds.length)} ${hashtag.postIds.length > 1 ? 'posts' : 'post'}`
+                if (hashtag.postsCount > 0) {
+                    return `${formatNumber(hashtag.postsCount)} ${hashtag.postsCount > 1 ? 'posts' : 'post'}`
                 }
             }
         }
@@ -129,7 +129,7 @@ const SearchDrawerListItem = React.memo((props: Props) => {
                     }
                     title={!props.loading ? props.item.searchUser ? props.item.searchUser.user.username : `#${props.item.hashtag?.name}` : null}
                 />
-                {(props.loading || props.item.searchUser || (props.item.hashtag && props.item.hashtag.postIds.length > 0)) && (
+                {(props.loading || props.item.searchUser || (props.item.hashtag && props.item.hashtag.postsCount > 0)) && (
                     <ListItemSubtitle
                         loading={Boolean(props.loading)}
                         loader={
