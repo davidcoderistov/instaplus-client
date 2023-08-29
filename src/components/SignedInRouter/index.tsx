@@ -168,7 +168,7 @@ export default function SignedInRouter() {
                         Explore
                     </div>
                 } />
-                <Route path='/explore/tags/:name' element={
+                <Route path='/tags/:name' element={
                     <HashtagPosts />
                 } />
                 <Route path='/reels' element={
