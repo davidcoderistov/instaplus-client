@@ -11,6 +11,8 @@ import _differenceBy from 'lodash/differenceBy'
 interface Props {
     commentId: string | null
 
+    onViewUser?(userId: string): void
+
     onCloseModal(): void
 }
 
@@ -98,6 +100,9 @@ export default function CommentLikes(props: Props) {
     const handleClickUser = useCallback((userId: string | number) => {
         props.onCloseModal()
         navigateToUserDetails(userId)
+        if (props.onViewUser) {
+            props.onViewUser(userId as string)
+        }
     }, [])
 
     return (

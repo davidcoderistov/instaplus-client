@@ -28,6 +28,8 @@ interface Props {
     postId: string
     post?: Post | null
 
+    onViewUser?(userId: string): void
+
     onClose(): void
 }
 
@@ -159,9 +161,11 @@ export default function PostModal(props: Props) {
                 onPostComment={onPostComment} />
             <PostLikes
                 postId={viewPostLikesPostId}
+                onViewUser={props.onViewUser}
                 onCloseModal={onClosePostLikes} />
             <CommentLikes
                 commentId={viewCommentLikesCommentId}
+                onViewUser={props.onViewUser}
                 onCloseModal={onCloseCommentLikes} />
         </>
     )

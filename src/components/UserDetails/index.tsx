@@ -479,6 +479,7 @@ export default function UserDetails() {
                 <PostModal
                     postId={viewPostId}
                     post={null}
+                    onViewUser={handleClosePostModal}
                     onClose={handleClosePostModal} />
             )}
         </Box>
