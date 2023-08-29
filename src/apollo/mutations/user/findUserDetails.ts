@@ -64,10 +64,32 @@ export function incrementFollowersCount(options: IncrementFollowersCountOptions)
     }
 }
 
+interface DecrementFollowersCountOptions {
+    queryData: FindUserDetailsQueryType
+}
+
+interface DecrementFollowersCountReturnValue {
+    queryResult: FindUserDetailsQueryType
+}
+
+export function decrementFollowersCount(options: DecrementFollowersCountOptions): DecrementFollowersCountReturnValue {
+
+    return {
+        queryResult: {
+            ...options.queryData,
+            findUserDetails: {
+                ...options.queryData.findUserDetails,
+                followersCount: options.queryData.findUserDetails.followersCount - 1,
+            },
+        },
+    }
+}
+
 const mutations = {
     incrementFollowingCount,
     decrementFollowingCount,
     incrementFollowersCount,
+    decrementFollowersCount,
 }
 
 export default mutations
