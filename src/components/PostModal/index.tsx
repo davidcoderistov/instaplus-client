@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useMemo, useCallback } from 'react'
 import { useUserDetailsNavigation, useHashtagNavigation, usePostViewNavigation } from '../../hooks/misc'
-import { useLazyQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { FIND_POST_DETAILS_BY_ID } from '../../graphql/queries/post'
 import { FindPostDetailsByIdQueryType } from '../../graphql/types/queries/post'
 import {
@@ -33,49 +33,46 @@ interface Props {
 
 export default function PostModal(props: Props) {
 
-    const [post, setPost] = useState<Post | null>(null)
+    const findPostDetailsById = useQuery<FindPostDetailsByIdQueryType>(FIND_POST_DETAILS_BY_ID, {
+        variables: { postId: props.postId },
+        skip: !!props.post,
+    })
 
-    const [findPostDetailsById, { data }] = useLazyQuery<FindPostDetailsByIdQueryType>(FIND_POST_DETAILS_BY_ID)
-
-    useEffect(() => {
+    const post: Post | null = useMemo(() => {
         if (props.post) {
-            setPost(props.post)
-        } else {
-            findPostDetailsById({ variables: { postId: props.postId } })
-        }
-    }, [props.post, props.postId, findPostDetailsById])
-
-    useEffect(() => {
-        if (data && data.findPostDetailsById) {
-            setPost({
-                id: data.findPostDetailsById._id,
-                description: data.findPostDetailsById.post.caption,
-                location: data.findPostDetailsById.post.location,
-                photoUrls: data.findPostDetailsById.post.photoUrls,
+            return props.post
+        } else if (!findPostDetailsById.loading && !findPostDetailsById.error && findPostDetailsById.data && findPostDetailsById.data.findPostDetailsById) {
+            return {
+                id: findPostDetailsById.data.findPostDetailsById.post._id,
+                description: findPostDetailsById.data.findPostDetailsById.post.caption,
+                location: findPostDetailsById.data.findPostDetailsById.post.location,
+                photoUrls: findPostDetailsById.data.findPostDetailsById.post.photoUrls,
                 creator: {
-                    id: data.findPostDetailsById.post.creator.user._id,
-                    username: data.findPostDetailsById.post.creator.user.username,
-                    photoUrl: data.findPostDetailsById.post.creator.user.photoUrl,
+                    id: findPostDetailsById.data.findPostDetailsById.post.creator.user._id,
+                    username: findPostDetailsById.data.findPostDetailsById.post.creator.user.username,
+                    photoUrl: findPostDetailsById.data.findPostDetailsById.post.creator.user.photoUrl,
                     following: true,
                     followingLoading: false,
                 },
-                isLiked: data.findPostDetailsById.liked,
-                isSaved: data.findPostDetailsById.saved,
-                likesCount: data.findPostDetailsById.likesCount,
-                commentsCount: data.findPostDetailsById.commentsCount,
-                lastLikingUser: data.findPostDetailsById.latestTwoLikeUsers.length > 0 ? {
-                    id: data.findPostDetailsById.latestTwoLikeUsers[0]._id,
-                    username: data.findPostDetailsById.latestTwoLikeUsers[0].username,
+                isLiked: findPostDetailsById.data.findPostDetailsById.liked,
+                isSaved: findPostDetailsById.data.findPostDetailsById.saved,
+                likesCount: findPostDetailsById.data.findPostDetailsById.likesCount,
+                commentsCount: findPostDetailsById.data.findPostDetailsById.commentsCount,
+                lastLikingUser: findPostDetailsById.data.findPostDetailsById.latestTwoLikeUsers.length > 0 ? {
+                    id: findPostDetailsById.data.findPostDetailsById.latestTwoLikeUsers[0]._id,
+                    username: findPostDetailsById.data.findPostDetailsById.latestTwoLikeUsers[0].username,
                 } : null,
-                lastLikingMutualFollowers: data.findPostDetailsById.latestThreeFollowedLikeUsers.map(user => ({
+                lastLikingMutualFollowers: findPostDetailsById.data.findPostDetailsById.latestThreeFollowedLikeUsers.map(user => ({
                     id: user._id,
                     username: user._id,
                     photoUrl: user.photoUrl as string,
                 })),
-                createdAt: data.findPostDetailsById.post.createdAt,
-            })
+                createdAt: findPostDetailsById.data.findPostDetailsById.post.createdAt,
+            }
+        } else {
+            return null
         }
-    }, [data])
+    }, [props.post, findPostDetailsById.loading, findPostDetailsById.error, findPostDetailsById.data])
 
     const {
         comments,
@@ -135,7 +132,7 @@ export default function PostModal(props: Props) {
                 open={true}
                 onClose={props.onClose}
                 post={post}
-                postLoading={false}
+                postLoading={findPostDetailsById.loading}
                 comments={comments}
                 commentsLoading={commentsLoading}
                 hasMoreComments={hasMoreComments}
