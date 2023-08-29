@@ -10,6 +10,7 @@ import PostModal from '../PostModal'
 import DataFallback from '../DataFallback'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import _range from 'lodash/range'
+import { formatNumber } from '../../lib/src/utils'
 
 
 export default function HashtagPosts() {
@@ -25,14 +26,7 @@ export default function HashtagPosts() {
     })
 
     const posts = useMemo(() => {
-        if (findPostsForHashtag.loading) {
-            return _range(6).map(index => ({
-                id: index,
-                photoUrl: null,
-                multiple: false,
-            }))
-        }
-        if (!findPostsForHashtag.error && findPostsForHashtag.data) {
+        if (!findPostsForHashtag.loading && !findPostsForHashtag.error && findPostsForHashtag.data) {
             return findPostsForHashtag.data.findPostsForHashtag.data.map(post => ({
                 id: post._id,
                 photoUrl: post.photoUrls.length > 0 ? post.photoUrls[0] : null,
@@ -45,16 +39,6 @@ export default function HashtagPosts() {
     const hasMorePosts = useMemo(() => {
         if (!findPostsForHashtag.loading && !findPostsForHashtag.error && findPostsForHashtag.data) {
             return findPostsForHashtag.data.findPostsForHashtag.data.length < findPostsForHashtag.data.findPostsForHashtag.count
-        }
-        return false
-    }, [findPostsForHashtag.loading, findPostsForHashtag.error, findPostsForHashtag.data])
-
-    const hasNoPosts = useMemo(() => {
-        if (findPostsForHashtag.error) {
-            return true
-        }
-        if (!findPostsForHashtag.loading && findPostsForHashtag.data) {
-            return findPostsForHashtag.data.findPostsForHashtag.data.length < 1
         }
         return false
     }, [findPostsForHashtag.loading, findPostsForHashtag.error, findPostsForHashtag.data])
@@ -126,38 +110,182 @@ export default function HashtagPosts() {
                     paddingBottom='0'
                     display='block'
                 >
-                    <InfiniteScroll
-                        next={handleFetchMorePosts}
-                        style={{ overflow: 'hidden' }}
-                        hasMore={hasMorePosts}
-                        scrollableTarget='hashtagPostsContainer'
-                        loader={
+                    {findPostsForHashtag.loading ? (
+                        <MediaGallery
+                            items={_range(6).map(index => ({
+                                id: index,
+                                photoUrl: null,
+                                multiple: false,
+                            }))}
+                            onClick={handleViewPost} />
+                    ) : !findPostsForHashtag.error && findPostsForHashtag.data && findPostsForHashtag.data.findPostsForHashtag.count > 0 ? (
+                        <Box
+                            component='div'
+                            minWidth='735px'
+                        >
                             <Box
                                 component='div'
+                                margin='30px auto 44px auto'
+                                alignItems='center'
                                 display='flex'
                                 flexDirection='row'
-                                justifyContent='center'
-                                alignItems='flex-start'
-                                paddingTop='10px'
-                                height='50px'
+                                fontSize='16px'
+                                lineHeight='24px'
+                                width='calc(100%-40px)'
+                                boxSizing='border-box'
+                                color='#F5F5F5'
+                                flexShrink='0'
+                                padding='0'
+                                position='relative'
+                                textAlign='center'
+                                sx={{ verticalAlign: 'baseline' }}
                             >
-                                <CircularProgress
-                                    size={30}
-                                    thickness={5}
-                                    sx={{
-                                        color: 'grey',
-                                        mt: 1,
-                                    }} />
+                                <Box
+                                    component='div'
+                                    display='block'
+                                >
+                                    <Box
+                                        component='div'
+                                        display='block'
+                                        position='relative'
+                                    >
+                                        <Box
+                                            component='div'
+                                            height='152px'
+                                            width='152px'
+                                            bgcolor='#121212'
+                                            borderRadius='50%'
+                                            boxSizing='border-box'
+                                            display='block'
+                                            overflow='hidden'
+                                            position='relative'
+                                        >
+                                            <img
+                                                alt=''
+                                                style={{
+                                                    border: '0',
+                                                    fontSize: '100%',
+                                                    height: '100%',
+                                                    margin: '0',
+                                                    padding: '0',
+                                                    width: '100%',
+                                                }}
+                                                src={findPostsForHashtag.data.findPostsForHashtag.data[0].photoUrls[0]} />
+                                        </Box>
+                                    </Box>
+                                </Box>
+                                <Box
+                                    component='div'
+                                    textAlign='left'
+                                    width='100%'
+                                    display='block'
+                                >
+                                    <Box
+                                        component='div'
+                                        marginLeft='50px'
+                                        textAlign='left'
+                                        display='block'
+                                    >
+                                        <Box
+                                            component='div'
+                                            marginBottom='12px'
+                                            bgcolor='transparent'
+                                            flexDirection='column'
+                                            boxSizing='border-box'
+                                            display='flex'
+                                            alignItems='stretch'
+                                            justifyContent='flex-start'
+                                            position='relative'
+                                            sx={{
+                                                overflowY: 'visible',
+                                                overflowX: 'visible',
+                                            }}
+                                        >
+                                            <Box
+                                                component='span'
+                                                lineHeight='24px'
+                                                fontWeight='400'
+                                                fontSize='30px'
+                                                minWidth='0'
+                                                color='#F5F5F5'
+                                                position='relative'
+                                                display='block'
+                                                maxWidth='100%'
+                                                sx={{
+                                                    overflowY: 'visible',
+                                                    overflowX: 'visible',
+                                                    wordWrap: 'break-word',
+                                                    whiteSpace: 'pre-line',
+                                                    wordBreak: 'break-word',
+                                                }}
+                                            >
+                                                #{name}
+                                            </Box>
+                                        </Box>
+                                        <Box
+                                            component='div'
+                                            bgcolor='transparent'
+                                            flexDirection='column'
+                                            boxSizing='border-box'
+                                            display='flex'
+                                            alignItems='stretch'
+                                            justifyContent='flex-start'
+                                            position='relative'
+                                            marginBottom='28px'
+                                            sx={{
+                                                overflowY: 'visible',
+                                                overflowX: 'visible',
+                                            }}
+                                        >
+                                            <Box
+                                                component='span'
+                                                color='#F5F5F5'
+                                                fontWeight='600'
+                                            >
+                                                <Box
+                                                    component='span'
+                                                >
+                                                    {formatNumber(findPostsForHashtag.data.findPostsForHashtag.count)}
+                                                </Box>
+                                            </Box>
+                                            {findPostsForHashtag.data.findPostsForHashtag.count > 1 ? 'posts' : 'post'}
+                                        </Box>
+                                    </Box>
+                                </Box>
                             </Box>
-                        }
-                        dataLength={posts.length}
-                        scrollThreshold='95%'
-                    >
-                        <MediaGallery
-                            items={posts}
-                            onClick={handleViewPost} />
-                    </InfiniteScroll>
-                    {hasNoPosts && (
+                            <InfiniteScroll
+                                next={handleFetchMorePosts}
+                                style={{ overflow: 'hidden' }}
+                                hasMore={hasMorePosts}
+                                scrollableTarget='hashtagPostsContainer'
+                                loader={
+                                    <Box
+                                        component='div'
+                                        display='flex'
+                                        flexDirection='row'
+                                        justifyContent='center'
+                                        alignItems='flex-start'
+                                        paddingTop='10px'
+                                        height='50px'
+                                    >
+                                        <CircularProgress
+                                            size={30}
+                                            thickness={5}
+                                            sx={{
+                                                color: 'grey',
+                                                mt: 1,
+                                            }} />
+                                    </Box>
+                                }
+                                dataLength={posts.length}
+                                scrollThreshold='95%'
+                            >
+                                <MediaGallery
+                                    items={posts}
+                                    onClick={handleViewPost} />
+                            </InfiniteScroll>
+                        </Box>
+                    ) : (
                         <Box
                             component='div'
                             width='100%'
