@@ -26,8 +26,39 @@ export function addFollowingUser(options: AddFollowingUserOptions): AddFollowing
     }
 }
 
+interface RemoveFollowingUserOptions {
+    queryData: FindFollowingForUserQueryType
+    variables: {
+        userId: string
+    }
+}
+
+interface RemoveFollowingUserReturnValue {
+    queryResult: FindFollowingForUserQueryType
+}
+
+export function removeFollowingUser(options: RemoveFollowingUserOptions): RemoveFollowingUserReturnValue {
+
+    const data = Array.from(options.queryData.findFollowingForUser.data)
+    const findFollowingUserId = data.findIndex(followingUser => followingUser.user._id === options.variables.userId)
+
+    if (findFollowingUserId >= 0) {
+        data.splice(findFollowingUserId, 1)
+    }
+    return {
+        queryResult: {
+            ...options.queryData,
+            findFollowingForUser: {
+                ...options.queryData.findFollowingForUser,
+                data,
+            },
+        },
+    }
+}
+
 const mutations = {
     addFollowingUser,
+    removeFollowingUser,
 }
 
 export default mutations
