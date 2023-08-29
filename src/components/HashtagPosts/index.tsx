@@ -125,7 +125,7 @@ export default function HashtagPosts() {
                         >
                             <Box
                                 component='div'
-                                margin='30px auto 44px auto'
+                                margin='10px auto 44px auto'
                                 alignItems='center'
                                 display='flex'
                                 flexDirection='row'
@@ -252,6 +252,17 @@ export default function HashtagPosts() {
                                         </Box>
                                     </Box>
                                 </Box>
+                            </Box>
+                            <Box
+                                component='div'
+                                color='#A8A8A8'
+                                fontSize='14px'
+                                lineHeight='18px'
+                                fontWeight='600'
+                                marginBottom='16px'
+                                textAlign='left'
+                            >
+                                Latest posts
                             </Box>
                             <InfiniteScroll
                                 next={handleFetchMorePosts}
