@@ -21,7 +21,7 @@ export default function HashtagPosts() {
         variables: {
             name,
             offset: 0,
-            limit: 9,
+            limit: 6,
         },
     })
 
