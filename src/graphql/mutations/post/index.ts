@@ -18,6 +18,7 @@ export const CREATE_POST = gql`
                 }
                 following
             }
+            createdAt
         }
     }
 `
