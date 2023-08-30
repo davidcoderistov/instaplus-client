@@ -158,9 +158,11 @@ export default function SignedInRouter() {
                 onOpenCreateNewPost={handleOpenCreatePostModal} />
             <NotificationsDrawer open={isNotificationsDrawerOpen} />
             <SearchDrawer open={isSearchDrawerOpen} />
-            <CreatePostModal
-                open={isCreatePostModalOpen}
-                onCloseModal={handleCloseCreatePostModal} />
+            {isCreatePostModalOpen && (
+                <CreatePostModal
+                    open={isCreatePostModalOpen}
+                    onCloseModal={handleCloseCreatePostModal} />
+            )}
             <Routes>
                 <Route path='/' element={<FollowedUsersPosts />} />
                 <Route path='/explore' element={
