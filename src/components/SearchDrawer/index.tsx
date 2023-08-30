@@ -51,6 +51,8 @@ interface SearchDrawerProps {
     onClickItem(item: UserSearch): void
 
     onRemoveItem(item: UserSearch): void
+
+    onClickSearchHistoryItem(item: UserSearch): void
 }
 
 export default function SearchDrawer(props: SearchDrawerProps) {
@@ -316,6 +318,7 @@ export default function SearchDrawer(props: SearchDrawerProps) {
                                         <SearchDrawerUserItem
                                             key={item.searchUser ? `user:${item.searchUser.user._id}` : `hashtag:${(item.hashtag as Hashtag)._id}`}
                                             item={item}
+                                            onClickItem={props.onClickSearchHistoryItem}
                                             onRemoveItem={props.onRemoveItem}
                                         />
                                     ))}
