@@ -17,6 +17,7 @@ import FollowingModal from '../FollowingModal'
 import MediaGallery from '../../lib/src/components/MediaGallery'
 import PostModal from '../PostModal'
 import DataFallback from '../DataFallback'
+import NotFound from '../NotFound'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import _range from 'lodash/range'
 import _differenceBy from 'lodash/differenceBy'
@@ -463,10 +464,20 @@ export default function UserDetails() {
                 ) : (
                     <Box
                         component='div'
-                        marginLeft='50px'
-                        marginY='300px'
+                        paddingTop='4vh'
+                        marginRight='auto'
+                        marginTop='0'
+                        paddingRight='20px'
+                        paddingLeft='20px'
+                        marginBottom='16px'
+                        flexGrow='1'
+                        marginLeft='auto'
+                        maxWidth='1035px'
+                        width='calc(100% - 40px)'
+                        paddingBottom='0'
+                        display='block'
                     >
-                        not found
+                        <NotFound />
                     </Box>
                 )}
             </Box>
