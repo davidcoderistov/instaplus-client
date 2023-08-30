@@ -126,6 +126,10 @@ export default function SignedInRouter() {
         setIsNotificationsDrawerOpen(false)
     }
 
+    const handleCloseSearchDrawer = () => {
+        setIsSearchDrawerOpen(false)
+    }
+
     const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false)
 
     const handleOpenCreatePostModal = () => {
@@ -157,7 +161,9 @@ export default function SignedInRouter() {
                 onOpenNotificationsDrawer={handleOpenNotificationsDrawer}
                 onOpenCreateNewPost={handleOpenCreatePostModal} />
             <NotificationsDrawer open={isNotificationsDrawerOpen} />
-            <SearchDrawer open={isSearchDrawerOpen} />
+            <SearchDrawer
+                open={isSearchDrawerOpen}
+                onClose={handleCloseSearchDrawer} />
             {isCreatePostModalOpen && (
                 <CreatePostModal
                     open={isCreatePostModalOpen}

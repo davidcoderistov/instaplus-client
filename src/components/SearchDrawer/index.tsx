@@ -1,4 +1,5 @@
 import { useMemo, useCallback } from 'react'
+import { useUserDetailsNavigation, useHashtagNavigation } from '../../hooks/misc'
 import { useSnackbar } from 'notistack'
 import { useQuery, useMutation } from '@apollo/client'
 import { useSearchResults } from '../../hooks/misc'
@@ -13,7 +14,7 @@ import findSearchHistoryMutations from '../../apollo/mutations/searchHistory/fin
 import InstaSearchDrawer from '../../lib/src/components/SearchDrawer'
 
 
-export default function SearchDrawer(props: { open: boolean }) {
+export default function SearchDrawer(props: { open: boolean, onClose(): void }) {
 
     const { enqueueSnackbar } = useSnackbar()
 
@@ -38,6 +39,20 @@ export default function SearchDrawer(props: { open: boolean }) {
         })
     }, [])
 
+    const navigateToUserDetails = useUserDetailsNavigation()
+
+    const navigateToHashtag = useHashtagNavigation()
+
+    const navigateAndCloseDrawer = (userSearch: UserSearch) => {
+        if (userSearch.searchUser) {
+            navigateToUserDetails(userSearch.searchUser.user._id)
+            props.onClose()
+        } else if (userSearch.hashtag) {
+            navigateToHashtag(userSearch.hashtag.name)
+            props.onClose()
+        }
+    }
+
     const onClickItem = useCallback((userSearch: UserSearch) => {
         searchHistory.updateQuery(findSearchHistory => findSearchHistoryMutations.addSearchHistoryItem({
             queryData: findSearchHistory,
@@ -51,6 +66,11 @@ export default function SearchDrawer(props: { open: boolean }) {
                 searchedHashtagId: userSearch.hashtag ? userSearch.hashtag._id : null,
             },
         })
+        navigateAndCloseDrawer(userSearch)
+    }, [])
+
+    const onClickSearchHistoryItem = useCallback((userSearch: UserSearch) => {
+        navigateAndCloseDrawer(userSearch)
     }, [])
 
     const onRemoveItem = useCallback((userSearch: UserSearch) => {
@@ -87,6 +107,7 @@ export default function SearchDrawer(props: { open: boolean }) {
             onSearch={onSearch}
             onClearSearchHistory={onClearSearchHistory}
             onClickItem={onClickItem}
-            onRemoveItem={onRemoveItem} />
+            onRemoveItem={onRemoveItem}
+            onClickSearchHistoryItem={onClickSearchHistoryItem} />
     )
 }
