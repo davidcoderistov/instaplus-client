@@ -26,8 +26,40 @@ export function addSavedPost(options: AddSavedPostOptions): AddSavedPostReturnVa
     }
 }
 
+interface RemoveSavedPostOptions {
+    queryData: FindSavedPostsForUserQueryType
+    variables: {
+        postId: string
+    }
+}
+
+interface RemoveSavedPostReturnValue {
+    queryResult: FindSavedPostsForUserQueryType
+}
+
+export function removeSavedPost(options: RemoveSavedPostOptions): RemoveSavedPostReturnValue {
+
+    const data = Array.from(options.queryData.findSavedPostsForUser.data)
+    const findPostIndex = data.findIndex(post => post._id === options.variables.postId)
+
+    if (findPostIndex >= 0) {
+        data.splice(findPostIndex, 1)
+    }
+
+    return {
+        queryResult: {
+            ...options.queryData,
+            findSavedPostsForUser: {
+                ...options.queryData.findSavedPostsForUser,
+                data,
+            },
+        },
+    }
+}
+
 const mutations = {
     addSavedPost,
+    removeSavedPost,
 }
 
 export default mutations
