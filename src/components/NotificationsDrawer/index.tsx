@@ -78,6 +78,7 @@ export default function NotificationsDrawer(props: { open: boolean, onClose(): v
             offset: 0,
             limit: 4,
         },
+        skip: !props.open,
     })
 
     const todayNotifications: NotificationI[] = useMemo(() => {
@@ -123,6 +124,7 @@ export default function NotificationsDrawer(props: { open: boolean, onClose(): v
             offset: 0,
             limit: 4,
         },
+        skip: !props.open,
     })
 
     const thisWeekNotifications: NotificationI[] = useMemo(() => {
@@ -168,6 +170,7 @@ export default function NotificationsDrawer(props: { open: boolean, onClose(): v
             offset: 0,
             limit: 4,
         },
+        skip: !props.open,
     })
 
     const thisMonthNotifications: NotificationI[] = useMemo(() => {
@@ -213,6 +216,7 @@ export default function NotificationsDrawer(props: { open: boolean, onClose(): v
             offset: 0,
             limit: 4,
         },
+        skip: !props.open,
     })
 
     const earlierNotifications: NotificationI[] = useMemo(() => {
