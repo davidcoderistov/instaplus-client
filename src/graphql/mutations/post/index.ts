@@ -42,6 +42,7 @@ export const SAVE_POST = gql`
     mutation savePost($postId: String!) {
         savePost(postId: $postId) {
             _id
+            photoUrls
         }
     }
 `
