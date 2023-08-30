@@ -27,6 +27,7 @@ import PostPreview from '../../lib/src/components/PostPreview'
 import MediaGallery from '../../lib/src/components/MediaGallery'
 import PostLikes from '../PostLikes'
 import CommentLikes from '../CommentLikes'
+import NotFound from '../NotFound'
 import { Post } from '../../lib/src/types/Post'
 
 
@@ -172,78 +173,82 @@ export default function PostView() {
                     paddingBottom='0'
                     display='block'
                 >
-                    <Box
-                        component='div'
-                        maxWidth='815px'
-                        marginRight='auto'
-                        width='100%'
-                        flexDirection='column'
-                        marginTop='0'
-                        marginBottom='0'
-                        display='flex'
-                        alignItems='center'
-                        position='relative'
-                        marginLeft='auto'
-                    >
+                    {!findPostDetailsById.error ? (
                         <Box
                             component='div'
-                            border='1px solid #363636'
+                            maxWidth='815px'
+                            marginRight='auto'
+                            width='100%'
+                            flexDirection='column'
+                            marginTop='0'
+                            marginBottom='0'
                             display='flex'
-                            flexDirection='row'
+                            alignItems='center'
+                            position='relative'
+                            marginLeft='auto'
                         >
                             <Box
                                 component='div'
-                                maxHeight='inherit'
-                                maxWidth='inherit'
-                                borderRadius='0'
-                                justifyContent='center'
-                                bgcolor='transparent'
-                                boxSizing='border-box'
+                                border='1px solid #363636'
                                 display='flex'
-                                alignItems='stretch'
                                 flexDirection='row'
-                                position='relative'
-                                sx={{
-                                    overflowY: 'visible',
-                                    overflowX: 'visible',
-                                }}
                             >
-                                <PostPreviewSlider
-                                    loading={findPostDetailsById.loading}
-                                    photoUrls={post ? post.photoUrls : []}
-                                    large
-                                />
-                                <PostPreview
-                                    dense
-                                    post={post}
-                                    postLoading={findPostDetailsById.loading}
-                                    comments={comments}
-                                    commentsLoading={commentsLoading}
-                                    hasMoreComments={hasMoreComments}
-                                    isPostingComment={isPostingComment}
-                                    onFollowUser={followUser}
-                                    onUnfollowUser={unfollowUser}
-                                    onLikePost={likePost}
-                                    onUnlikePost={unlikePost}
-                                    onSavePost={savePost}
-                                    onRemovePost={unsavePost}
-                                    onViewPostLikes={onViewPostLikes}
-                                    onViewPost={() => {
+                                <Box
+                                    component='div'
+                                    maxHeight='inherit'
+                                    maxWidth='inherit'
+                                    borderRadius='0'
+                                    justifyContent='center'
+                                    bgcolor='transparent'
+                                    boxSizing='border-box'
+                                    display='flex'
+                                    alignItems='stretch'
+                                    flexDirection='row'
+                                    position='relative'
+                                    sx={{
+                                        overflowY: 'visible',
+                                        overflowX: 'visible',
                                     }}
-                                    onFetchMoreComments={onFetchMoreComments}
-                                    onViewUser={handleViewUser}
-                                    onViewCommentLikes={onViewCommentLikes}
-                                    onReplyToComment={onReplyToComment}
-                                    onLikeComment={likeComment}
-                                    onUnlikeComment={unlikeComment}
-                                    onViewReplies={onViewReplies}
-                                    onHideReplies={onHideReplies}
-                                    onViewHashtag={handleViewHashtag}
-                                    onPostComment={onPostComment} />
+                                >
+                                    <PostPreviewSlider
+                                        loading={findPostDetailsById.loading}
+                                        photoUrls={post ? post.photoUrls : []}
+                                        large
+                                    />
+                                    <PostPreview
+                                        dense
+                                        post={post}
+                                        postLoading={findPostDetailsById.loading}
+                                        comments={comments}
+                                        commentsLoading={commentsLoading}
+                                        hasMoreComments={hasMoreComments}
+                                        isPostingComment={isPostingComment}
+                                        onFollowUser={followUser}
+                                        onUnfollowUser={unfollowUser}
+                                        onLikePost={likePost}
+                                        onUnlikePost={unlikePost}
+                                        onSavePost={savePost}
+                                        onRemovePost={unsavePost}
+                                        onViewPostLikes={onViewPostLikes}
+                                        onViewPost={() => {
+                                        }}
+                                        onFetchMoreComments={onFetchMoreComments}
+                                        onViewUser={handleViewUser}
+                                        onViewCommentLikes={onViewCommentLikes}
+                                        onReplyToComment={onReplyToComment}
+                                        onLikeComment={likeComment}
+                                        onUnlikeComment={unlikeComment}
+                                        onViewReplies={onViewReplies}
+                                        onHideReplies={onHideReplies}
+                                        onViewHashtag={handleViewHashtag}
+                                        onPostComment={onPostComment} />
+                                </Box>
                             </Box>
                         </Box>
-                    </Box>
-                    {!findPostDetailsById.loading && post && !findLatestPostsForUser.loading && posts.length > 0 && (
+                    ) : (
+                        <NotFound />
+                    )}
+                    {!findPostDetailsById.error && !findPostDetailsById.loading && post && !findLatestPostsForUser.loading && posts.length > 0 && (
                         <>
                             <Box
                                 component='div'
