@@ -19,6 +19,7 @@ import PostCard from '../../lib/src/components/PostCard'
 import TopFiveSuggestedUsers from '../../lib/src/components/TopFiveSuggestedUsers'
 import PostLikes from '../PostLikes'
 import PostModal from '../PostModal'
+import AllCaughtUp from '../AllCaughtUp'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import _range from 'lodash/range'
 import _differenceBy from 'lodash/differenceBy'
@@ -234,6 +235,7 @@ export default function FollowedUsersPosts() {
                                                     }} />
                                             </Box>
                                         }
+                                        endMessage={<AllCaughtUp />}
                                         dataLength={postsCount}
                                         scrollThreshold='95%'
                                     >
