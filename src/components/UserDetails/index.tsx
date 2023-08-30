@@ -382,6 +382,7 @@ export default function UserDetails() {
                             marginBottom='16px'
                             flexGrow='1'
                             marginLeft='auto'
+                            minWidth='735px'
                             maxWidth='1035px'
                             width='calc(100% - 40px)'
                             paddingBottom='0'

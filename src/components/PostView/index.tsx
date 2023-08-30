@@ -256,6 +256,7 @@ export default function PostView() {
                                 alignItems='stretch'
                                 justifyContent='flex-start'
                                 position='relative'
+                                minWidth='735px'
                                 borderBottom='1px solid #262626'
                                 sx={{
                                     overflowY: 'visible',
@@ -271,6 +272,7 @@ export default function PostView() {
                                 margin='0'
                                 paddingTop='38px'
                                 position='relative'
+                                minWidth='735px'
                                 sx={{ verticalAlign: 'baseline' }}
                             >
                                 <Box
