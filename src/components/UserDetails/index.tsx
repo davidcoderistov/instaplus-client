@@ -200,6 +200,19 @@ export default function UserDetails() {
         skip: !isProfileView || isPostsTabActive,
     })
 
+    const hasMorePosts = useMemo(() => {
+        if (isPostsTabActive) {
+            if (!findUserDetails.loading && !postsForUser.loading && !postsForUser.error && postsForUser.data) {
+                return postsForUser.data.findPostsForUser.data.length < postsForUser.data.findPostsForUser.count
+            }
+        } else {
+            if (!findUserDetails.loading && !savedPostsForUser.loading && !savedPostsForUser.error && savedPostsForUser.data) {
+                return Boolean(savedPostsForUser.data.findSavedPostsForUser.nextCursor)
+            }
+        }
+        return false
+    }, [isPostsTabActive, findUserDetails.loading, postsForUser.loading, postsForUser.error, postsForUser.data, savedPostsForUser.loading, savedPostsForUser.error, savedPostsForUser.data])
+
     const posts = useMemo(() => {
         if (findUserDetails.loading || postsForUser.loading || savedPostsForUser.loading) {
             return _range(3).map(index => ({
@@ -226,33 +239,20 @@ export default function UserDetails() {
             }
         }
         return []
-    }, [isPostsTabActive, findUserDetails, postsForUser.loading, postsForUser.error, postsForUser.data, savedPostsForUser.loading, savedPostsForUser.error, savedPostsForUser.data])
-
-    const hasMorePosts = useMemo(() => {
-        if (isPostsTabActive) {
-            if (!postsForUser.loading && !postsForUser.error && postsForUser.data) {
-                return postsForUser.data.findPostsForUser.data.length < postsForUser.data.findPostsForUser.count
-            }
-        } else {
-            if (!savedPostsForUser.loading && !savedPostsForUser.error && savedPostsForUser.data) {
-                return Boolean(savedPostsForUser.data.findSavedPostsForUser.nextCursor)
-            }
-        }
-        return false
-    }, [isPostsTabActive, postsForUser.loading, postsForUser.error, postsForUser.data, savedPostsForUser.loading, savedPostsForUser.error, savedPostsForUser.data])
+    }, [isPostsTabActive, findUserDetails.loading, postsForUser.loading, postsForUser.error, postsForUser.data, savedPostsForUser.loading, savedPostsForUser.error, savedPostsForUser.data])
 
     const emptyPosts = useMemo(() => {
         if (isPostsTabActive) {
-            if (!postsForUser.loading && !postsForUser.error && postsForUser.data) {
+            if (!findUserDetails.loading && !postsForUser.loading && !postsForUser.error && postsForUser.data) {
                 return postsForUser.data.findPostsForUser.count < 1
             }
         } else {
-            if (!savedPostsForUser.loading && !savedPostsForUser.error && savedPostsForUser.data) {
+            if (!findUserDetails.loading && !savedPostsForUser.loading && !savedPostsForUser.error && savedPostsForUser.data) {
                 return savedPostsForUser.data.findSavedPostsForUser.data.length < 1
             }
         }
         return false
-    }, [isPostsTabActive, postsForUser.loading, postsForUser.error, postsForUser.data, savedPostsForUser.loading, savedPostsForUser.error, savedPostsForUser.data])
+    }, [isPostsTabActive, findUserDetails.loading, postsForUser.loading, postsForUser.error, postsForUser.data, savedPostsForUser.loading, savedPostsForUser.error, savedPostsForUser.data])
 
     const handleFetchMorePosts = () => {
         if (isPostsTabActive) {
