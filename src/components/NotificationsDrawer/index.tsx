@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useUserDetailsNavigation, usePostViewNavigation } from '../../hooks/misc'
 import { useQuery } from '@apollo/client'
 import {
     FIND_DAILY_NOTIFICATIONS,
@@ -70,7 +71,7 @@ const parseNotification = (notification: Notification): NotificationI => {
     }
 }
 
-export default function NotificationsDrawer(props: { open: boolean }) {
+export default function NotificationsDrawer(props: { open: boolean, onClose(): void }) {
 
     const findDailyNotifications = useQuery<FindDailyNotificationsQueryType>(FIND_DAILY_NOTIFICATIONS, {
         variables: {
@@ -256,6 +257,24 @@ export default function NotificationsDrawer(props: { open: boolean }) {
         return findDailyNotifications.loading || findWeeklyNotifications.loading || findMonthlyNotifications.loading || findEarlierNotifications.loading
     }, [findDailyNotifications.loading, findWeeklyNotifications.loading, findMonthlyNotifications.loading, findEarlierNotifications.loading])
 
+    const navigateToUserDetails = useUserDetailsNavigation()
+
+    const navigateToPostView = usePostViewNavigation()
+
+    const handleClickNotification = (type: 'follow' | 'like' | 'comment', id: string | number | null) => {
+        if (type === 'follow') {
+            if (id) {
+                navigateToUserDetails(id)
+                props.onClose()
+            }
+        } else {
+            if (id) {
+                navigateToPostView(id)
+                props.onClose()
+            }
+        }
+    }
+
     return (
         <InstaNotificationsDrawer
             open={props.open}
@@ -272,7 +291,7 @@ export default function NotificationsDrawer(props: { open: boolean }) {
             onFetchMoreThisWeekNotifications={onFetchMoreThisWeekNotifications}
             onFetchMoreThisMonthNotifications={onFetchMoreThisMonthNotifications}
             onFetchMoreEarlierNotifications={onFetchMoreEarlierNotifications}
-            onClick={console.log}
+            onClick={handleClickNotification}
         />
     )
 }

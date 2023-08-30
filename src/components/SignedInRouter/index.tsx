@@ -110,6 +110,10 @@ export default function SignedInRouter() {
         setIsSearchDrawerOpen(false)
     }
 
+    const handleCloseNotificationsDrawer = () => {
+        setIsNotificationsDrawerOpen(false)
+    }
+
     const handleClickApp = () => {
         if (isNotificationsDrawerOpen) {
             setIsNotificationsDrawerOpen(false)
@@ -160,7 +164,9 @@ export default function SignedInRouter() {
                 onOpenSearchDrawer={handleOpenSearchDrawer}
                 onOpenNotificationsDrawer={handleOpenNotificationsDrawer}
                 onOpenCreateNewPost={handleOpenCreatePostModal} />
-            <NotificationsDrawer open={isNotificationsDrawerOpen} />
+            <NotificationsDrawer
+                open={isNotificationsDrawerOpen}
+                onClose={handleCloseNotificationsDrawer} />
             <SearchDrawer
                 open={isSearchDrawerOpen}
                 onClose={handleCloseSearchDrawer} />
