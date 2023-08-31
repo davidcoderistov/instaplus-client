@@ -1,6 +1,11 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { useQuery } from '@apollo/client'
-import { useAuthUser, usePostViewNavigation, useUserDetailsNavigation, useHashtagNavigation } from '../../hooks/misc'
+import {
+    useAuthUser,
+    usePostViewNavigation,
+    useUserDetailsNavigation,
+    useHashtagNavigation,
+} from '../../hooks/misc'
 import {
     useFollowUser,
     useUnfollowUser,
@@ -13,6 +18,8 @@ import {
 import { FIND_FOLLOWED_USERS_POSTS } from '../../graphql/queries/post'
 import { FindFollowedUsersPostsQueryType } from '../../graphql/types/queries/post'
 import { Post } from '../../lib/src/types/Post'
+import { FIND_SUGGESTED_USERS } from '../../graphql/queries/user'
+import { FindSuggestedUsersQueryType } from '../../graphql/types/queries/user'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import PostCard from '../../lib/src/components/PostCard'
@@ -156,6 +163,37 @@ export default function FollowedUsersPosts() {
         navigateToHashtag(name)
     }
 
+    const findSuggestedUsers = useQuery<FindSuggestedUsersQueryType>(FIND_SUGGESTED_USERS)
+
+    const suggestedUsers = useMemo(() => {
+        if (!findSuggestedUsers.loading && !findSuggestedUsers.error && findSuggestedUsers.data) {
+            return findSuggestedUsers.data.findSuggestedUsers.map(user => ({
+                id: user.followableUser.user._id,
+                username: user.followableUser.user.username,
+                firstName: user.followableUser.user.firstName,
+                lastName: user.followableUser.user.lastName,
+                photoUrl: user.followableUser.user.photoUrl,
+                following: user.followableUser.following,
+                followingLoading: user.followableUser.followingLoading,
+                followedByUsernames: user.latestFollower ? [user.latestFollower.username] : [],
+                followedByCount: user.followersCount,
+            }))
+        }
+        return []
+    }, [findSuggestedUsers.loading, findSuggestedUsers.error, findSuggestedUsers.data])
+
+    const handleFollowSuggestedUser = useCallback((userId: string | number) => {
+        followUser(userId as string)
+    }, [])
+
+    const handleUnfollowSuggestedUser = useCallback((userId: string | number) => {
+        unfollowUser(userId as string)
+    }, [])
+
+    const handleClickSuggestedUser = useCallback((userId: string | number) => {
+        navigateToUserDetails(userId)
+    }, [])
+
     return (
         <Box
             id='followedUsersPostsContainer'
@@ -181,7 +219,7 @@ export default function FollowedUsersPosts() {
                     justifyContent='center'
                     width='100%'
                     display='flex'
-                    paddingTop='22px'
+                    paddingTop='8px'
                     flexDirection='row'
                 >
                     <Box
@@ -264,12 +302,11 @@ export default function FollowedUsersPosts() {
                     </Box>
                     <TopFiveSuggestedUsers
                         authUser={authUser}
-                        users={[]}
-                        isInitialLoading={false}
-                        onFollowUser={console.log}
-                        onUnfollowUser={console.log}
-                        onClickUser={console.log}
-                        onClickAuthUser={console.log}
+                        users={suggestedUsers}
+                        isInitialLoading={findSuggestedUsers.loading}
+                        onFollowUser={handleFollowSuggestedUser}
+                        onUnfollowUser={handleUnfollowSuggestedUser}
+                        onClickUser={handleClickSuggestedUser}
                         onSeeAll={console.log} />
                 </Box>
             </Box>
