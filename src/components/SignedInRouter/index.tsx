@@ -183,7 +183,7 @@ export default function SignedInRouter() {
                         Explore
                     </div>
                 } />
-                <Route path='/explore/people' element={
+                <Route path='/people/suggested' element={
                     <SuggestedUsers />
                 } />
                 <Route path='/tags/:name' element={

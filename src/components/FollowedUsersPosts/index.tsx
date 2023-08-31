@@ -198,7 +198,7 @@ export default function FollowedUsersPosts() {
     const navigate = useNavigate()
 
     const handleClickSeeAllSuggestedUsers = () => {
-        navigate('/explore/people')
+        navigate('/people/suggested')
     }
 
     return (
