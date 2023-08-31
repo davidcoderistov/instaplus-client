@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import {
     useAuthUser,
@@ -194,6 +195,12 @@ export default function FollowedUsersPosts() {
         navigateToUserDetails(userId)
     }, [])
 
+    const navigate = useNavigate()
+
+    const handleClickSeeAllSuggestedUsers = () => {
+        navigate('/explore/people')
+    }
+
     return (
         <Box
             id='followedUsersPostsContainer'
@@ -307,7 +314,7 @@ export default function FollowedUsersPosts() {
                         onFollowUser={handleFollowSuggestedUser}
                         onUnfollowUser={handleUnfollowSuggestedUser}
                         onClickUser={handleClickSuggestedUser}
-                        onSeeAll={console.log} />
+                        onSeeAll={handleClickSeeAllSuggestedUsers} />
                 </Box>
             </Box>
             <PostLikes

@@ -21,6 +21,7 @@ import FollowedUsersPosts from '../FollowedUsersPosts'
 import PostView from '../PostView'
 import UserDetails from '../UserDetails'
 import HashtagPosts from '../HashtagPosts'
+import SuggestedUsers from '../SuggestedUsers'
 
 
 export default function SignedInRouter() {
@@ -181,6 +182,9 @@ export default function SignedInRouter() {
                     <div style={{ color: 'white' }}>
                         Explore
                     </div>
+                } />
+                <Route path='/explore/people' element={
+                    <SuggestedUsers />
                 } />
                 <Route path='/tags/:name' element={
                     <HashtagPosts />
