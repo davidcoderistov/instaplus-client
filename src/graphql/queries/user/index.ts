@@ -79,3 +79,26 @@ export const FIND_FOLLOWING_FOR_USER = gql`
         }
     }
 `
+
+export const FIND_SUGGESTED_USERS = gql`
+    query findSuggestedUsers {
+        findSuggestedUsers {
+            followableUser {
+                user {
+                    _id
+                    firstName
+                    lastName
+                    username
+                    photoUrl
+                }
+                following
+                followingLoading @client
+            }
+            followersCount
+            latestFollower {
+                _id
+                username
+            }
+        }
+    }
+`

@@ -1,4 +1,4 @@
-import { User, UserDetails, FollowableUser } from '../../models'
+import { User, UserDetails, FollowableUser, SuggestedUser } from '../../models'
 import { NextCursor } from '../../../../types'
 
 
@@ -22,4 +22,8 @@ export interface FindFollowingForUserQueryType {
         data: FollowableUser[]
         nextCursor: NextCursor
     }
+}
+
+export interface FindSuggestedUsersQueryType {
+    findSuggestedUsers: SuggestedUser[]
 }

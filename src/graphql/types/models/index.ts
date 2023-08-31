@@ -127,3 +127,9 @@ export interface UserDetails {
     mutualFollowersCount: number
     latestTwoMutualFollowersUsernames: string[]
 }
+
+export interface SuggestedUser {
+    followableUser: FollowableUser
+    followersCount: number
+    latestFollower: Pick<User, '_id' | 'username'>
+}
