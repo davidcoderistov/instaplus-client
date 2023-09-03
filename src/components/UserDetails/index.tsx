@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useAuthUser } from '../../hooks/misc'
 import { useLocation, useParams } from 'react-router-dom'
+import { useFollowUser, useUnfollowUser } from '../../hooks/graphql'
 import { useQuery } from '@apollo/client'
 import { FIND_USER_DETAILS } from '../../graphql/queries/user'
 import { FindUserDetailsQueryType } from '../../graphql/types/queries/user'
@@ -168,6 +169,10 @@ export default function UserDetails() {
     const handleCloseFollowingModal = () => {
         setViewFollowingUserId(null)
     }
+
+    const followUser = useFollowUser()
+
+    const unfollowUser = useUnfollowUser()
 
     const [isPostsTabActive, setIsPostsTabActive] = useState(true)
 
@@ -368,6 +373,8 @@ export default function UserDetails() {
                                     mutualFollowersUsernames={findUserDetails.data.findUserDetails.latestTwoMutualFollowersUsernames}
                                     onViewFollowers={handleViewFollowers}
                                     onViewFollowing={handleViewFollowing}
+                                    onFollowUser={followUser}
+                                    onUnfollowUser={unfollowUser}
                                 />
                             ) : (
                                 <ProfileDescription loading />
