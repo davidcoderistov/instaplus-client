@@ -3,10 +3,13 @@ import { useApolloClient, useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
 import { FIND_COMMENTS_FOR_POST } from '../../graphql/queries/post'
 import { FindCommentsForPostQueryType } from '../../graphql/types/queries/post'
+import { FIND_FOLLOWED_USERS_POSTS } from '../../graphql/queries/post'
+import { FindFollowedUsersPostsQueryType } from '../../graphql/types/queries/post'
 import { CREATE_COMMENT } from '../../graphql/mutations/post'
 import { CreateCommentMutationType } from '../../graphql/types/mutations/post'
 import { Comment } from '../../graphql/types/models'
 import findCommentsForPostMutations from '../../apollo/mutations/post/findCommentsForPost'
+import findFollowedUsersPostsMutations from '../../apollo/mutations/post/findFollowedUsersPosts'
 
 
 const findCommentById = (comments: Comment[], commentId: string): Comment | null => {
@@ -90,6 +93,17 @@ export function usePostComment() {
                                     return findCommentsForPostMutations.addComment({
                                         queryData: findCommentsForPost,
                                         variables: { comment: createComment },
+                                    }).queryResult
+                                }
+                            })
+
+                            client.cache.updateQuery({
+                                query: FIND_FOLLOWED_USERS_POSTS,
+                            }, (findFollowedUsersPosts: FindFollowedUsersPostsQueryType | null) => {
+                                if (findFollowedUsersPosts) {
+                                    return findFollowedUsersPostsMutations.incrementCommentsCount({
+                                        queryData: findFollowedUsersPosts,
+                                        variables: { postId },
                                     }).queryResult
                                 }
                             })
