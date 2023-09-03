@@ -22,6 +22,7 @@ import PostView from '../PostView'
 import UserDetails from '../UserDetails'
 import HashtagPosts from '../HashtagPosts'
 import SuggestedUsers from '../SuggestedUsers'
+import SuggestedPosts from '../SuggestedPosts'
 
 
 export default function SignedInRouter() {
@@ -177,22 +178,17 @@ export default function SignedInRouter() {
                     onCloseModal={handleCloseCreatePostModal} />
             )}
             <Routes>
-                <Route path='/' element={<FollowedUsersPosts />} />
+                <Route path='/' element={
+                    <FollowedUsersPosts />
+                } />
                 <Route path='/explore' element={
-                    <div style={{ color: 'white' }}>
-                        Explore
-                    </div>
+                    <SuggestedPosts />
                 } />
                 <Route path='/people/suggested' element={
                     <SuggestedUsers />
                 } />
                 <Route path='/tags/:name' element={
                     <HashtagPosts />
-                } />
-                <Route path='/reels' element={
-                    <div style={{ color: 'white' }}>
-                        Reels
-                    </div>
                 } />
                 <Route path='/chat' element={
                     <Chat />
