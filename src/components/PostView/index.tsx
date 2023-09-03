@@ -49,7 +49,7 @@ export default function PostView() {
                     id: post.post.creator.user._id,
                     username: post.post.creator.user.username,
                     photoUrl: post.post.creator.user.photoUrl,
-                    following: post.post.creator.followingLoading,
+                    following: post.post.creator.following,
                     followingLoading: post.post.creator.followingLoading,
                 },
                 isLiked: post.liked,
