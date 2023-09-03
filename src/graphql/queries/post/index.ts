@@ -30,6 +30,7 @@ export const FIND_FOLLOWED_USERS_POSTS = gql`
                             photoUrl
                         }
                         following
+                        followingLoading @client
                     }
                     createdAt
                 }
@@ -166,6 +167,7 @@ export const FIND_POST_DETAILS_BY_ID = gql`
                         photoUrl
                     }
                     following
+                    followingLoading @client
                 }
                 createdAt
             }
