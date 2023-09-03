@@ -2,7 +2,7 @@ import React, { useRef, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Button from '../Button'
-import { useSnackbar } from 'notistack'
+import FileInput from '../FileInput'
 
 
 interface Props {
@@ -20,27 +20,13 @@ interface Props {
 
 export default function ChatFooterAction(props: Props) {
 
-    const { enqueueSnackbar } = useSnackbar()
-
     const fileInputRef = useRef<HTMLInputElement | null>(null)
 
-    const handleChangeFile = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleUploadFile = useCallback((files: File[]) => {
         if (!props.isUploadingPhoto) {
-            if (event.target.files) {
-                const file: File | null = event.target.files[0]
-                if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
-                    props.onUploadFile(props.chatId, file)
-                } else {
-                    enqueueSnackbar('You can upload photos and videos only', {
-                        variant: 'error',
-                        anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
-                        autoHideDuration: 3000,
-                    })
-                }
-                event.target.value = ''
-            }
+            props.onUploadFile(props.chatId, files[0])
         }
-    }, [props.onUploadFile, enqueueSnackbar, props.chatId, props.isUploadingPhoto])
+    }, [props.onUploadFile, props.chatId, props.isUploadingPhoto])
 
     const handleClickUploadFile = () => {
         fileInputRef.current?.click()
@@ -110,12 +96,10 @@ export default function ChatFooterAction(props: Props) {
                             <CircularProgress sx={{ color: '#FFFFFF' }} size={24} />
                         ) : (
                             <>
-                                <input
+                                <FileInput
                                     ref={fileInputRef}
-                                    type='file'
-                                    accept='image/*,video/*'
-                                    onChange={handleChangeFile}
-                                    style={{ display: 'none' }}
+                                    multiple={false}
+                                    onUploadFiles={handleUploadFile}
                                 />
                                 <svg
                                     aria-label='Add Photo or Video'
