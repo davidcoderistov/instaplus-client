@@ -69,3 +69,10 @@ export interface FindPostsForHashtagQueryType {
         count: number
     }
 }
+
+export interface FindSuggestedPostsQueryType {
+    findSuggestedPosts: {
+        data: Pick<Post, '_id' | 'photoUrls'>[]
+        count: number
+    }
+}

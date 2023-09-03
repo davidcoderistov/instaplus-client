@@ -232,3 +232,15 @@ export const FIND_POSTS_FOR_HASHTAG = gql`
         }
     }
 `
+
+export const FIND_SUGGESTED_POSTS = gql`
+    query findSuggestedPosts($offset: Int!, $limit: Int!) {
+        findSuggestedPosts(offset: $offset, limit: $limit) {
+            data {
+                _id
+                photoUrls
+            }
+            count
+        }
+    }
+`
