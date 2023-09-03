@@ -1,7 +1,7 @@
 import React from 'react'
 import Box from '@mui/material/Box'
 import Button from '../Button'
-import { enqueueSnackbar } from 'notistack'
+import FileInput from '../FileInput'
 
 
 interface Props {
@@ -9,21 +9,6 @@ interface Props {
 }
 
 export default function UploadMedia(props: Props) {
-
-    const handleUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
-            const files = Array.from(event.target.files)
-            if (files.every(file => file && (file.type.startsWith('image/')))) {
-                props.onUploadFiles(files)
-                event.target.value = ''
-                return
-            }
-        }
-        enqueueSnackbar('You can upload photos only', {
-            variant: 'error', anchorOrigin: { horizontal: 'right', vertical: 'bottom' }, autoHideDuration: 3000,
-        })
-        event.target.value = ''
-    }
 
     return (
         <Box
@@ -134,12 +119,9 @@ export default function UploadMedia(props: Props) {
                     text={
                         <>
                             Select from computer
-                            <input
-                                type='file'
-                                hidden
+                            <FileInput
                                 multiple
-                                accept='image/*,video/*'
-                                onChange={handleUploadFile} />
+                                onUploadFiles={props.onUploadFiles} />
                         </>
                     }
                     onClick={() => {
