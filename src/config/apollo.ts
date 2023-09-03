@@ -110,6 +110,9 @@ const cache = new InMemoryCache({
                 findSavedPostsForUser: {
                     keyArgs: false,
                 },
+                findSuggestedPosts: {
+                    keyArgs: false,
+                },
             },
         },
         Chat: {
