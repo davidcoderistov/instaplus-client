@@ -23,6 +23,7 @@ import UserDetails from '../UserDetails'
 import HashtagPosts from '../HashtagPosts'
 import SuggestedUsers from '../SuggestedUsers'
 import SuggestedPosts from '../SuggestedPosts'
+import ProfileSettings from '../ProfileSettings'
 
 
 export default function SignedInRouter() {
@@ -201,6 +202,9 @@ export default function SignedInRouter() {
                 } />
                 <Route path='/profile' element={
                     <UserDetails />
+                } />
+                <Route path='/accounts/edit' element={
+                    <ProfileSettings />
                 } />
                 <Route path='*' element={
                     <Navigate to='/' replace />
