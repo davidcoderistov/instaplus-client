@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useAuthUser } from '../../hooks/misc'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useParams, useNavigate } from 'react-router-dom'
 import { useFollowUser, useUnfollowUser } from '../../hooks/graphql'
 import { useQuery } from '@apollo/client'
 import { FIND_USER_DETAILS } from '../../graphql/queries/user'
@@ -145,6 +145,12 @@ export default function UserDetails() {
     const userId = isProfileView ? authUser._id : params.userId
 
     const findUserDetails = useQuery<FindUserDetailsQueryType>(FIND_USER_DETAILS, { variables: { userId } })
+
+    const navigate = useNavigate()
+
+    const handleEditUserProfile = () => {
+        navigate('/accounts/edit')
+    }
 
     const [viewFollowersUserId, setViewFollowersUserId] = useState<string | null>(null)
 
@@ -371,6 +377,7 @@ export default function UserDetails() {
                                     followingCount={findUserDetails.data.findUserDetails.followingCount}
                                     mutualFollowersCount={findUserDetails.data.findUserDetails.mutualFollowersCount}
                                     mutualFollowersUsernames={findUserDetails.data.findUserDetails.latestTwoMutualFollowersUsernames}
+                                    onEditUserProfile={handleEditUserProfile}
                                     onViewFollowers={handleViewFollowers}
                                     onViewFollowing={handleViewFollowing}
                                     onFollowUser={followUser}
