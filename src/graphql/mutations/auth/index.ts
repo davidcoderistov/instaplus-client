@@ -81,3 +81,18 @@ export const CHANGE_PASSWORD = gql`
         }
     }
 `
+
+export const CHANGE_PROFILE_PHOTO = gql`
+    mutation changeProfilePhoto($photo: Upload!) {
+        changeProfilePhoto(photo: $photo) {
+            user {
+                _id
+                firstName
+                lastName
+                username
+                photoUrl
+            }
+            accessToken
+        }
+    }
+`
