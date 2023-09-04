@@ -6,6 +6,7 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import CssBaseline from '@mui/material/CssBaseline'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Avatar from '@mui/material/Avatar'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
@@ -34,7 +35,7 @@ const validationSchema = yup.object().shape({
     confirmNewPassword: yup.string()
         .required('Confirm new password is required')
         .min(8, 'Confirm new password must be at least 8 characters')
-        .oneOf([yup.ref('newPassword'), null], 'Passwords do not match'),
+        .oneOf([yup.ref('newPassword')], 'Passwords do not match'),
 })
 
 export interface ChangePasswordProps {
@@ -77,6 +78,9 @@ export default function ChangePassword(props: Props) {
                     mt: 4,
                 }}
             >
+                <Typography component='h1' variant='h5' sx={{ mb: 2 }} alignSelf='flex-start'>
+                    Change password
+                </Typography>
                 <Grid container spacing={2} sx={{ mb: 2 }}>
                     <Grid item xs={12}>
                         <Box

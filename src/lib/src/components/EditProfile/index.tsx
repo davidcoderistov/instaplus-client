@@ -7,6 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import IconButton from '@mui/material/IconButton'
 import Avatar from '@mui/material/Avatar'
@@ -93,9 +94,11 @@ export default function EditProfile(props: Props) {
 
             delegate.then(() => {
                 editor.getImage().toBlob(blob => {
-                    const photo = new File([blob], uploadFile.name, { type: blob.type })
-                    props.onSaveProfilePhoto(photo)
-                    setIsSavingProfilePhoto(false)
+                    if (blob) {
+                        const photo = new File([blob], uploadFile.name, { type: blob.type })
+                        props.onSaveProfilePhoto(photo)
+                        setIsSavingProfilePhoto(false)
+                    }
                 })
             })
         }
@@ -126,6 +129,9 @@ export default function EditProfile(props: Props) {
                     mt: 4,
                 }}
             >
+                <Typography component='h1' variant='h5' sx={{ mb: 2 }} alignSelf='flex-start'>
+                    Edit profile
+                </Typography>
                 <Grid container spacing={2} sx={{ mb: 2 }}>
                     <Grid item xs={12}>
                         <Box
