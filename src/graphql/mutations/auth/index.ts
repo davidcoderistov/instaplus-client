@@ -66,3 +66,18 @@ export const UPDATE_USER = gql`
         }
     }
 `
+
+export const CHANGE_PASSWORD = gql`
+    mutation changePassword($oldPassword: String!, $newPassword: String!, $confirmNewPassword: String!) {
+        changePassword(oldPassword: $oldPassword, newPassword: $newPassword, confirmNewPassword: $confirmNewPassword) {
+            user {
+                _id
+                firstName
+                lastName
+                username
+                photoUrl
+            }
+            accessToken
+        }
+    }
+`
