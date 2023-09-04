@@ -107,6 +107,7 @@ export default function EditProfile(props: Props) {
     useEffect(() => {
         if (!props.isSavingProfilePhoto) {
             setUploadFile(null)
+            setEditor(null)
         }
     }, [props.isSavingProfilePhoto])
 
