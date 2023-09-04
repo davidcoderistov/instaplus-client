@@ -1,10 +1,21 @@
 import { useState } from 'react'
 import { useAuthUser } from '../../hooks/misc'
+import { useSnackbar } from 'notistack'
+import { useMutation, ApolloError } from '@apollo/client'
+import { UPDATE_USER, CHANGE_PROFILE_PHOTO, CHANGE_PASSWORD } from '../../graphql/mutations/auth'
+import {
+    UpdateUserMutationType,
+    ChangeProfilePhotoMutationType,
+    ChangePasswordMutationType,
+} from '../../graphql/types/mutations/auth'
 import Box from '@mui/material/Box'
 import SettingsMenuItem from './SettingsMenuItem'
 import LogoutModal from '../LogoutModal'
-import EditProfile from '../../lib/src/components/EditProfile'
-import ChangePassword from '../../lib/src/components/ChangePassword'
+import EditProfile, { SaveProfileProps } from '../../lib/src/components/EditProfile'
+import ChangePassword, { ChangePasswordProps } from '../../lib/src/components/ChangePassword'
+import { AuthUser } from '../../graphql/types/models'
+import { User } from '../../types'
+import { getValidationError } from '../../utils'
 
 
 export default function ProfileSettings() {
@@ -32,7 +43,103 @@ export default function ProfileSettings() {
         setIsLogoutModalOpen(false)
     }
 
-    const [authUser] = useAuthUser()
+    const [authUser, setAuthUser] = useAuthUser()
+
+    const { enqueueSnackbar } = useSnackbar()
+
+    const [updateUser, { loading: isSavingProfile }] = useMutation<UpdateUserMutationType>(UPDATE_USER)
+
+    const handleSaveProfile = ({ data, setServerError }: SaveProfileProps) => {
+        updateUser({
+            variables: {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                username: data.username,
+            },
+        }).then(data => {
+            const updatedUser = data.data?.updateUser
+            if (updatedUser) {
+                setAuthUser(getAuthUser(updatedUser))
+                enqueueSnackbar('You have updated your profile successfully', { variant: 'success' })
+            } else {
+                enqueueSnackbar('Profile could not be updated. Please try again later', { variant: 'error' })
+            }
+        }).catch((err: ApolloError) => {
+            const validationError = getValidationError(err)
+            if (validationError?.firstName) {
+                return setServerError('firstName', validationError.firstName)
+            } else if (validationError?.lastName) {
+                return setServerError('lastName', validationError.lastName)
+            } else if (validationError?.username) {
+                return setServerError('username', validationError.username)
+            } else {
+                enqueueSnackbar('Profile could not be updated. Please try again later', { variant: 'error' })
+            }
+        })
+    }
+
+    const [changeProfilePhoto, { loading: isSavingProfilePhoto }] = useMutation<ChangeProfilePhotoMutationType>(CHANGE_PROFILE_PHOTO)
+
+    const handleSaveProfilePhoto = (photo: File) => {
+        changeProfilePhoto({
+            variables: {
+                photo,
+            },
+            context: {
+                hasUpload: true,
+            },
+        }).then(data => {
+            const updatedUser = data.data?.changeProfilePhoto
+            if (updatedUser) {
+                setAuthUser(getAuthUser(updatedUser))
+                enqueueSnackbar('You have updated your profile photo successfully', { variant: 'success' })
+            } else {
+                enqueueSnackbar('Profile photo could not be updated. Please try again later', { variant: 'error' })
+            }
+        }).catch(() => {
+            enqueueSnackbar('Profile photo could not be updated. Please try again later', { variant: 'error' })
+        })
+    }
+
+    const [changePassword, { loading: isChangingPassword }] = useMutation<ChangePasswordMutationType>(CHANGE_PASSWORD)
+
+    const handleChangePassword = ({ data, setServerError }: ChangePasswordProps) => {
+        changePassword({
+            variables: {
+                oldPassword: data.oldPassword,
+                newPassword: data.newPassword,
+                confirmNewPassword: data.confirmNewPassword,
+            },
+        }).then(data => {
+            const updatedUser = data.data?.changePassword
+            if (updatedUser) {
+                setAuthUser(getAuthUser(updatedUser))
+                enqueueSnackbar('You have changed your password successfully', { variant: 'success' })
+            } else {
+                enqueueSnackbar('Password could not be changed. Please try again later', { variant: 'error' })
+            }
+        }).catch((err: ApolloError) => {
+            const validationError = getValidationError(err)
+            if (validationError?.oldPassword) {
+                return setServerError('oldPassword', validationError.oldPassword)
+            } else if (validationError?.newPassword) {
+                return setServerError('newPassword', validationError.newPassword)
+            } else if (validationError?.confirmNewPassword) {
+                return setServerError('confirmNewPassword', validationError.confirmNewPassword)
+            } else {
+                enqueueSnackbar('Password could not be changed. Please try again later', { variant: 'error' })
+            }
+        })
+    }
+
+    const getAuthUser = ({ user, accessToken }: AuthUser): User => ({
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        username: user.username,
+        photoUrl: user.photoUrl,
+        accessToken,
+    })
 
     return (
         <Box
@@ -121,16 +228,16 @@ export default function ProfileSettings() {
                             {activeStep === 1 && (
                                 <EditProfile
                                     authUser={authUser}
-                                    onSaveProfile={console.log}
-                                    isSavingProfile={false}
-                                    onSaveProfilePhoto={console.log}
-                                    isSavingProfilePhoto={false} />
+                                    onSaveProfile={handleSaveProfile}
+                                    isSavingProfile={isSavingProfile}
+                                    onSaveProfilePhoto={handleSaveProfilePhoto}
+                                    isSavingProfilePhoto={isSavingProfilePhoto} />
                             )}
                             {activeStep === 2 && (
                                 <ChangePassword
                                     authUser={authUser}
-                                    onChangePassword={console.log}
-                                    isChangingPassword={false} />
+                                    onChangePassword={handleChangePassword}
+                                    isChangingPassword={isChangingPassword} />
                             )}
                         </Box>
                         <LogoutModal
