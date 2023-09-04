@@ -1,3 +1,7 @@
+import { useAuthUser } from '../../hooks/misc'
+import { useSnackbar } from 'notistack'
+import { useMutation } from '@apollo/client'
+import { LOGOUT } from '../../graphql/mutations/auth'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import LoadingButton from '@mui/lab/LoadingButton'
@@ -11,6 +15,21 @@ interface Props {
 }
 
 export default function LogoutModal(props: Props) {
+
+    const [, setAuthUser] = useAuthUser()
+
+    const { enqueueSnackbar } = useSnackbar()
+
+    const [logout, { loading }] = useMutation(LOGOUT)
+
+    const handleLogout = () => {
+        logout().then(() => {
+            setAuthUser(null)
+            props.onCloseModal()
+        }).catch(() => {
+            enqueueSnackbar('Could not log out. Please try again later', { variant: 'error' })
+        })
+    }
 
     return (
         <Dialog
@@ -124,8 +143,8 @@ export default function LogoutModal(props: Props) {
                                 borderTop: '1px solid #363636',
                                 borderBottom: '1px solid #363636',
                             }}
-                            onClick={console.log}
-                            loading={false}
+                            onClick={handleLogout}
+                            loading={loading}
                             disableElevation
                             disableRipple
                         >
