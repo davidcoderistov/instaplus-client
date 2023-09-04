@@ -51,3 +51,18 @@ export const LOGOUT = gql`
         }
     }
 `
+
+export const UPDATE_USER = gql`
+    mutation updateUser($firstName: String!, $lastName: String!, $username: String!) {
+        updateUser(firstName: $firstName, lastName: $lastName, username: $username) {
+            user {
+                _id
+                firstName
+                lastName
+                username
+                photoUrl
+            }
+            accessToken
+        }
+    }
+`
