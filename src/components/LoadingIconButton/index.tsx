@@ -13,8 +13,6 @@ interface Props {
 
 export default function LoadingIconButton({ color, loading, iconComponent, onClick }: Props) {
 
-    const size = iconComponent.props?.sx?.fontSize || 24
-
     return loading ? (
         <Button
             sx={{
@@ -24,7 +22,7 @@ export default function LoadingIconButton({ color, loading, iconComponent, onCli
             }}
             disabled={true}
         >
-            <CircularProgress size={size - 6} sx={{ color }} />
+            <CircularProgress size={18} sx={{ color }} />
         </Button>
     ) : (
         <IconButton
