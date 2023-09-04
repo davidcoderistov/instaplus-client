@@ -8,11 +8,19 @@ import { Visibility, VisibilityOff } from '@mui/icons-material'
 interface Props {
     id: string
     label: string
+    dark?: boolean
     error: boolean
     errorMessage: string
 }
 
-const PasswordInput = React.forwardRef<HTMLInputElement, Props>(({ id, label, error, errorMessage, ...rest }, ref) => {
+const PasswordInput = React.forwardRef<HTMLInputElement, Props>(({
+                                                                     id,
+                                                                     label,
+                                                                     dark,
+                                                                     error,
+                                                                     errorMessage,
+                                                                     ...rest
+                                                                 }, ref) => {
 
     const [showPassword, setShowPassword] = useState(false)
 
@@ -40,6 +48,16 @@ const PasswordInput = React.forwardRef<HTMLInputElement, Props>(({ id, label, er
             label={label}
             type={showPassword ? 'text' : 'password'}
             autoComplete={id}
+            sx={dark ? {
+                '& label.Mui-focused': {
+                    color: '#F5F5F5',
+                },
+                '& .MuiOutlinedInput-root': {
+                    '&.Mui-focused fieldset': {
+                        borderColor: '#F5F5F5',
+                    },
+                },
+            } : {}}
             InputProps={{
                 endAdornment: (
                     <InputAdornment position='end'>
