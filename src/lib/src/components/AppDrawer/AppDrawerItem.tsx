@@ -1,5 +1,6 @@
 import React from 'react'
 import Box from '@mui/material/Box'
+import { bindTrigger, PopupState } from 'material-ui-popup-state/hooks'
 
 
 interface Props {
@@ -9,10 +10,13 @@ interface Props {
     isBordered?: boolean
     icon: React.ReactNode
     activeIcon: React.ReactNode
+    popupState?: PopupState
     onClick?: (event: React.MouseEvent) => void
 }
 
 export default function AppDrawerItem(props: Props) {
+
+    const popoverProps = props.popupState ? bindTrigger(props.popupState) : {}
 
     return (
         <Box
@@ -38,6 +42,7 @@ export default function AppDrawerItem(props: Props) {
                         component='div'
                         display='block'
                         position='relative'
+                        {...popoverProps}
                     >
                         <Box
                             component='div'
