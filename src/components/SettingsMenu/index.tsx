@@ -80,7 +80,7 @@ export default function SettingsMenu(props: Props) {
                 {...bindPopover(popupState)}
                 anchorOrigin={{
                     vertical: 'top',
-                    horizontal: 'bottom',
+                    horizontal: 'left',
                 }}
                 transformOrigin={{
                     vertical: 'bottom',
