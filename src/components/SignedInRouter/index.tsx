@@ -8,7 +8,8 @@ import { MARK_MESSAGE_AS_READ } from '../../graphql/mutations/chat'
 import findChatsForUserMutations from '../../apollo/mutations/chat/findChatsForUser'
 import findMessagesByChatIdMutations from '../../apollo/mutations/chat/findMessagesByChatId'
 import { Message } from '../../graphql/types/models'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { useUserDetailsNavigation } from '../../hooks/misc'
 import { useAuthUser } from '../../hooks/misc'
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -24,6 +25,7 @@ import HashtagPosts from '../HashtagPosts'
 import SuggestedUsers from '../SuggestedUsers'
 import SuggestedPosts from '../SuggestedPosts'
 import ProfileSettings from '../ProfileSettings'
+import LogoutModal from '../LogoutModal'
 
 
 export default function SignedInRouter() {
@@ -147,6 +149,28 @@ export default function SignedInRouter() {
         setIsCreatePostModalOpen(false)
     }
 
+    const navigate = useNavigate()
+
+    const handleViewSettings = () => {
+        navigate('/accounts/edit')
+    }
+
+    const navigateToUserDetails = useUserDetailsNavigation()
+
+    const handleViewProfile = () => {
+        navigateToUserDetails(authUser._id)
+    }
+
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
+
+    const handleLogout = () => {
+        setIsLogoutModalOpen(true)
+    }
+
+    const handleCloseLogoutModal = () => {
+        setIsLogoutModalOpen(false)
+    }
+
     return (
         <Box
             component='div'
@@ -166,7 +190,10 @@ export default function SignedInRouter() {
                 isSettingsOpen={false}
                 onOpenSearchDrawer={handleOpenSearchDrawer}
                 onOpenNotificationsDrawer={handleOpenNotificationsDrawer}
-                onOpenCreateNewPost={handleOpenCreatePostModal} />
+                onOpenCreateNewPost={handleOpenCreatePostModal}
+                onViewSettings={handleViewSettings}
+                onViewProfile={handleViewProfile}
+                onLogout={handleLogout} />
             <NotificationsDrawer
                 open={isNotificationsDrawerOpen}
                 onClose={handleCloseNotificationsDrawer} />
@@ -178,6 +205,9 @@ export default function SignedInRouter() {
                     open={isCreatePostModalOpen}
                     onCloseModal={handleCloseCreatePostModal} />
             )}
+            <LogoutModal
+                open={isLogoutModalOpen}
+                onCloseModal={handleCloseLogoutModal} />
             <Routes>
                 <Route path='/' element={
                     <FollowedUsersPosts />
