@@ -9,6 +9,7 @@ import { NavLink as Link } from 'react-router-dom'
 import AppDrawerItem from './AppDrawerItem'
 import AppDrawerIcon from './AppDrawerIcon'
 import AppDrawerAvatar from './AppDrawerAvatar'
+import SettingsMenu from '../SettingsMenu'
 
 
 const StyledLink = styled(Link)({
@@ -57,6 +58,12 @@ interface Props {
     onOpenNotificationsDrawer(event: React.MouseEvent): void
 
     onOpenCreateNewPost(): void
+
+    onViewSettings(): void
+
+    onViewProfile(): void
+
+    onLogout(): void
 }
 
 export default function AppDrawer(props: Props) {
@@ -419,37 +426,12 @@ export default function AppDrawer(props: Props) {
                 display='block'
                 width='100%'
             >
-                <AppDrawerItem
-                    name='More'
-                    isActive={props.isSettingsOpen}
-                    isCondensed={!isDrawerOpen}
-                    icon={
-                        <AppDrawerIcon
-                            ariaLabel='More'
-                            path={
-                                <>
-                                    <line fill='none' stroke='currentColor' strokeLinecap='round'
-                                          strokeLinejoin='round' strokeWidth='2'
-                                          x1='3' x2='21' y1='4' y2='4' />
-                                    <line fill='none' stroke='currentColor' strokeLinecap='round'
-                                          strokeLinejoin='round' strokeWidth='2'
-                                          x1='3' x2='21' y1='12' y2='12' />
-                                    <line fill='none' stroke='currentColor' strokeLinecap='round'
-                                          strokeLinejoin='round' strokeWidth='2'
-                                          x1='3' x2='21' y1='20' y2='20' />
-                                </>
-                            }
-                        />
-                    }
-                    activeIcon={
-                        <AppDrawerIcon
-                            ariaLabel='More'
-                            path={
-                                <path
-                                    d='M3.5 6.5h17a1.5 1.5 0 0 0 0-3h-17a1.5 1.5 0 0 0 0 3Zm17 4h-17a1.5 1.5 0 0 0 0 3h17a1.5 1.5 0 0 0 0-3Zm0 7h-17a1.5 1.5 0 0 0 0 3h17a1.5 1.5 0 0 0 0-3Z' />
-                            }
-                        />
-                    } />
+                <SettingsMenu
+                    isDrawerOpen={isDrawerOpen}
+                    onViewSettings={props.onViewSettings}
+                    onViewProfile={props.onViewProfile}
+                    onLogout={props.onLogout}
+                />
             </Box>
         </Drawer>
     )
