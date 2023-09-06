@@ -19,6 +19,7 @@ interface StaticProps {
         following: boolean
         followingLoading: boolean
     }
+    authUserId: string | number
     post: {
         id: string | number
         location: string | null
@@ -49,6 +50,7 @@ interface LoadingProps {
     loading: true
     dense?: boolean
     user?: never
+    authUserId?: never
     post?: never
     popupState?: never
 
@@ -485,7 +487,7 @@ export default function PostHeader(props: Props) {
                                 position='relative'
                                 sx={{ verticalAlign: 'baseline' }}
                             >
-                                {!props.loading && (!props.user.following || props.user.followingLoading) ? (
+                                {!props.loading && (props.user.id !== props.authUserId && (!props.user.following || props.user.followingLoading)) ? (
                                     <Box
                                         component='span'
                                         marginLeft='4px'
@@ -499,7 +501,7 @@ export default function PostHeader(props: Props) {
                                     <Box component='span' display='inline'>&#8203;</Box>
                                 )}
                             </Box>
-                            {!props.loading && (!props.user.following || props.user.followingLoading) && (
+                            {!props.loading && (props.user.id !== props.authUserId && (!props.user.following || props.user.followingLoading)) && (
                                 <Button
                                     variant='primary'
                                     text='Follow'
@@ -707,7 +709,7 @@ export default function PostHeader(props: Props) {
                 <>
                     <PostSettingsModal
                         open={isSettingsModalOpen}
-                        following={props.user.following}
+                        following={props.authUserId !== props.user.id && props.user.following}
                         onUnfollowUser={handleOpenUnfollowUserModal}
                         onGoToPost={handleGoToPost}
                         onViewProfile={handleViewProfileFromModal}

@@ -14,6 +14,7 @@ import { PopupState } from 'material-ui-popup-state/hooks'
 
 interface Props {
     dense?: boolean
+    authUserId: string | number
     post: Post | null
     postLoading: boolean
     comments: Comment[]
@@ -190,6 +191,7 @@ export default function PostPreview(props: Props) {
                             <PostHeader loading />
                         ) : props.post ? (
                             <PostHeader
+                                authUserId={props.authUserId}
                                 post={props.post}
                                 user={props.post.creator}
                                 popupState={props.popupState}

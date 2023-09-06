@@ -16,6 +16,7 @@ interface Props {
 
     onClose(): void
 
+    authUserId: string | number
     post: Post | null
     postLoading: boolean
     comments: Comment[]
@@ -232,6 +233,7 @@ export default function PostPreviewModal(props: Props) {
                                         photoUrls={props.post ? props.post.photoUrls : []}
                                     />
                                     <PostPreview
+                                        authUserId={props.authUserId}
                                         post={props.post}
                                         postLoading={props.postLoading}
                                         comments={props.comments}
