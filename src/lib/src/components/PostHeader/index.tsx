@@ -4,6 +4,7 @@ import Skeleton from '@mui/material/Skeleton'
 import Button from '../Button'
 import PostSettingsModal from '../PostSettingsModal'
 import UnfollowUserModal from '../UnfollowUserModal'
+import { PopupState, bindHover } from 'material-ui-popup-state/hooks'
 import { getTimeElapsed } from '../../utils'
 import Avatar from '@mui/material/Avatar'
 
@@ -23,6 +24,7 @@ interface StaticProps {
         location: string | null
         createdAt: number
     }
+    popupState: PopupState
 
     onFollowUser(userId: string | number): void
 
@@ -31,6 +33,8 @@ interface StaticProps {
     onGoToPost(postId: string | number): void
 
     onViewProfile(id: string | number): void
+
+    onHoverUser(userId: string | number): void
 
     onOpenSettingsModal?(): void
 
@@ -46,6 +50,7 @@ interface LoadingProps {
     dense?: boolean
     user?: never
     post?: never
+    popupState?: never
 
     onFollowUser?(): never
 
@@ -54,6 +59,8 @@ interface LoadingProps {
     onGoToPost?(): never
 
     onViewProfile?(): never
+
+    onHoverUser?(): never
 
     onOpenSettingsModal?(): never
 
@@ -88,6 +95,14 @@ export default function PostHeader(props: Props) {
     const handleViewProfile = () => {
         if (!props.loading) {
             props.onViewProfile(props.user.id)
+        }
+    }
+
+    const hoverProps = props.loading ? {} : bindHover(props.popupState)
+
+    const handleHoverUser = () => {
+        if (!props.loading) {
+            props.onHoverUser(props.user.id)
         }
     }
 
@@ -245,6 +260,8 @@ export default function PostHeader(props: Props) {
                                         borderTopStyle: 'solid',
                                         overflowY: 'hidden',
                                     }}
+                                    {...hoverProps}
+                                    onMouseEnter={handleHoverUser}
                                     onClick={handleViewProfile}
                                 >
                                     {props.loading ? (
@@ -317,6 +334,8 @@ export default function PostHeader(props: Props) {
                                     verticalAlign: 'baseline',
                                     cursor: props.loading ? 'default' : 'pointer',
                                 }}
+                                {...hoverProps}
+                                onMouseEnter={handleHoverUser}
                                 onClick={handleViewProfile}
                             >
                                 <Box

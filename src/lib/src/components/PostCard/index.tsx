@@ -5,12 +5,14 @@ import PostActions from '../PostActions'
 import PostLikes from '../PostLikes'
 import PostDescription from '../PostDescription'
 import { Post } from '../../types/Post'
+import { PopupState } from 'material-ui-popup-state/hooks'
 import { formatNumber } from '../../utils'
 
 
 interface StaticProps {
     loading?: never
     post: Post
+    popupState: PopupState
 
     onFollowUser(userId: string | number): void
 
@@ -34,12 +36,15 @@ interface StaticProps {
 
     onViewUser(userId: string | number): void
 
+    onHoverUser(userId: string | number): void
+
     onViewHashtag?(name: string): void
 }
 
 interface LoadingProps {
     loading: true
     post?: never
+    popupState?: never
 
     onFollowUser?(): never
 
@@ -62,6 +67,8 @@ interface LoadingProps {
     onViewPostComments?(): never
 
     onViewUser?(): never
+
+    onHoverUser?(): never
 
     onViewHashtag?(): never
 }
@@ -132,10 +139,12 @@ export default function PostCard(props: Props) {
                             dense
                             user={props.post.creator}
                             post={props.post}
+                            popupState={props.popupState}
                             onFollowUser={props.onFollowUser}
                             onUnfollowUser={props.onUnfollowUser}
                             onGoToPost={props.onViewPost}
-                            onViewProfile={props.onViewUser} />
+                            onViewProfile={props.onViewUser}
+                            onHoverUser={props.onHoverUser} />
                     )}
                 </Box>
                 <Box

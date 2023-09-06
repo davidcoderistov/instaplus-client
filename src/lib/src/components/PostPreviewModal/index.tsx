@@ -8,6 +8,7 @@ import PostPreview from '../PostPreview'
 import { useClickOutside } from '../../hooks'
 import { Post } from '../../types/Post'
 import { Comment } from '../../types/Comment'
+import { PopupState } from 'material-ui-popup-state/hooks'
 
 
 interface Props {
@@ -23,6 +24,7 @@ interface Props {
     isPostingComment: boolean
     viewingPostLikes: boolean
     viewingCommentLikes: boolean
+    popupState: PopupState
 
     onFollowUser(userId: string | number): void
 
@@ -45,6 +47,8 @@ interface Props {
     onFetchMoreComments(): void
 
     onViewUser(userId: string | number): void
+
+    onHoverUser(userId: string | number): void
 
     onViewCommentLikes(commentId: string | number): void
 
@@ -234,6 +238,7 @@ export default function PostPreviewModal(props: Props) {
                                         commentsLoading={props.commentsLoading}
                                         hasMoreComments={props.hasMoreComments}
                                         isPostingComment={props.isPostingComment}
+                                        popupState={props.popupState}
                                         onFollowUser={props.onFollowUser}
                                         onUnfollowUser={props.onUnfollowUser}
                                         onLikePost={props.onLikePost}
@@ -245,6 +250,7 @@ export default function PostPreviewModal(props: Props) {
                                         onViewPost={props.onViewPost}
                                         onFetchMoreComments={props.onFetchMoreComments}
                                         onViewUser={props.onViewUser}
+                                        onHoverUser={props.onHoverUser}
                                         onViewCommentLikes={props.onViewCommentLikes}
                                         onReplyToComment={props.onReplyToComment}
                                         onLikeComment={props.onLikeComment}

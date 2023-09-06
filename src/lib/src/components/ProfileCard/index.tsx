@@ -6,6 +6,7 @@ import Button from '../Button'
 import Skeleton from '@mui/material/Skeleton'
 import Stats from './Stats'
 import FollowingButton from '../FollowingButton'
+import _range from 'lodash/range'
 
 
 interface StaticProps {
@@ -15,7 +16,7 @@ interface StaticProps {
         username: string
         firstName: string
         lastName: string
-        photoUrl?: string | null
+        photoUrl: string | null
         following: boolean
         followingLoading: boolean
     }
@@ -24,7 +25,8 @@ interface StaticProps {
     followingCount: number
     posts: {
         id: string | number
-        photoUrl: string
+        photoUrl: string | null
+        multiple: boolean
     }[]
 
     onClickUser(id: string | number): void
@@ -78,6 +80,12 @@ export default function ProfileCard(props: Props) {
             props.onMessageUser(props.user.id)
         }
     }, [props.loading, props.onMessageUser])
+
+    const handleClickPost = useCallback((postId: string | number) => {
+        if (!props.loading) {
+            props.onClickPost(postId)
+        }
+    }, [props.loading])
 
     return (
         <Box
@@ -257,17 +265,17 @@ export default function ProfileCard(props: Props) {
                     }}
                 >
                     <Stats
-                        loading={props.loading}
+                        loading={Boolean(props.loading)}
                         title='posts'
                         count={props.postsCount}
                     />
                     <Stats
-                        loading={props.loading}
+                        loading={Boolean(props.loading)}
                         title='followers'
                         count={props.followersCount}
                     />
                     <Stats
-                        loading={props.loading}
+                        loading={Boolean(props.loading)}
                         title='following'
                         count={props.followingCount}
                     />
@@ -278,11 +286,12 @@ export default function ProfileCard(props: Props) {
             >
                 {props.loading || props.posts.length > 0 ? (
                     <MediaGallery
-                        items={props.loading ? [...Array(3).keys()].map(index => ({
+                        items={props.loading ? _range(3).map(index => ({
                             id: index,
                             photoUrl: null,
+                            multiple: false,
                         })) : props.posts}
-                        onClick={props.onClickPost}
+                        onClick={handleClickPost}
                     />
                 ) : (
                     <Box
