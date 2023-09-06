@@ -13,6 +13,7 @@ interface StaticProps {
     loading?: never
     post: Post
     popupState: PopupState
+    authUserId: string | number
 
     onFollowUser(userId: string | number): void
 
@@ -45,6 +46,7 @@ interface LoadingProps {
     loading: true
     post?: never
     popupState?: never
+    authUserId?: never
 
     onFollowUser?(): never
 
@@ -138,6 +140,7 @@ export default function PostCard(props: Props) {
                         <PostHeader
                             dense
                             user={props.post.creator}
+                            authUserId={props.authUserId}
                             post={props.post}
                             popupState={props.popupState}
                             onFollowUser={props.onFollowUser}
