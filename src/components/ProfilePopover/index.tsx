@@ -1,4 +1,6 @@
 import { useQuery } from '@apollo/client'
+import { useUserDetailsNavigation, usePostViewNavigation } from '../../hooks/misc'
+import { useFollowUser, useUnfollowUser } from '../../hooks/graphql'
 import { FIND_USER_DETAILS } from '../../graphql/queries/user'
 import { FindUserDetailsQueryType } from '../../graphql/types/queries/user'
 import { FIND_LATEST_POSTS_FOR_USER } from '../../graphql/queries/post'
@@ -27,6 +29,14 @@ export default function ProfilePopover(props: Props) {
         },
         skip: Boolean(!props.userId),
     })
+
+    const navigateToUserDetails = useUserDetailsNavigation()
+
+    const navigateToPostView = usePostViewNavigation()
+
+    const followUser = useFollowUser()
+
+    const unfollowUser = useUnfollowUser()
 
     return (
         <HoverPopover
@@ -67,11 +77,11 @@ export default function ProfilePopover(props: Props) {
                         photoUrl: post.photoUrls[0],
                         multiple: false,
                     }))}
-                    onClickUser={console.log}
+                    onClickUser={navigateToUserDetails}
                     onMessageUser={console.log}
-                    onFollowUser={console.log}
-                    onUnfollowUser={console.log}
-                    onClickPost={console.log}
+                    onFollowUser={followUser}
+                    onUnfollowUser={unfollowUser}
+                    onClickPost={navigateToPostView}
                 />
             ) : null}
         </HoverPopover>
