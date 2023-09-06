@@ -2,6 +2,7 @@ import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import SuggestedUserListItem from '../SuggestedUserListItem'
+import { PopupState } from 'material-ui-popup-state/hooks'
 import _range from 'lodash/range'
 
 
@@ -27,9 +28,11 @@ interface Props {
     }
     users: User[]
     isInitialLoading: boolean
+    popupState: PopupState
     onFollowUser: (id: string | number) => void
     onUnfollowUser: (id: string | number) => void
     onClickUser: (id: string | number) => void
+    onHoverUser: (id: string | number) => void
     onSeeAll: () => void
 }
 
@@ -613,6 +616,8 @@ export default function TopFiveSuggestedUsers(props: Props) {
                                                     onFollowUser={props.onFollowUser}
                                                     onUnfollowUser={props.onUnfollowUser}
                                                     onClickUser={props.onClickUser}
+                                                    popupState={props.popupState}
+                                                    onHoverUser={props.onHoverUser}
                                                 />
                                             ))}
                                         </Box>
