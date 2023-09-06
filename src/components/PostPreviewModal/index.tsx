@@ -72,7 +72,7 @@ export default function PostPreviewModal(props: Props) {
     const postRef = useRef<Node | null>(null)
 
     const closeModal = () => {
-        if (!settingsModalOpenRef.current && !unfollowUserModalRef.current && !props.viewingPostLikes && !props.viewingCommentLikes) {
+        if (!settingsModalOpenRef.current && !unfollowUserModalRef.current && !props.viewingPostLikes && !props.viewingCommentLikes && !props.popupState.isOpen) {
             props.onClose()
         }
     }
