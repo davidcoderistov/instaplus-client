@@ -297,6 +297,7 @@ export default function FollowedUsersPosts() {
                                         {posts.map(post => (
                                             <PostCard
                                                 key={post.id}
+                                                authUserId={authUser._id}
                                                 post={post}
                                                 popupState={popupState}
                                                 onFollowUser={followUser}

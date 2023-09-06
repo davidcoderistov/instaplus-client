@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react'
 import { useQuery } from '@apollo/client'
 import { usePopupState } from 'material-ui-popup-state/hooks'
 import { useParams } from 'react-router-dom'
-import { useUserDetailsNavigation, useHashtagNavigation, usePostViewNavigation } from '../../hooks/misc'
+import { useAuthUser, useUserDetailsNavigation, useHashtagNavigation, usePostViewNavigation } from '../../hooks/misc'
 import {
     useCommentLikes,
     useCommentReplies,
@@ -34,6 +34,8 @@ import { Post } from '../../lib/src/types/Post'
 
 
 export default function PostView() {
+
+    const [authUser] = useAuthUser()
 
     const { postId } = useParams()
 
@@ -227,6 +229,7 @@ export default function PostView() {
                                     />
                                     <PostPreview
                                         dense
+                                        authUserId={authUser._id}
                                         post={post}
                                         postLoading={findPostDetailsById.loading}
                                         comments={comments}

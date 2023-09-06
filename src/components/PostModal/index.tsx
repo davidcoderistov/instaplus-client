@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import { usePopupState } from 'material-ui-popup-state/hooks'
-import { useUserDetailsNavigation, useHashtagNavigation, usePostViewNavigation } from '../../hooks/misc'
+import { useAuthUser, useUserDetailsNavigation, useHashtagNavigation, usePostViewNavigation } from '../../hooks/misc'
 import { useQuery } from '@apollo/client'
 import { FIND_POST_DETAILS_BY_ID } from '../../graphql/queries/post'
 import { FindPostDetailsByIdQueryType } from '../../graphql/types/queries/post'
@@ -36,6 +36,8 @@ interface Props {
 }
 
 export default function PostModal(props: Props) {
+
+    const [authUser] = useAuthUser()
 
     const findPostDetailsById = useQuery<FindPostDetailsByIdQueryType>(FIND_POST_DETAILS_BY_ID, {
         variables: { postId: props.postId },
@@ -143,6 +145,7 @@ export default function PostModal(props: Props) {
             <PostPreviewModal
                 open={true}
                 onClose={props.onClose}
+                authUserId={authUser._id}
                 post={post}
                 postLoading={findPostDetailsById.loading}
                 comments={comments}
