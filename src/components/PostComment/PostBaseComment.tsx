@@ -2,6 +2,7 @@ import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Skeleton from '@mui/material/Skeleton'
 import PostDescription from '../PostDescription'
+import { PopupState, bindHover } from 'material-ui-popup-state/hooks'
 import { getTimeElapsed, formatNumber } from '../../utils'
 
 
@@ -24,10 +25,13 @@ interface Comment {
 interface StaticProps {
     loading?: never
     comment: Comment
+    popupState: PopupState
     condensed?: boolean
     dense?: boolean
 
     onViewUser(userId: string | number): void
+
+    onHoverUser(userId: string | number): void
 
     onViewCommentLikes(commentId: string | number): void
 
@@ -43,10 +47,13 @@ interface StaticProps {
 interface LoadingProps {
     loading: true
     comment?: never
+    popupState?: never
     condensed?: boolean
     dense?: boolean
 
     onViewUser?(): never
+
+    onHoverUser?(): never
 
     onViewCommentLikes?(): never
 
@@ -70,6 +77,14 @@ export default function PostBaseComment(props: Props) {
     const handleViewUser = () => {
         if (!props.loading) {
             props.onViewUser(props.comment.creator.id)
+        }
+    }
+
+    const hoverProps = props.loading ? {} : bindHover(props.popupState)
+
+    const handleHoverUser = () => {
+        if (!props.loading) {
+            props.onHoverUser(props.comment.creator.id)
         }
     }
 
@@ -192,6 +207,8 @@ export default function PostBaseComment(props: Props) {
                                             touchAction: 'manipulation',
                                             cursor: props.loading ? 'default' : 'pointer',
                                         }}
+                                        {...hoverProps}
+                                        onMouseEnter={handleHoverUser}
                                         onClick={handleViewUser}
                                     >
                                         {props.loading ? (
@@ -290,6 +307,8 @@ export default function PostBaseComment(props: Props) {
                                             borderStyle: 'none',
                                             outlineStyle: 'none',
                                         }}
+                                        {...hoverProps}
+                                        onMouseEnter={handleHoverUser}
                                         onClick={handleViewUser}
                                     >
                                         {props.loading ? (

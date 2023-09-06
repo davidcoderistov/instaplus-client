@@ -2,6 +2,7 @@ import React from 'react'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import PostBaseComment from './PostBaseComment'
+import { PopupState } from 'material-ui-popup-state/hooks'
 import { formatNumber } from '../../utils'
 import _isEqual from 'lodash/isEqual'
 
@@ -29,10 +30,13 @@ interface Comment {
 interface StaticProps {
     loading?: never
     comment: Comment
+    popupState: PopupState
     condensed?: boolean
     dense?: boolean
 
     onViewUser(userId: string | number): void
+
+    onHoverUser(userId: string | number): void
 
     onViewCommentLikes(commentId: string | number): void
 
@@ -52,10 +56,13 @@ interface StaticProps {
 interface LoadingProps {
     loading: true
     comment?: never
+    popupState?: never
     condensed?: boolean
     dense?: boolean
 
     onViewUser?(): never
+
+    onHoverUser?(): never
 
     onViewCommentLikes?(): never
 
@@ -111,9 +118,11 @@ const PostComment = React.memo((props: Props) => {
             ) : (
                 <PostBaseComment
                     comment={props.comment}
+                    popupState={props.popupState}
                     condensed={props.condensed}
                     dense={props.dense}
                     onViewUser={props.onViewUser}
+                    onHoverUser={props.onHoverUser}
                     onViewCommentLikes={props.onViewCommentLikes}
                     onReplyToComment={props.onReplyToComment}
                     onLikeComment={props.onLikeComment}
@@ -226,7 +235,9 @@ const PostComment = React.memo((props: Props) => {
                             <PostComment
                                 key={comment.id}
                                 comment={comment}
+                                popupState={props.popupState}
                                 onViewUser={props.onViewUser}
+                                onHoverUser={props.onHoverUser}
                                 onViewCommentLikes={props.onViewCommentLikes}
                                 onReplyToComment={props.onReplyToComment}
                                 onLikeComment={props.onLikeComment}

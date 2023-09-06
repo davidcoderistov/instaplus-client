@@ -14,7 +14,7 @@ export default function Stats(props: Props) {
 
     const count = useMemo(() => {
         if (!props.loading) {
-            return formatNumber(props.count)
+            return formatNumber(props.count || 0)
         }
         return null
     }, [props.loading, props.count])

@@ -4,6 +4,7 @@ import PostComment from '../PostComment'
 import CircularProgress from '@mui/material/CircularProgress'
 import { Post } from '../../types/Post'
 import { Comment } from '../../types/Comment'
+import { PopupState } from 'material-ui-popup-state/hooks'
 import _range from 'lodash/range'
 
 
@@ -14,10 +15,13 @@ interface Props {
     comments: Comment[]
     commentsLoading: boolean
     hasMoreComments: boolean
+    popupState: PopupState
 
     onFetchMoreComments(): void
 
     onViewUser(userId: string | number): void
+
+    onHoverUser(userId: string | number): void
 
     onViewCommentLikes(commentId: string | number): void
 
@@ -64,7 +68,10 @@ export default function PostComments(props: Props) {
                     repliesLoading: false,
                     createdAt: props.post.createdAt,
                 }}
+                popupState={props.popupState}
                 onViewUser={() => {
+                }}
+                onHoverUser={() => {
                 }}
                 onViewCommentLikes={() => {
                 }}
@@ -236,7 +243,9 @@ export default function PostComments(props: Props) {
                                 <PostComment
                                     key={comment.id}
                                     comment={comment}
+                                    popupState={props.popupState}
                                     onViewUser={props.onViewUser}
+                                    onHoverUser={props.onHoverUser}
                                     onViewCommentLikes={props.onViewCommentLikes}
                                     onReplyToComment={props.onReplyToComment}
                                     onLikeComment={props.onLikeComment}

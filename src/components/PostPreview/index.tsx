@@ -9,6 +9,7 @@ import PostPreviewAddComment from '../PostPreviewAddComment'
 import moment from 'moment'
 import { Post } from '../../types/Post'
 import { Comment } from '../../types/Comment'
+import { PopupState } from 'material-ui-popup-state/hooks'
 
 
 interface Props {
@@ -19,6 +20,7 @@ interface Props {
     commentsLoading: boolean
     hasMoreComments: boolean
     isPostingComment: boolean
+    popupState: PopupState
 
     onFollowUser(userId: string | number): void
 
@@ -41,6 +43,8 @@ interface Props {
     onFetchMoreComments(): void
 
     onViewUser(userId: string | number): void
+
+    onHoverUser(userId: string | number): void
 
     onViewCommentLikes(commentId: string | number): void
 
@@ -188,10 +192,12 @@ export default function PostPreview(props: Props) {
                             <PostHeader
                                 post={props.post}
                                 user={props.post.creator}
+                                popupState={props.popupState}
                                 onFollowUser={props.onFollowUser}
                                 onUnfollowUser={props.onUnfollowUser}
                                 onGoToPost={props.onViewPost}
                                 onViewProfile={props.onViewUser}
+                                onHoverUser={props.onHoverUser}
                                 onOpenSettingsModal={props.onOpenSettingsModal}
                                 onCloseSettingsModal={props.onCloseSettingsModal}
                                 onOpenUnfollowUserModal={props.onOpenUnfollowUserModal}
@@ -242,8 +248,10 @@ export default function PostPreview(props: Props) {
                             comments={props.comments}
                             commentsLoading={props.commentsLoading}
                             hasMoreComments={props.hasMoreComments}
+                            popupState={props.popupState}
                             onFetchMoreComments={props.onFetchMoreComments}
                             onViewUser={props.onViewUser}
+                            onHoverUser={props.onHoverUser}
                             onViewCommentLikes={props.onViewCommentLikes}
                             onReplyToComment={handleReplyToComment}
                             onLikeComment={props.onLikeComment}
