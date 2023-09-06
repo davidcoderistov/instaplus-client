@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
+import { PopupState, bindHover } from 'material-ui-popup-state/hooks'
 
 
 interface Props {
@@ -8,11 +9,14 @@ interface Props {
     clickable?: boolean
     large?: boolean
     hashtag?: boolean
+    popupState?: PopupState
     loader: React.ReactNode | null
     photoUrls: (string | null)[]
     usernames: string[]
 
     onClick?(): void
+
+    onHover?(): void
 }
 
 export default function ListItemAvatar({ clickable = true, ...props }: Props) {
@@ -26,6 +30,14 @@ export default function ListItemAvatar({ clickable = true, ...props }: Props) {
     const isClickable = props.onClick ? true : clickable
 
     const multiple = props.usernames.length > 1
+
+    const hoverProps = props.popupState ? bindHover(props.popupState) : {}
+
+    const handleHover = useCallback(() => {
+        if (!props.loading && props.popupState && props.onHover) {
+            props.onHover()
+        }
+    }, [props.loader, props.popupState, props.onHover])
 
     return (
         <Box
@@ -130,6 +142,8 @@ export default function ListItemAvatar({ clickable = true, ...props }: Props) {
                                     outlineStyle: 'none',
                                     overflowY: 'hidden',
                                 }}
+                                {...hoverProps}
+                                onMouseEnter={handleHover}
                                 onClick={handleClick}
                             >
                                 {props.loading ? props.loader : props.hashtag ? (

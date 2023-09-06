@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 import Box from '@mui/material/Box'
+import { PopupState, bindHover } from 'material-ui-popup-state/hooks'
 
 
 interface Props {
@@ -7,8 +8,11 @@ interface Props {
     loader: React.ReactNode | null
     title: string | React.ReactNode | null
     clickable?: boolean
+    popupState?: PopupState
 
     onClick?(): void
+
+    onHover?(): void
 }
 
 export default function ListItemTitle({ clickable = true, ...props }: Props) {
@@ -20,6 +24,14 @@ export default function ListItemTitle({ clickable = true, ...props }: Props) {
     }, [props.loading, props.onClick])
 
     const isClickable = props.onClick ? true : clickable
+
+    const hoverProps = props.popupState ? bindHover(props.popupState) : {}
+
+    const handleHover = useCallback(() => {
+        if (!props.loading && props.popupState && props.onHover) {
+            props.onHover()
+        }
+    }, [props.loader, props.popupState, props.onHover])
 
     return (
         <Box
@@ -99,6 +111,8 @@ export default function ListItemTitle({ clickable = true, ...props }: Props) {
                             touchAction: 'manipulation',
                             cursor: props.loading || !isClickable ? 'default' : 'pointer',
                         }}
+                        {...hoverProps}
+                        onMouseEnter={handleHover}
                         onClick={handleClick}
                     >
                         <Box

@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo } from 'react'
 import ListItem from '../ListItem'
 import ListItemAvatar from '../ListItemAvatar'
 import ListItemContent from '../ListItemContent'
@@ -8,6 +8,7 @@ import ListItemActions from '../ListItemActions'
 import Button from '../Button'
 import FollowingButton from '../FollowingButton'
 import Skeleton from '@mui/material/Skeleton'
+import { PopupState } from 'material-ui-popup-state/hooks'
 import _isEqual from 'lodash/isEqual'
 
 
@@ -26,12 +27,15 @@ interface StaticProps {
         followedByUsernames: string[]
         followedByCount: number
     }
+    popupState?: PopupState
 
     onFollowUser(id: string | number): void
 
     onUnfollowUser(id: string | number): void
 
     onClickUser(id: string | number): void
+
+    onHoverUser?(id: string | number): void
 }
 
 interface LoadingProps {
@@ -39,29 +43,38 @@ interface LoadingProps {
     dense?: boolean
     authUserId?: never
     user?: never
+    popupState?: never
 
     onFollowUser?: never
 
     onUnfollowUser?: never
 
     onClickUser?: never
+
+    onHoverUser?: never
 }
 
 type Props = StaticProps | LoadingProps
 
 const SuggestedUserListItem = React.memo((props: Props) => {
 
-    const handleFollowUser = useCallback(() => {
+    const handleFollowUser = () => {
         if (!props.loading) {
             props.onFollowUser(props.user.id)
         }
-    }, [props.loading, props.onFollowUser])
+    }
 
-    const handleClickUser = useCallback(() => {
+    const handleClickUser = () => {
         if (!props.loading) {
             props.onClickUser(props.user.id)
         }
-    }, [props.loading, props.onClickUser])
+    }
+
+    const handleHoverUser = () => {
+        if (!props.loading && props.onHoverUser) {
+            props.onHoverUser(props.user.id)
+        }
+    }
 
     const followedBy = useMemo(() => {
         if (!props.loading) {
@@ -90,6 +103,8 @@ const SuggestedUserListItem = React.memo((props: Props) => {
                 photoUrls={props.loading ? [] : [props.user.photoUrl]}
                 usernames={props.loading ? [] : [props.user.username]}
                 onClick={handleClickUser}
+                popupState={props.popupState}
+                onHover={handleHoverUser}
             />
             <ListItemContent gutters={Boolean(props.loading)}>
                 <ListItemTitle
@@ -106,6 +121,8 @@ const SuggestedUserListItem = React.memo((props: Props) => {
                     }
                     title={props.user ? props.user.username : null}
                     onClick={handleClickUser}
+                    popupState={props.popupState}
+                    onHover={handleHoverUser}
                 />
                 {!props.dense && (
                     <ListItemSubtitle
@@ -155,8 +172,8 @@ const SuggestedUserListItem = React.memo((props: Props) => {
     )
 }, (prevProps, nextProps) => {
 
-    const { user: prevUser, ...prevRest } = prevProps
-    const { user: nextUser, ...nextRest } = nextProps
+    const { user: prevUser, popupState: prevPopupState, ...prevRest } = prevProps
+    const { user: nextUser, popupState: nextPopupState, ...nextRest } = nextProps
 
     const usersEqual = _isEqual(prevUser, nextUser)
 
