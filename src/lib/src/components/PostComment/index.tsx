@@ -253,8 +253,8 @@ const PostComment = React.memo((props: Props) => {
     )
 }, (prevProps, nextProps) => {
 
-    const { comment: prevComment, ...prevRest } = prevProps
-    const { comment: nextComment, ...nextRest } = nextProps
+    const { comment: prevComment, popupState: prevPopupState, ...prevRest } = prevProps
+    const { comment: nextComment, popupState: nextPopupState, ...nextRest } = nextProps
 
     const commentsEqual = _isEqual(prevComment, nextComment)
 

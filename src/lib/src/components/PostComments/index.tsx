@@ -69,24 +69,15 @@ export default function PostComments(props: Props) {
                     createdAt: props.post.createdAt,
                 }}
                 popupState={props.popupState}
-                onViewUser={() => {
-                }}
-                onHoverUser={() => {
-                }}
-                onViewCommentLikes={() => {
-                }}
-                onReplyToComment={() => {
-                }}
-                onLikeComment={() => {
-                }}
-                onUnlikeComment={() => {
-                }}
-                onViewReplies={() => {
-                }}
-                onHideReplies={() => {
-                }}
-                onViewHashtag={props.onViewHashtag}
-            />
+                onViewUser={props.onViewUser}
+                onHoverUser={props.onHoverUser}
+                onViewCommentLikes={props.onViewCommentLikes}
+                onReplyToComment={props.onReplyToComment}
+                onLikeComment={props.onLikeComment}
+                onUnlikeComment={props.onUnlikeComment}
+                onViewReplies={props.onViewReplies}
+                onHideReplies={props.onHideReplies}
+                onViewHashtag={props.onViewHashtag} />
         )
     }, [commentsLoading, props.post])
 
