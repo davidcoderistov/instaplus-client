@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client'
-import { useUserDetailsNavigation, usePostViewNavigation } from '../../hooks/misc'
+import { useNavigate } from 'react-router-dom'
+import { useAuthUser, useUserDetailsNavigation, usePostViewNavigation } from '../../hooks/misc'
 import { useFollowUser, useUnfollowUser } from '../../hooks/graphql'
 import { FIND_USER_DETAILS } from '../../graphql/queries/user'
 import { FindUserDetailsQueryType } from '../../graphql/types/queries/user'
@@ -16,6 +17,8 @@ interface Props {
 }
 
 export default function ProfilePopover(props: Props) {
+
+    const [authUser] = useAuthUser()
 
     const userDetails = useQuery<FindUserDetailsQueryType>(FIND_USER_DETAILS, {
         variables: { userId: props.userId },
@@ -37,6 +40,12 @@ export default function ProfilePopover(props: Props) {
     const followUser = useFollowUser()
 
     const unfollowUser = useUnfollowUser()
+
+    const navigate = useNavigate()
+
+    const handleEditProfile = () => {
+        navigate('/accounts/edit')
+    }
 
     return (
         <HoverPopover
@@ -69,6 +78,7 @@ export default function ProfilePopover(props: Props) {
                         following: userDetails.data.findUserDetails.followableUser.following,
                         followingLoading: userDetails.data.findUserDetails.followableUser.followingLoading,
                     }}
+                    authUserId={authUser._id}
                     postsCount={userDetails.data.findUserDetails.postsCount}
                     followersCount={userDetails.data.findUserDetails.followersCount}
                     followingCount={userDetails.data.findUserDetails.followingCount}
@@ -82,6 +92,7 @@ export default function ProfilePopover(props: Props) {
                     onFollowUser={followUser}
                     onUnfollowUser={unfollowUser}
                     onClickPost={navigateToPostView}
+                    onEditProfile={handleEditProfile}
                 />
             ) : null}
         </HoverPopover>
