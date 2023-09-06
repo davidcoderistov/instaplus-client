@@ -207,8 +207,8 @@ export default function FollowedUsersPosts() {
 
     const [hoverUserId, setHoverUserId] = useState<string | null>(null)
 
-    const handleHoverUser = useCallback((userId: string) => {
-        setHoverUserId(userId)
+    const handleHoverUser = useCallback((userId: string | number) => {
+        setHoverUserId(userId as string)
     }, [])
 
     return (
@@ -326,6 +326,8 @@ export default function FollowedUsersPosts() {
                         onFollowUser={handleFollowSuggestedUser}
                         onUnfollowUser={handleUnfollowSuggestedUser}
                         onClickUser={handleClickSuggestedUser}
+                        popupState={popupState}
+                        onHoverUser={handleHoverUser}
                         onSeeAll={handleClickSeeAllSuggestedUsers} />
                 </Box>
             </Box>
