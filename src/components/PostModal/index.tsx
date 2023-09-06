@@ -1,4 +1,5 @@
-import { useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback } from 'react'
+import { usePopupState } from 'material-ui-popup-state/hooks'
 import { useUserDetailsNavigation, useHashtagNavigation, usePostViewNavigation } from '../../hooks/misc'
 import { useQuery } from '@apollo/client'
 import { FIND_POST_DETAILS_BY_ID } from '../../graphql/queries/post'
@@ -21,6 +22,7 @@ import {
 import PostPreviewModal from '../../lib/src/components/PostPreviewModal'
 import PostLikes from '../PostLikes'
 import CommentLikes from '../CommentLikes'
+import ProfilePopover from '../ProfilePopover'
 import { Post } from '../../lib/src/types/Post'
 
 
@@ -128,6 +130,14 @@ export default function PostModal(props: Props) {
         navigateToPostView(postId)
     }
 
+    const popupState = usePopupState({ variant: 'popover', popupId: 'profilePopover' })
+
+    const [hoverUserId, setHoverUserId] = useState<string | null>(null)
+
+    const handleHoverUser = useCallback((userId: string) => {
+        setHoverUserId(userId)
+    }, [])
+
     return (
         <>
             <PostPreviewModal
@@ -138,6 +148,7 @@ export default function PostModal(props: Props) {
                 comments={comments}
                 commentsLoading={commentsLoading}
                 hasMoreComments={hasMoreComments}
+                popupState={popupState}
                 viewingPostLikes={Boolean(viewPostLikesPostId)}
                 viewingCommentLikes={Boolean(viewCommentLikesCommentId)}
                 isPostingComment={isPostingComment}
@@ -151,6 +162,7 @@ export default function PostModal(props: Props) {
                 onViewPost={handleViewPost}
                 onFetchMoreComments={onFetchMoreComments}
                 onViewUser={handleViewUser}
+                onHoverUser={handleHoverUser}
                 onViewCommentLikes={onViewCommentLikes}
                 onReplyToComment={onReplyToComment}
                 onLikeComment={likeComment}
@@ -159,6 +171,9 @@ export default function PostModal(props: Props) {
                 onHideReplies={onHideReplies}
                 onViewHashtag={handleViewHashtag}
                 onPostComment={onPostComment} />
+            <ProfilePopover
+                popupState={popupState}
+                userId={hoverUserId} />
             <PostLikes
                 postId={viewPostLikesPostId}
                 onViewUser={props.onViewUser}

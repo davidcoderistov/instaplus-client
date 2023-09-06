@@ -1,5 +1,6 @@
-import { useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { useQuery } from '@apollo/client'
+import { usePopupState } from 'material-ui-popup-state/hooks'
 import { useParams } from 'react-router-dom'
 import { useUserDetailsNavigation, useHashtagNavigation, usePostViewNavigation } from '../../hooks/misc'
 import {
@@ -28,6 +29,7 @@ import MediaGallery from '../../lib/src/components/MediaGallery'
 import PostLikes from '../PostLikes'
 import CommentLikes from '../CommentLikes'
 import NotFound from '../NotFound'
+import ProfilePopover from '../ProfilePopover'
 import { Post } from '../../lib/src/types/Post'
 
 
@@ -139,6 +141,14 @@ export default function PostView() {
         navigate(postId)
     }
 
+    const popupState = usePopupState({ variant: 'popover', popupId: 'profilePopover' })
+
+    const [hoverUserId, setHoverUserId] = useState<string | null>(null)
+
+    const handleHoverUser = useCallback((userId: string) => {
+        setHoverUserId(userId)
+    }, [])
+
     return (
         <Box
             component='div'
@@ -223,6 +233,7 @@ export default function PostView() {
                                         commentsLoading={commentsLoading}
                                         hasMoreComments={hasMoreComments}
                                         isPostingComment={isPostingComment}
+                                        popupState={popupState}
                                         onFollowUser={followUser}
                                         onUnfollowUser={unfollowUser}
                                         onLikePost={likePost}
@@ -234,6 +245,7 @@ export default function PostView() {
                                         }}
                                         onFetchMoreComments={onFetchMoreComments}
                                         onViewUser={handleViewUser}
+                                        onHoverUser={handleHoverUser}
                                         onViewCommentLikes={onViewCommentLikes}
                                         onReplyToComment={onReplyToComment}
                                         onLikeComment={likeComment}
@@ -321,6 +333,9 @@ export default function PostView() {
                         </>
                     )}
                 </Box>
+                <ProfilePopover
+                    popupState={popupState}
+                    userId={hoverUserId} />
                 <PostLikes
                     postId={viewPostLikesPostId}
                     onCloseModal={onClosePostLikes} />

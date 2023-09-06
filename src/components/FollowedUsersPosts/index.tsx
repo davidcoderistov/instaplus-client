@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
+import { usePopupState } from 'material-ui-popup-state/hooks'
 import {
     useAuthUser,
     usePostViewNavigation,
@@ -28,6 +29,7 @@ import TopFiveSuggestedUsers from '../../lib/src/components/TopFiveSuggestedUser
 import PostLikes from '../PostLikes'
 import PostModal from '../PostModal'
 import AllCaughtUp from '../AllCaughtUp'
+import ProfilePopover from '../ProfilePopover'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import _range from 'lodash/range'
 import _differenceBy from 'lodash/differenceBy'
@@ -201,6 +203,14 @@ export default function FollowedUsersPosts() {
         navigate('/people/suggested')
     }
 
+    const popupState = usePopupState({ variant: 'popover', popupId: 'profilePopover' })
+
+    const [hoverUserId, setHoverUserId] = useState<string | null>(null)
+
+    const handleHoverUser = useCallback((userId: string) => {
+        setHoverUserId(userId)
+    }, [])
+
     return (
         <Box
             id='followedUsersPostsContainer'
@@ -288,6 +298,7 @@ export default function FollowedUsersPosts() {
                                             <PostCard
                                                 key={post.id}
                                                 post={post}
+                                                popupState={popupState}
                                                 onFollowUser={followUser}
                                                 onUnfollowUser={unfollowUser}
                                                 onLikePost={likePost}
@@ -299,6 +310,7 @@ export default function FollowedUsersPosts() {
                                                 onViewPost={handlePostView}
                                                 onViewPostComments={handleViewPost}
                                                 onViewUser={handleViewUser}
+                                                onHoverUser={handleHoverUser}
                                                 onViewHashtag={handleViewHashtag}
                                             />
                                         ))}
@@ -317,6 +329,9 @@ export default function FollowedUsersPosts() {
                         onSeeAll={handleClickSeeAllSuggestedUsers} />
                 </Box>
             </Box>
+            <ProfilePopover
+                popupState={popupState}
+                userId={hoverUserId} />
             <PostLikes
                 postId={viewPostLikesPostId}
                 onCloseModal={onClosePostLikes} />
