@@ -72,7 +72,7 @@ export default function AppDrawer(props: Props) {
 
     const mw1260 = useMediaQuery('(min-width:1260px)')
 
-    const isDrawerOpen = !props.isSearchDrawerOpen && !props.isNotificationsDrawerOpen && mw1260 && location.pathname !== '/chat'
+    const isDrawerOpen = !props.isSearchDrawerOpen && !props.isNotificationsDrawerOpen && mw1260 && !location.pathname.startsWith('/chat')
 
     const isLinkOpen = !props.isSearchDrawerOpen && !props.isNotificationsDrawerOpen && !props.isCreatingNewPost
 
