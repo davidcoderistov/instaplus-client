@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { useParams } from 'react-router-dom'
 import { useAuthUser } from '../../hooks/misc'
 import { useApolloClient, useQuery, useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
@@ -557,6 +558,14 @@ export default function Chat() {
     const handleCloseImagePreviewModal = () => {
         setPreviewPhotoUrl(null)
     }
+
+    const { userId } = useParams()
+
+    useEffect(() => {
+        if (!findChatsForUser.loading && userId) {
+            handleCreateChat([userId])
+        }
+    }, [findChatsForUser.loading, userId])
 
     return (
         <>

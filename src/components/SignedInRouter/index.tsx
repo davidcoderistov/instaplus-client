@@ -221,7 +221,7 @@ export default function SignedInRouter() {
                 <Route path='/tags/:name' element={
                     <HashtagPosts />
                 } />
-                <Route path='/chat' element={
+                <Route path='/chat/:userId?' element={
                     <Chat />
                 } />
                 <Route path='/post/:postId' element={
