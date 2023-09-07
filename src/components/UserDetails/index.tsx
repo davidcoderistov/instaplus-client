@@ -152,6 +152,10 @@ export default function UserDetails() {
         navigate('/accounts/edit')
     }
 
+    const handleMessageUser = (userId: string | number) => {
+        navigate(`/chat/${userId}`)
+    }
+
     const [viewFollowersUserId, setViewFollowersUserId] = useState<string | null>(null)
 
     const handleViewFollowers = () => {
@@ -378,6 +382,7 @@ export default function UserDetails() {
                                     mutualFollowersCount={findUserDetails.data.findUserDetails.mutualFollowersCount}
                                     mutualFollowersUsernames={findUserDetails.data.findUserDetails.latestTwoMutualFollowersUsernames}
                                     onEditUserProfile={handleEditUserProfile}
+                                    onMessageUser={handleMessageUser}
                                     onViewFollowers={handleViewFollowers}
                                     onViewFollowing={handleViewFollowing}
                                     onFollowUser={followUser}

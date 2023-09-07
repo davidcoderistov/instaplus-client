@@ -36,6 +36,10 @@ export default function ProfilePopover(props: Props) {
 
     const navigateToPostView = usePostViewNavigation()
 
+    const handleMessageUser = (userId: string | number) => {
+        navigate(`/chat/${userId}`)
+    }
+
     const followUser = useFollowUser()
 
     const unfollowUser = useUnfollowUser()
@@ -212,7 +216,7 @@ export default function ProfilePopover(props: Props) {
                         multiple: false,
                     }))}
                     onClickUser={navigateToUserDetails}
-                    onMessageUser={console.log}
+                    onMessageUser={handleMessageUser}
                     onFollowUser={followUser}
                     onUnfollowUser={unfollowUser}
                     onClickPost={navigateToPostView}
