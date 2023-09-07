@@ -17,6 +17,7 @@ export function useFollowUser() {
 
     return (userId: string) => {
         updateFollowingLoadingStatus(userId, true)
+        window.dispatchEvent(new CustomEvent('onFollowUserStart', { detail: { userId } }))
         followUser({
             variables: {
                 followedUserId: userId,
@@ -25,10 +26,13 @@ export function useFollowUser() {
             const followedUser = follow.data?.followUser
             if (followedUser) {
                 updateFollowUserConnections(followedUser)
+                window.dispatchEvent(new CustomEvent('onFollowUserSuccess', { detail: { userId, followedUser } }))
             }
-            updateFollowingLoadingStatus(userId, false)
         }).catch(() => {
             enqueueSnackbar('Could not follow user', { variant: 'error' })
+            window.dispatchEvent(new CustomEvent('onFollowUserError', { detail: { userId } }))
+        }).finally(() => {
+            updateFollowingLoadingStatus(userId, false)
         })
     }
 }

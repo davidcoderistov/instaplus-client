@@ -17,6 +17,7 @@ export function useUnfollowUser() {
 
     return (userId: string) => {
         updateFollowingLoadingStatus(userId, true)
+        window.dispatchEvent(new CustomEvent('onUnfollowUserStart', { detail: { userId } }))
         unfollowUser({
             variables: {
                 followedUserId: userId,
@@ -25,10 +26,13 @@ export function useUnfollowUser() {
             const followedUser = unfollow.data?.unfollowUser
             if (followedUser) {
                 updateUnfollowUserConnections(followedUser)
+                window.dispatchEvent(new CustomEvent('onUnfollowUserSuccess', { detail: { userId, followedUser } }))
             }
-            updateFollowingLoadingStatus(userId, false)
         }).catch(() => {
             enqueueSnackbar('Could not unfollow user', { variant: 'error' })
+            window.dispatchEvent(new CustomEvent('onUnfollowUserError', { detail: { userId } }))
+        }).finally(() => {
+            updateFollowingLoadingStatus(userId, false)
         })
     }
 }
