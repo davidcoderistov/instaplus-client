@@ -211,11 +211,7 @@ export default function Chat() {
         }
     }
 
-    const [markMessageAsRead] = useMutation(MARK_MESSAGE_AS_READ)
-
-    const handleClickChat = useCallback((chatId: string) => {
-        isMessagesCountSetRef.current = false
-        setIsChatDetailsDrawerOpen(false)
+    const updateChatSelectedStatus = (chatId: string) => {
         findChatsForUser.updateQuery(findChatsForUser => {
             if (findChatsForUser.findChatsForUser.data) {
                 const chatForUser = findChatsForUser.findChatsForUser.data.find(chatForUser => chatForUser.chat._id === chatId)
@@ -236,6 +232,14 @@ export default function Chat() {
                 },
             }).queryResult
         })
+    }
+
+    const [markMessageAsRead] = useMutation(MARK_MESSAGE_AS_READ)
+
+    const handleClickChat = useCallback((chatId: string) => {
+        isMessagesCountSetRef.current = false
+        setIsChatDetailsDrawerOpen(false)
+        updateChatSelectedStatus(chatId)
         setMessagesOffset(15)
     }, [])
 
@@ -314,12 +318,7 @@ export default function Chat() {
         }
         if (allUserIds.length <= 2 && findChatForUser) {
             const chatId = findChatForUser.chat._id
-            findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.updateSelectedStatus({
-                queryData: findChatsForUser,
-                variables: {
-                    chatId,
-                },
-            }).queryResult)
+            updateChatSelectedStatus(chatId)
             closeCreateChatModal()
         } else {
             createChat({
@@ -329,6 +328,15 @@ export default function Chat() {
             }).then(({ data }) => {
                 const createChat = data?.createChat
                 if (createChat) {
+                    if (createChat.message) {
+                        if (!createChat.message.seenByUserIds.includes(authUser._id)) {
+                            markMessageAsRead({
+                                variables: {
+                                    messageId: createChat.message._id,
+                                },
+                            })
+                        }
+                    }
                     findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.addChat({
                         queryData: findChatsForUser,
                         variables: {
@@ -344,7 +352,7 @@ export default function Chat() {
                                     photoUrl: createChat.message?.photoUrl ?? null,
                                     previewPhotoUrl: null,
                                     photoOrientation: null,
-                                    seenByUserIds: [],
+                                    seenByUserIds: [authUser._id],
                                     reactions: null,
                                     reply: null,
                                     videoUrl: createChat.message?.videoUrl ?? null,
