@@ -367,7 +367,7 @@ export default function ProfileCard(props: Props) {
                                 wordWrap: 'break-word',
                             }}
                         >
-                            When {props.user?.username} shares photos and reels, you'll see them here.
+                            When {props.user?.username} shares photos, you'll see them here.
                         </Box>
                     </Box>
                 )}
