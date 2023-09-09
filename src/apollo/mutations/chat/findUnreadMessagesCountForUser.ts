@@ -20,8 +20,28 @@ export function incrementUnreadMessagesCount(options: IncrementUnreadMessagesCou
     }
 }
 
+interface DecrementUnreadMessagesCountOptions {
+    queryData: FindUnreadMessagesCountForUserQueryType
+}
+
+interface DecrementUnreadMessagesCountReturnValue {
+    queryResult: FindUnreadMessagesCountForUserQueryType
+}
+
+export function decrementUnreadMessagesCount(options: DecrementUnreadMessagesCountOptions): DecrementUnreadMessagesCountReturnValue {
+    return {
+        queryResult: {
+            findUnreadMessagesCountForUser: {
+                ...options.queryData.findUnreadMessagesCountForUser,
+                count: options.queryData.findUnreadMessagesCountForUser.count - 1,
+            },
+        },
+    }
+}
+
 const mutations = {
     incrementUnreadMessagesCount,
+    decrementUnreadMessagesCount,
 }
 
 export default mutations
