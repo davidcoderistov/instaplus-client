@@ -578,6 +578,20 @@ export default function Chat() {
         }
     }, [findChatsForUser.loading, userId])
 
+    useEffect(() => {
+        return () => {
+            client.cache.updateQuery({
+                query: FIND_CHATS_FOR_USER,
+            }, (findChatsForUser: FindChatsForUserQueryType | null) => {
+                if (findChatsForUser) {
+                    return findChatsForUserMutations.deselectAllChats({
+                        queryData: findChatsForUser,
+                    }).queryResult
+                }
+            })
+        }
+    }, [])
+
     return (
         <>
             <Box
