@@ -8,6 +8,7 @@ interface Props {
     isActive: boolean
     isCondensed: boolean
     isBordered?: boolean
+    count?: number
     icon: React.ReactNode
     activeIcon: React.ReactNode
     popupState?: PopupState
@@ -95,6 +96,43 @@ export default function AppDrawerItem(props: Props) {
                                     >
                                         {props.isActive ? props.activeIcon : props.icon}
                                     </Box>
+                                    {props.count && props.count > 0 && (
+                                        <Box
+                                            component='div'
+                                            display='block'
+                                            top='-7px'
+                                            lineHeight='18px!important'
+                                            zIndex='1'
+                                            right='-7px'
+                                            position='absolute'
+                                        >
+                                            <Box
+                                                component='div'
+                                                borderRadius='50px'
+                                                border='1.5px solid #000000'
+                                                height='18px'
+                                                display='flex'
+                                                justifyContent='center'
+                                                alignItems='center'
+                                                maxWidth='36px'
+                                                minWidth='18px'
+                                                bgcolor='#FF3040'
+                                            >
+                                                <Box
+                                                    component='span'
+                                                    paddingTop='3px'
+                                                    color='#FFFFFF'
+                                                    fontWeight='400'
+                                                    paddingBottom='3px'
+                                                    paddingLeft='5px'
+                                                    fontSize='0.6875rem'
+                                                    paddingRight='5px'
+                                                >
+                                                    {props.count}
+                                                </Box>
+                                            </Box>
+                                        </Box>
+                                    )}
                                 </Box>
                             </Box>
                             <Box
