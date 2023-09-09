@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useAuthUser } from '../../hooks/misc'
 import { useApolloClient, useQuery, useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
+import { useDecrementUnreadMessagesCount } from '../../hooks/graphql'
 import { FIND_CHATS_FOR_USER, FIND_MESSAGES_BY_CHAT_ID } from '../../graphql/queries/chat'
 import {
     CREATE_CHAT,
@@ -211,6 +212,8 @@ export default function Chat() {
         }
     }
 
+    const decrementUnreadMessagesCount = useDecrementUnreadMessagesCount()
+
     const updateChatSelectedStatus = (chatId: string) => {
         findChatsForUser.updateQuery(findChatsForUser => {
             if (findChatsForUser.findChatsForUser.data) {
@@ -221,7 +224,7 @@ export default function Chat() {
                             variables: {
                                 messageId: chatForUser.message._id,
                             },
-                        })
+                        }).then(decrementUnreadMessagesCount)
                     }
                 }
             }
@@ -334,7 +337,7 @@ export default function Chat() {
                                 variables: {
                                     messageId: createChat.message._id,
                                 },
-                            })
+                            }).then(decrementUnreadMessagesCount)
                         }
                     }
                     findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.addChat({
