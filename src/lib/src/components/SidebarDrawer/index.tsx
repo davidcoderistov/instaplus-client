@@ -9,7 +9,7 @@ const SidebarDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 
             whiteSpace: 'nowrap',
             width: anchor === 'right' ? 350 : 390,
             transition: theme.transitions.create('width', {
-                easing: theme.transitions.easing.sharp,
+                easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen,
             }),
             boxSizing: 'border-box',
