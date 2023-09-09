@@ -119,11 +119,37 @@ export function addChat(options: AddChatOptions): AddChatReturnValue {
     }
 }
 
+interface DeselectAllChatsOptions {
+    queryData: FindChatsForUserQueryType
+}
+
+interface DeselectAllChatsReturnValue {
+    queryResult: FindChatsForUserQueryType
+}
+
+export function deselectAllChats(options: DeselectAllChatsOptions): DeselectAllChatsReturnValue {
+    return {
+        queryResult: {
+            findChatsForUser: {
+                ...options.queryData.findChatsForUser,
+                data: options.queryData.findChatsForUser.data.map(chatForUser => ({
+                    ...chatForUser,
+                    chat: {
+                        ...chatForUser.chat,
+                        selected: false,
+                    },
+                })),
+            },
+        },
+    }
+}
+
 const mutations = {
     updateSelectedStatus,
     updateLatestMessage,
     deleteChat,
     addChat,
+    deselectAllChats,
 }
 
 export default mutations
