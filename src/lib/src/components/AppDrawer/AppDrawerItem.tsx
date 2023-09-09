@@ -96,7 +96,7 @@ export default function AppDrawerItem(props: Props) {
                                     >
                                         {props.isActive ? props.activeIcon : props.icon}
                                     </Box>
-                                    {props.count && props.count > 0 && (
+                                    {props.count && props.count > 0 ? (
                                         <Box
                                             component='div'
                                             display='block'
@@ -132,7 +132,7 @@ export default function AppDrawerItem(props: Props) {
                                                 </Box>
                                             </Box>
                                         </Box>
-                                    )}
+                                    ) : null}
                                 </Box>
                             </Box>
                             <Box
