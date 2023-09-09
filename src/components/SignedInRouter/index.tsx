@@ -1,7 +1,15 @@
-import React, { useState } from 'react'
-import { useApolloClient, useMutation, useSubscription } from '@apollo/client'
-import { FIND_CHATS_FOR_USER, FIND_MESSAGES_BY_CHAT_ID } from '../../graphql/queries/chat'
-import { FindChatsForUserQueryType, FindMessagesByChatIdQueryType } from '../../graphql/types/queries/chat'
+import React, { useState, useMemo } from 'react'
+import { useApolloClient, useQuery, useMutation, useSubscription } from '@apollo/client'
+import {
+    FIND_CHATS_FOR_USER,
+    FIND_MESSAGES_BY_CHAT_ID,
+    FIND_UNREAD_MESSAGES_COUNT_FOR_USER,
+} from '../../graphql/queries/chat'
+import {
+    FindChatsForUserQueryType,
+    FindMessagesByChatIdQueryType,
+    FindUnreadMessagesCountForUserQueryType,
+} from '../../graphql/types/queries/chat'
 import { NEW_MESSAGE, NEW_MESSAGE_REACTION } from '../../graphql/subscriptions/chat'
 import { NewMessageSubscriptionType } from '../../graphql/types/subscriptions/chat'
 import { MARK_MESSAGE_AS_READ } from '../../graphql/mutations/chat'
@@ -171,6 +179,15 @@ export default function SignedInRouter() {
         setIsLogoutModalOpen(false)
     }
 
+    const findUnreadMessagesCountForUser = useQuery<FindUnreadMessagesCountForUserQueryType>(FIND_UNREAD_MESSAGES_COUNT_FOR_USER)
+
+    const unreadMessagesCount = useMemo(() => {
+        if (!findUnreadMessagesCountForUser.loading && !findUnreadMessagesCountForUser.error && findUnreadMessagesCountForUser.data) {
+            return findUnreadMessagesCountForUser.data.findUnreadMessagesCountForUser.count
+        }
+        return 0
+    }, [findUnreadMessagesCountForUser])
+
     return (
         <Box
             component='div'
@@ -187,7 +204,7 @@ export default function SignedInRouter() {
                 isSearchDrawerOpen={isSearchDrawerOpen}
                 isNotificationsDrawerOpen={isNotificationsDrawerOpen}
                 isCreatingNewPost={isCreatePostModalOpen}
-                isSettingsOpen={false}
+                unreadMessagesCount={unreadMessagesCount}
                 onOpenSearchDrawer={handleOpenSearchDrawer}
                 onOpenNotificationsDrawer={handleOpenNotificationsDrawer}
                 onOpenCreateNewPost={handleOpenCreatePostModal}
