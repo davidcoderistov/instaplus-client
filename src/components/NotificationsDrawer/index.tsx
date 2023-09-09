@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import SidebarDrawer from '../SidebarDrawer'
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
@@ -130,6 +130,12 @@ export default function NotificationsDrawer(props: SearchDrawerProps) {
     const handleClickDrawer = (event: React.MouseEvent) => {
         event.stopPropagation()
     }
+
+    useEffect(() => {
+        if (props.open) {
+            setView('all')
+        }
+    }, [props.open])
 
     return (
         <SidebarDrawer
