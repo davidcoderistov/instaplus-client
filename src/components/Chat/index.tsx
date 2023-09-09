@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useAuthUser } from '../../hooks/misc'
 import { useApolloClient, useQuery, useMutation } from '@apollo/client'
 import { useSnackbar } from 'notistack'
+import { useUserDetailsNavigation } from '../../hooks/misc'
 import { useDecrementUnreadMessagesCount } from '../../hooks/graphql'
 import { FIND_CHATS_FOR_USER, FIND_MESSAGES_BY_CHAT_ID } from '../../graphql/queries/chat'
 import {
@@ -531,6 +532,12 @@ export default function Chat() {
         sendPhotoMessage(chatId, file)
     }, [])
 
+    const navigateToUserDetails = useUserDetailsNavigation()
+
+    const handleViewUser = useCallback((userId: string | number) => {
+        navigateToUserDetails(userId)
+    }, [])
+
     const [viewReactions, setViewReactions] = useState<Reaction[] | null>(null)
 
     const handleViewReactions = useCallback((reactions: Reaction[]) => {
@@ -688,7 +695,7 @@ export default function Chat() {
                                             hasMoreMessages={hasMoreMessages}
                                             onFetchMoreMessages={onFetchMoreMessages}
                                             onViewChatDetails={handleViewChatDetails}
-                                            onViewUser={console.log}
+                                            onViewUser={handleViewUser}
                                             onClickPhoto={handlePreviewPhoto}
                                             onClickReplyPhoto={handlePreviewPhoto}
                                             onReact={handleReactToMessage}
@@ -713,7 +720,7 @@ export default function Chat() {
                     chatId={selectedChat.id}
                     creatorId={selectedChat.creatorId}
                     chatMembers={selectedChat.chatMembers}
-                    onClickUser={console.log}
+                    onClickUser={handleViewUser}
                     onDeleteChat={handleDeleteChat}
                     isDeletingChat={deleteChatData.loading}
                     onLeaveChat={handleLeaveChat}
