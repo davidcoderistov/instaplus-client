@@ -109,7 +109,7 @@ const NotificationsDrawerListItem = React.memo((props: Props) => {
                     fontWeight='400'
                     color='#A8A8A8'
                 >
-                    {getTimeElapsed(props.notification.createdAt, 'hours')}
+                    {getTimeElapsed(props.notification.createdAt, 'minutes')}
                 </Box>
             )
         }
