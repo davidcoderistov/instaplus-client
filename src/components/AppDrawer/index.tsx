@@ -52,6 +52,7 @@ interface Props {
     isNotificationsDrawerOpen: boolean
     isCreatingNewPost: boolean
     unreadMessagesCount: number
+    hasUnseenNotifications: boolean
 
     onOpenSearchDrawer(event: React.MouseEvent): void
 
@@ -339,6 +340,7 @@ export default function AppDrawer(props: Props) {
                     isActive={props.isNotificationsDrawerOpen}
                     isCondensed={!isDrawerOpen}
                     isBordered={props.isNotificationsDrawerOpen}
+                    dotted={props.hasUnseenNotifications}
                     onClick={props.onOpenNotificationsDrawer}
                     icon={
                         <AppDrawerIcon
