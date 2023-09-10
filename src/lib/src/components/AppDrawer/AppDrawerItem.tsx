@@ -9,6 +9,7 @@ interface Props {
     isCondensed: boolean
     isBordered?: boolean
     count?: number
+    dotted?: boolean
     icon: React.ReactNode
     activeIcon: React.ReactNode
     popupState?: PopupState
@@ -133,6 +134,25 @@ export default function AppDrawerItem(props: Props) {
                                             </Box>
                                         </Box>
                                     ) : null}
+                                    {props.dotted && (
+                                        <Box
+                                            component='div'
+                                            top='-1px'
+                                            right='-2px'
+                                            position='absolute'
+                                            display='block'
+                                        >
+                                            <Box
+                                                component='div'
+                                                borderRadius='50px'
+                                                border='1.5px solid #000000'
+                                                height='9px'
+                                                width='9px'
+                                                bgcolor='#FF3040'
+                                                display='block'
+                                            />
+                                        </Box>
+                                    )}
                                 </Box>
                             </Box>
                             <Box
