@@ -92,3 +92,12 @@ export const FIND_EARLIER_NOTIFICATIONS = gql`
         }
     }
 `
+
+export const FIND_USER_HAS_UNSEEN_NOTIFICATIONS = gql`
+    query findUserHasUnseenNotifications {
+        findUserHasUnseenNotifications {
+            _id
+            hasUnseenNotifications
+        }
+    }
+`

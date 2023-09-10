@@ -28,3 +28,10 @@ export interface FindEarlierNotificationsQueryType {
         data: Notification[]
     }
 }
+
+export interface FindUserHasUnseenNotificationsQueryType {
+    findUserHasUnseenNotifications: {
+        _id: string
+        hasUnseenNotifications: boolean
+    }
+}
