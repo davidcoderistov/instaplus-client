@@ -1,18 +1,22 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useUserDetailsNavigation, usePostViewNavigation } from '../../hooks/misc'
-import { useQuery } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import {
     FIND_DAILY_NOTIFICATIONS,
     FIND_WEEKLY_NOTIFICATIONS,
     FIND_MONTHLY_NOTIFICATIONS,
     FIND_EARLIER_NOTIFICATIONS,
+    FIND_USER_HAS_UNSEEN_NOTIFICATIONS,
 } from '../../graphql/queries/notification'
 import {
     FindDailyNotificationsQueryType,
     FindWeeklyNotificationsQueryType,
     FindMonthlyNotificationsQueryType,
     FindEarlierNotificationsQueryType,
+    FindUserHasUnseenNotificationsQueryType,
 } from '../../graphql/types/queries/notification'
+import { UPDATE_NOTIFICATION_HISTORY_FOR_USER } from '../../graphql/mutations/notification'
+import { markNotificationsAsSeen } from '../../apollo/mutations/notification/findUserHasUnseenNotifications'
 import { Post, Notification } from '../../graphql/types/models'
 import InstaNotificationsDrawer from '../../lib/src/components/NotificationsDrawer'
 import _unionBy from 'lodash/unionBy'
@@ -278,6 +282,40 @@ export default function NotificationsDrawer(props: { open: boolean, onClose(): v
             }
         }
     }
+
+    const findUserHasUnseenNotifications = useQuery<FindUserHasUnseenNotificationsQueryType>(FIND_USER_HAS_UNSEEN_NOTIFICATIONS)
+
+    const [updateNotificationHistoryForUser, { called: isNotificationHistoryUpdated }] = useMutation(UPDATE_NOTIFICATION_HISTORY_FOR_USER)
+
+    useEffect(() => {
+        if (props.open) {
+            if (!isNotificationHistoryUpdated) {
+                if (!findUserHasUnseenNotifications.loading && !findUserHasUnseenNotifications.error && findUserHasUnseenNotifications.data?.findUserHasUnseenNotifications.hasUnseenNotifications) {
+                    let lastCreatedAt = null
+                    if (todayNotifications.length > 0) {
+                        lastCreatedAt = todayNotifications[0].createdAt
+                    } else if (thisWeekNotifications.length > 0) {
+                        lastCreatedAt = thisWeekNotifications[0].createdAt
+                    } else if (thisMonthNotifications.length > 0) {
+                        lastCreatedAt = thisMonthNotifications[0].createdAt
+                    } else if (earlierNotifications.length > 0) {
+                        lastCreatedAt = earlierNotifications[0].createdAt
+                    }
+                    if (lastCreatedAt) {
+                        updateNotificationHistoryForUser({
+                            variables: {
+                                date: lastCreatedAt,
+                            },
+                        }).then(() => {
+                            findUserHasUnseenNotifications.updateQuery(userHasUnseenNotifications =>
+                                markNotificationsAsSeen({ queryData: userHasUnseenNotifications }).queryResult,
+                            )
+                        })
+                    }
+                }
+            }
+        }
+    }, [props.open, findUserHasUnseenNotifications, todayNotifications, thisWeekNotifications, thisMonthNotifications, earlierNotifications, isNotificationHistoryUpdated, updateNotificationHistoryForUser])
 
     return (
         <InstaNotificationsDrawer
