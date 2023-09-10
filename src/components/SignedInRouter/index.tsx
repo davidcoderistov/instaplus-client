@@ -11,6 +11,8 @@ import {
     FindMessagesByChatIdQueryType,
     FindUnreadMessagesCountForUserQueryType,
 } from '../../graphql/types/queries/chat'
+import { FIND_USER_HAS_UNSEEN_NOTIFICATIONS } from '../../graphql/queries/notification'
+import { FindUserHasUnseenNotificationsQueryType } from '../../graphql/types/queries/notification'
 import { NEW_MESSAGE, NEW_MESSAGE_REACTION } from '../../graphql/subscriptions/chat'
 import { NewMessageSubscriptionType } from '../../graphql/types/subscriptions/chat'
 import { MARK_MESSAGE_AS_READ } from '../../graphql/mutations/chat'
@@ -197,6 +199,15 @@ export default function SignedInRouter() {
         return 0
     }, [findUnreadMessagesCountForUser])
 
+    const findUserHasUnseenNotifications = useQuery<FindUserHasUnseenNotificationsQueryType>(FIND_USER_HAS_UNSEEN_NOTIFICATIONS)
+
+    const hasUnseenNotifications = useMemo(() => {
+        if (!findUserHasUnseenNotifications.loading && !findUserHasUnseenNotifications.error && findUserHasUnseenNotifications.data) {
+            return findUserHasUnseenNotifications.data.findUserHasUnseenNotifications.hasUnseenNotifications
+        }
+        return false
+    }, [findUserHasUnseenNotifications])
+
     return (
         <Box
             component='div'
@@ -214,6 +225,7 @@ export default function SignedInRouter() {
                 isNotificationsDrawerOpen={isNotificationsDrawerOpen}
                 isCreatingNewPost={isCreatePostModalOpen}
                 unreadMessagesCount={unreadMessagesCount}
+                hasUnseenNotifications={hasUnseenNotifications}
                 onOpenSearchDrawer={handleOpenSearchDrawer}
                 onOpenNotificationsDrawer={handleOpenNotificationsDrawer}
                 onOpenCreateNewPost={handleOpenCreatePostModal}
