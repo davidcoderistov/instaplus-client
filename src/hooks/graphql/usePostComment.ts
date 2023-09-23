@@ -96,19 +96,18 @@ export function usePostComment() {
                                     }).queryResult
                                 }
                             })
-
-                            client.cache.updateQuery({
-                                query: FIND_FOLLOWED_USERS_POSTS,
-                            }, (findFollowedUsersPosts: FindFollowedUsersPostsQueryType | null) => {
-                                if (findFollowedUsersPosts) {
-                                    return findFollowedUsersPostsMutations.incrementCommentsCount({
-                                        queryData: findFollowedUsersPosts,
-                                        variables: { postId },
-                                    }).queryResult
-                                }
-                            })
                         }
                     }
+                    client.cache.updateQuery({
+                        query: FIND_FOLLOWED_USERS_POSTS,
+                    }, (findFollowedUsersPosts: FindFollowedUsersPostsQueryType | null) => {
+                        if (findFollowedUsersPosts) {
+                            return findFollowedUsersPostsMutations.incrementCommentsCount({
+                                queryData: findFollowedUsersPosts,
+                                variables: { postId },
+                            }).queryResult
+                        }
+                    })
                 }
             }
         }).catch(() => {
