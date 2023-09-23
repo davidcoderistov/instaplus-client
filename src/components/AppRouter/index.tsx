@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import AppContext from '../../config/context'
 import { User } from '../../types'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useMutation } from '@apollo/client'
+import { useApolloClient, useMutation } from '@apollo/client'
 import {
     REFRESH,
     LOGOUT,
@@ -93,10 +93,13 @@ export default function AppRouter() {
         }
     }
 
+    const client = useApolloClient()
+
     const invalidateSession = async () => {
         setInvalidatingSession(true)
         try {
             await logout()
+            await client.clearStore()
             setLoggedInUser(null)
         } catch (err) {
             if (isInvalidSessionError(err)) {
