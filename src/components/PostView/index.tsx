@@ -112,6 +112,12 @@ export default function PostView() {
         navigateToUserDetails(userId)
     }, [])
 
+    const handleViewPostCreator = () => {
+        if (post) {
+            navigateToUserDetails(post.creator.id)
+        }
+    }
+
     const navigateToHashtag = useHashtagNavigation()
 
     const handleViewHashtag = useCallback((name: string) => {
@@ -324,6 +330,7 @@ export default function PostView() {
                                         component='span'
                                         color='#F5F5F5'
                                         sx={{ cursor: 'pointer' }}
+                                        onClick={handleViewPostCreator}
                                     >{post.creator.username}</Box>
                                     </Box>
                                 </Box>
