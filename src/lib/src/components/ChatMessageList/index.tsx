@@ -395,7 +395,7 @@ export default function ChatMessageList(props: Props) {
                                                 ))}
                                             </Box>
                                         </Box>
-                                    ) : (
+                                    ) : props.chatMessages.length > 0 ? (
                                         <InfiniteScroll
                                             scrollableTarget='chatMessagesList'
                                             next={props.onFetchMoreChatMessages}
@@ -443,6 +443,62 @@ export default function ChatMessageList(props: Props) {
                                                 </Box>
                                             </Box>
                                         </InfiniteScroll>
+                                    ) : (
+                                        <Box
+                                            component='div'
+                                            display='flex'
+                                            flexDirection='row'
+                                            justifyContent='center'
+                                            alignItems='center'
+                                            color='#F5F5F5'
+                                            width='100%'
+                                            height='100%'
+                                        >
+                                            <Box
+                                                component='div'
+                                                flexDirection='column'
+                                                boxSizing='border-box'
+                                                display='flex'
+                                                alignItems='center'
+                                                flexShrink='0'
+                                                position='relative'
+                                                zIndex='0'
+                                                paddingTop='16px'
+                                                maxWidth='100%'
+                                            >
+                                                <Box
+                                                    component='div'
+                                                    display='block'
+                                                    maxWidth='480px'
+                                                >
+                                                    <Box
+                                                        component='div'
+                                                        lineHeight='18px'
+                                                        fontSize='14px'
+                                                        fontWeight='400'
+                                                        minWidth='0'
+                                                        marginBottom='0!important'
+                                                        textAlign='center'
+                                                        marginRight='0!important'
+                                                        color='#A8A8A8'
+                                                        position='relative'
+                                                        display='block'
+                                                        maxWidth='100%'
+                                                        marginLeft='0!important'
+                                                        marginTop='0!important'
+                                                        sx={{
+                                                            overflowY: 'visible',
+                                                            wordWrap: 'break-word',
+                                                            overflowX: 'visible',
+                                                            whiteSpace: 'pre-line',
+                                                            wordBreak: 'break-word',
+                                                        }}
+                                                    >
+                                                        No recent messages.
+                                                    </Box>
+                                                </Box>
+                                            </Box>
+                                        </Box>
                                     )}
                                 </Box>
                             </Box>
