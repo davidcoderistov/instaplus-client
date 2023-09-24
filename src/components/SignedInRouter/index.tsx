@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { useApolloClient, useQuery, useMutation, useSubscription } from '@apollo/client'
 import { useIncrementUnreadMessagesCount } from '../../hooks/graphql'
+import { FIND_SUGGESTED_USERS } from '../../graphql/queries/user'
 import {
     FIND_CHATS_FOR_USER,
     FIND_MESSAGES_BY_CHAT_ID,
@@ -44,6 +45,8 @@ export default function SignedInRouter() {
     const [authUser] = useAuthUser()
 
     const client = useApolloClient()
+
+    useQuery(FIND_SUGGESTED_USERS)
 
     const [markMessageAsRead] = useMutation(MARK_MESSAGE_AS_READ)
 
