@@ -59,7 +59,7 @@ export default function AppRouter() {
         if (loggedInUser) {
             setSessionModalTimeout(setTimeout(() => {
                 setSessionModalOpen(true)
-            }, 840000))
+            }, 119 * 60000))
         }
     }, [loggedInUser])
 
