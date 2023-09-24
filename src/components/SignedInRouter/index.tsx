@@ -104,10 +104,10 @@ export default function SignedInRouter() {
                                         seenByUserIds: [...message.seenByUserIds, authUser._id],
                                     }
                                 } else {
-                                    incrementUnreadMessagesCount()
+                                    incrementUnreadMessagesCount(chatWithLatestMessage.chat._id)
                                 }
                             } else {
-                                incrementUnreadMessagesCount()
+                                incrementUnreadMessagesCount(chatWithLatestMessage.chat._id)
                             }
                             return findMessagesByChatIdMutations.addMessage({
                                 queryData,
@@ -116,7 +116,7 @@ export default function SignedInRouter() {
                                 },
                             }).queryResult
                         } else {
-                            incrementUnreadMessagesCount()
+                            incrementUnreadMessagesCount(chatWithLatestMessage.chat._id)
                         }
                     },
                 )

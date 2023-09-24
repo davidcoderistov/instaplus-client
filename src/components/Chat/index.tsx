@@ -225,7 +225,9 @@ export default function Chat() {
                             variables: {
                                 messageId: chatForUser.message._id,
                             },
-                        }).then(decrementUnreadMessagesCount)
+                        }).then(() => {
+                            decrementUnreadMessagesCount(chatForUser.chat._id)
+                        })
                     }
                 }
             }
@@ -338,7 +340,9 @@ export default function Chat() {
                                 variables: {
                                     messageId: createChat.message._id,
                                 },
-                            }).then(decrementUnreadMessagesCount)
+                            }).then(() => {
+                                decrementUnreadMessagesCount(createChat.chat._id)
+                            })
                         }
                     }
                     findChatsForUser.updateQuery(findChatsForUser => findChatsForUserMutations.addChat({

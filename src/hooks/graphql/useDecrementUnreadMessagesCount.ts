@@ -8,13 +8,14 @@ export function useDecrementUnreadMessagesCount() {
 
     const client = useApolloClient()
 
-    return () => {
+    return (chatId: string) => {
         client.cache.updateQuery({
             query: FIND_UNREAD_MESSAGES_COUNT_FOR_USER,
         }, (findUnreadMessagesCountForUser: FindUnreadMessagesCountForUserQueryType | null) => {
             if (findUnreadMessagesCountForUser) {
                 return decrementUnreadMessagesCount({
                     queryData: findUnreadMessagesCountForUser,
+                    chatId,
                 }).queryResult
             }
         })

@@ -18,6 +18,7 @@ export interface FindMessagesByChatIdQueryType {
 
 export interface FindUnreadMessagesCountForUserQueryType {
     findUnreadMessagesCountForUser: {
+        chatsIds: string[]
         count: number
     }
 }

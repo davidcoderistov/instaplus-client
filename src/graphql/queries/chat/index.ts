@@ -93,6 +93,7 @@ export const FIND_MESSAGES_BY_CHAT_ID = gql`
 export const FIND_UNREAD_MESSAGES_COUNT_FOR_USER = gql`
     query findUnreadMessagesCountForUser {
         findUnreadMessagesCountForUser {
+            chatsIds
             count
         }
     }
