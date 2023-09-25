@@ -270,6 +270,20 @@ export default function UserDetails() {
         return false
     }, [isPostsTabActive, findUserDetails.loading, postsForUser.loading, postsForUser.error, postsForUser.data, savedPostsForUser.loading, savedPostsForUser.error, savedPostsForUser.data])
 
+    const emptyPostsText = useMemo(() => {
+        if (isPostsTabActive) {
+            if (isProfileView) {
+                return `When you share posts, you'll see them here.`
+            } else if (findUserDetails.data) {
+                const username = findUserDetails.data.findUserDetails.followableUser.user.username
+                return `When ${username} shares posts, you'll see them here.`
+            }
+        } else {
+            return `When you save posts, you'll see them here.`
+        }
+        return ''
+    }, [isPostsTabActive, isProfileView, findUserDetails])
+
     const handleFetchMorePosts = () => {
         if (isPostsTabActive) {
             if (postsForUser.data) {
@@ -475,7 +489,7 @@ export default function UserDetails() {
                                 >
                                     <DataFallback
                                         title='No posts yet'
-                                        subtitle={`When ${isProfileView ? authUser.username : findUserDetails.data?.findUserDetails.followableUser.user.username} shares photos, you'll see them here.`} />
+                                        subtitle={emptyPostsText} />
                                 </Box>
                             )}
                         </Box>
