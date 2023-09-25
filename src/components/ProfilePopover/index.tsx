@@ -126,6 +126,7 @@ export default function ProfilePopover(props: Props) {
                                 ...followableUser,
                                 followingLoading: false,
                             },
+                            followersCount: followableUser.following ? userDetails.followersCount + 1 : userDetails.followersCount - 1,
                         }
                     }
                     return userDetails
