@@ -11,7 +11,7 @@ import {
     RefreshMutationType,
     LogoutMutationType,
 } from '../../graphql/types/mutations/auth'
-import { setStorageLoggedInUser } from '../../localStorage'
+import { setStorageLoggedInUser, getStorageLoggedInUser } from '../../localStorage'
 import { isInvalidSessionError } from '../../utils'
 import Box from '@mui/material/Box'
 import ReactLoading from 'react-loading'
@@ -23,7 +23,7 @@ import SessionModal from '../SessionModal'
 
 export default function AppRouter() {
 
-    const [loggedInUser, setUser] = useState<User | null>(null)
+    const [loggedInUser, setUser] = useState<User | null>(getStorageLoggedInUser())
     const [sessionModalOpen, setSessionModalOpen] = useState(false)
 
     const [refresh] = useMutation<RefreshMutationType>(REFRESH)
@@ -100,6 +100,9 @@ export default function AppRouter() {
         try {
             await logout()
             await client.clearStore()
+            if (sessionModalTimeout) {
+                clearTimeout(sessionModalTimeout)
+            }
             setLoggedInUser(null)
         } catch (err) {
             if (isInvalidSessionError(err)) {
@@ -119,13 +122,6 @@ export default function AppRouter() {
 
     const handleInvalidateSession = () => {
         invalidateSession()
-    }
-
-    const handleLogout = () => {
-        setLoggedInUser(null)
-        if (sessionModalTimeout) {
-            clearTimeout(sessionModalTimeout)
-        }
     }
 
     return (
