@@ -12,9 +12,6 @@ import {
     LogoutMutationType,
 } from '../../graphql/types/mutations/auth'
 import { setStorageLoggedInUser, getStorageLoggedInUser } from '../../localStorage'
-import { isInvalidSessionError } from '../../utils'
-import Box from '@mui/material/Box'
-import ReactLoading from 'react-loading'
 import SignedInRouter from '../SignedInRouter'
 import SignIn from '../SignIn'
 import SignUp from '../SignUp'
@@ -29,25 +26,15 @@ export default function AppRouter() {
     const [refresh] = useMutation<RefreshMutationType>(REFRESH)
     const [logout] = useMutation<LogoutMutationType>(LOGOUT)
 
-    const [loadingInitialUser, setLoadingInitialUser] = useState(false)
     const [refreshingSession, setRefreshingSession] = useState(false)
     const [invalidatingSession, setInvalidatingSession] = useState(false)
     const [sessionModalTimeout, setSessionModalTimeout] = useState<ReturnType<typeof setTimeout> | null>(null)
 
     useEffect(() => {
-        const getInitialUser = async () => {
-            setLoadingInitialUser(true)
-            try {
-                const user: { data?: RefreshMutationType | null } = await refresh()
-                if (user.data) {
-                    setLoggedInUser(getRefreshUser(user.data))
-                }
-            } catch (err) {
-            } finally {
-                setLoadingInitialUser(false)
-            }
+        const refresh = async () => {
+            await refreshSession()
         }
-        getInitialUser()
+        refresh()
     }, [])
 
     const setLoggedInUser = (user: User | null) => {
@@ -80,13 +67,11 @@ export default function AppRouter() {
             const user: { data?: RefreshMutationType | null } = await refresh()
             if (user.data) {
                 setLoggedInUser(getRefreshUser(user.data))
-            }
-        } catch (err) {
-            if (isInvalidSessionError(err)) {
-                setLoggedInUser(null)
             } else {
                 await invalidateSession()
             }
+        } catch (err) {
+            await invalidateSession()
         } finally {
             setRefreshingSession(false)
             setSessionModalOpen(false)
@@ -99,20 +84,23 @@ export default function AppRouter() {
         setInvalidatingSession(true)
         try {
             await logout()
-            await client.clearStore()
-            if (sessionModalTimeout) {
-                clearTimeout(sessionModalTimeout)
-            }
-            setLoggedInUser(null)
+            await clearData()
         } catch (err) {
-            if (isInvalidSessionError(err)) {
-                setLoggedInUser(null)
-            } else {
-                console.error(err)
-            }
+            await clearData()
         } finally {
             setInvalidatingSession(false)
             setSessionModalOpen(false)
+        }
+    }
+
+    const clearData = async () => {
+        try {
+            setLoggedInUser(null)
+            if (sessionModalTimeout) {
+                clearTimeout(sessionModalTimeout)
+            }
+            await client.clearStore()
+        } catch (err) {
         }
     }
 
@@ -126,23 +114,7 @@ export default function AppRouter() {
 
     return (
         <>
-            {loadingInitialUser ? (
-                <Box
-                    component='div'
-                    width='100%'
-                    height='100vh'
-                    display='flex'
-                    flexDirection='column'
-                    justifyContent='center'
-                    alignItems='center'
-                >
-                    <ReactLoading
-                        type='spinningBubbles'
-                        color='#a94064'
-                        height='200px'
-                        width='200px' />
-                </Box>
-            ) : loggedInUser ? (
+            {loggedInUser ? (
                 <AppContext.Provider value={{ loggedInUser, setLoggedInUser }}>
                     <SignedInRouter />
                 </AppContext.Provider>
