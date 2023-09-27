@@ -6,8 +6,8 @@ import { createClient } from 'graphql-ws'
 import { getStorageLoggedInUser } from '../localStorage'
 
 
-const apiUri = 'http://localhost:8001/api'
-const wsUrl = 'ws://localhost:8001/api'
+const apiUri = process.env.REACT_APP_API_URL as string
+const wsUrl = process.env.REACT_APP_WS_URL as string
 
 const httpLink = createHttpLink({
     uri: apiUri,
