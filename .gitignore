@@ -13,6 +13,7 @@ dist-ssr
 *.local
 .graphqlconfig
 remote-schema.graphql
+.env
 
 # Editor directories and files
 .vscode/*

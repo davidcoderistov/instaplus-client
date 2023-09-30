@@ -12,13 +12,28 @@ import {
     LogoutMutationType,
 } from '../../graphql/types/mutations/auth'
 import { setStorageLoggedInUser, getStorageLoggedInUser } from '../../localStorage'
+import Box from '@mui/material/Box'
+import ReactLoading from 'react-loading'
 import SignedInRouter from '../SignedInRouter'
 import SignIn from '../SignIn'
 import SignUp from '../SignUp'
 import SessionModal from '../SessionModal'
+import moment from 'moment'
 
 
 export default function AppRouter() {
+
+    const [loading, setLoading] = useState(() => {
+        const authUser = getStorageLoggedInUser()
+        if (authUser) {
+            const now = moment()
+            const createdAt = moment(authUser.createdAt)
+            if (now.diff(createdAt, 'minutes') > 110) {
+                return true
+            }
+        }
+        return false
+    })
 
     const [loggedInUser, setUser] = useState<User | null>(getStorageLoggedInUser())
     const [sessionModalOpen, setSessionModalOpen] = useState(false)
@@ -58,6 +73,7 @@ export default function AppRouter() {
             username: data.refresh.user.username,
             photoUrl: data.refresh.user.photoUrl,
             accessToken: data.refresh.accessToken,
+            createdAt: data.refresh.createdAt,
         }
     }
 
@@ -73,6 +89,7 @@ export default function AppRouter() {
         } catch (err) {
             await invalidateSession()
         } finally {
+            setLoading(false)
             setRefreshingSession(false)
             setSessionModalOpen(false)
         }
@@ -114,7 +131,23 @@ export default function AppRouter() {
 
     return (
         <>
-            {loggedInUser ? (
+            {loading ? (
+                <Box
+                    component='div'
+                    width='100%'
+                    height='100vh'
+                    display='flex'
+                    flexDirection='column'
+                    justifyContent='center'
+                    alignItems='center'
+                >
+                    <ReactLoading
+                        type='spinningBubbles'
+                        color='#a94064'
+                        height='200px'
+                        width='200px' />
+                </Box>
+            ) : loggedInUser ? (
                 <AppContext.Provider value={{ loggedInUser, setLoggedInUser }}>
                     <SignedInRouter />
                 </AppContext.Provider>

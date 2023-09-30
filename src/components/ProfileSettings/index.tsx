@@ -132,13 +132,14 @@ export default function ProfileSettings() {
         })
     }
 
-    const getAuthUser = ({ user, accessToken }: AuthUser): User => ({
+    const getAuthUser = ({ user, accessToken, createdAt }: AuthUser): User => ({
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         username: user.username,
         photoUrl: user.photoUrl,
         accessToken,
+        createdAt,
     })
 
     return (

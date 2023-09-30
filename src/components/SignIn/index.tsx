@@ -34,6 +34,7 @@ export default function SignIn() {
                     username: data.signIn.user.username,
                     photoUrl: data.signIn.user.photoUrl,
                     accessToken: data.signIn.accessToken,
+                    createdAt: data.signIn.createdAt,
                 })
             } else {
                 enqueueSnackbar('Could not sign in. Please try again later', { variant: 'error' })

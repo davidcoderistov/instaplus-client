@@ -22,6 +22,7 @@ export const SIGN_IN = gql`
                 photoUrl
             }
             accessToken
+            createdAt
         }
     }
 `
@@ -37,6 +38,7 @@ export const REFRESH = gql`
                 photoUrl
             }
             accessToken
+            createdAt
         }
     }
 `
@@ -63,6 +65,7 @@ export const UPDATE_USER = gql`
                 photoUrl
             }
             accessToken
+            createdAt
         }
     }
 `
@@ -78,6 +81,7 @@ export const CHANGE_PASSWORD = gql`
                 photoUrl
             }
             accessToken
+            createdAt
         }
     }
 `
@@ -93,6 +97,7 @@ export const CHANGE_PROFILE_PHOTO = gql`
                 photoUrl
             }
             accessToken
+            createdAt
         }
     }
 `

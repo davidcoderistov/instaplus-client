@@ -5,6 +5,7 @@ export interface User {
     username: string
     photoUrl: string | null
     accessToken: string
+    createdAt: number
 }
 
 export interface NextCursor {

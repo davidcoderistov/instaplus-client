@@ -15,6 +15,7 @@ export interface FollowableUser {
 export interface AuthUser {
     user: User
     accessToken: string
+    createdAt: number
 }
 
 export interface Reaction {
