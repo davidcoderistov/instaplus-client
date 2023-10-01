@@ -26,3 +26,70 @@ Instaplus Client offers a range of core features designed to provide a seamless 
   
 - **AWS EC2 Deployment:** Hosted on [Amazon Web Services (AWS) Elastic Compute Cloud (EC2)](https://aws.amazon.com/ec2/) instances for scalability and reliability.
 
+## Apollo Client Configuration
+
+The client is configured using multiple links to handle various aspects of communication:
+
+- **HTTP Link:** Standard HTTP link for executing queries and mutations.
+
+- **Auth Link:** Manages user authentication and sets authorization headers.
+
+- **Upload Link:** Handles file uploads with preflight checks.
+
+- **WebSocket Link:** Enables real-time messaging and subscriptions via WebSockets.
+
+```javascript
+const apiUri = process.env.REACT_APP_API_URL as string
+const wsUrl = process.env.REACT_APP_WS_URL as string
+
+const httpLink = createHttpLink({
+    uri: apiUri,
+    credentials: 'include',
+})
+
+const uploadLink = createUploadLink({
+    uri: apiUri,
+    headers: {
+        'Apollo-Require-Preflight': 'true',
+    },
+}) as unknown as ApolloLink
+
+const authLink = new ApolloLink((operation, forward) => {
+    const user = getStorageLoggedInUser()
+
+    operation.setContext({
+        headers: {
+            authorization: user?.accessToken ? `Bearer ${user.accessToken}` : '',
+        },
+    })
+
+    return forward(operation)
+})
+
+const wsLink = new GraphQLWsLink(createClient({
+    url: wsUrl,
+    connectionParams: () => ({
+        accessToken: getStorageLoggedInUser()?.accessToken,
+    }),
+}))
+
+const splitLink = split(
+    operation => operation.getContext().hasUpload,
+    authLink.concat(uploadLink),
+    split(
+        ({ query }) => {
+            const definition = getMainDefinition(query)
+            return (
+                definition.kind === 'OperationDefinition' &&
+                definition.operation === 'subscription'
+            )
+        },
+        wsLink,
+        authLink.concat(httpLink),
+    ),
+)
+```
+
+## Contact
+
+If you want to contact me you can reach me at [davidcoderistov@gmail.com](mailto:davidcoderistov@gmail.com).
