@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
 import AppContext from '../../config/context'
 import { useSnackbar } from 'notistack'
 import InstaSignIn, { SignInProps } from '../../lib/src/components/SignIn'
@@ -12,8 +11,6 @@ import { getValidationError } from '../../utils'
 export default function SignIn() {
 
     const { setLoggedInUser } = useContext(AppContext)
-
-    const navigate = useNavigate()
 
     const [signIn, { loading }] = useMutation<SignInMutationType>(SIGN_IN)
 
@@ -50,14 +47,9 @@ export default function SignIn() {
         })
     }
 
-    const handleSignUp = () => {
-        navigate('/signup')
-    }
-
     return (
         <InstaSignIn
             onSignIn={handleSignIn}
-            onSignUp={handleSignUp}
             signingIn={loading} />
     )
 }

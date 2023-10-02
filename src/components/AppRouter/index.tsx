@@ -16,7 +16,6 @@ import Box from '@mui/material/Box'
 import ReactLoading from 'react-loading'
 import SignedInRouter from '../SignedInRouter'
 import SignIn from '../SignIn'
-import SignUp from '../SignUp'
 import SessionModal from '../SessionModal'
 import moment from 'moment'
 
@@ -156,9 +155,6 @@ export default function AppRouter() {
                     <Routes>
                         <Route path='/signin' element={
                             <SignIn />
-                        } />
-                        <Route path='/signup' element={
-                            <SignUp />
                         } />
                         <Route path='*' element={
                             <Navigate to='/signin' replace />
