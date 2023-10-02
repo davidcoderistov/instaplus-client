@@ -27,7 +27,6 @@ export interface SignInProps {
 
 interface Props {
     onSignIn: (props: SignInProps) => void
-    onSignUp: () => void
     signingIn: boolean
 }
 
@@ -99,22 +98,9 @@ export default function SignIn(props: Props) {
                     >
                         Sign In
                     </LoadingButton>
-                    <Grid container justifyContent='flex-end'>
-                        <Grid item>
-                            <Typography
-                                component='span'
-                                variant='body2'
-                                color='primary.main'
-                                sx={{ cursor: 'pointer' }}
-                                onClick={props.onSignUp}
-                            >
-                                Don't have an account? Sign Up
-                            </Typography>
-                        </Grid>
-                    </Grid>
                 </Box>
             </Box>
-            <Copyright sx={{ mt: 7 }} />
+            <Copyright sx={{ mt: 1 }} />
         </Container>
     )
 }
