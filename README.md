@@ -1,46 +1,95 @@
-# Getting Started with Create React App
+### [ec2-16-171-240-55.eu-north-1.compute.amazonaws.com:3000](http://ec2-16-171-240-55.eu-north-1.compute.amazonaws.com:3000/)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[Instaplus Demo](https://github.com/davidcoderistov/instaplus-client/assets/85624034/d7e07724-21d3-461b-b3a5-e39580840a21)
 
-## Available Scripts
+<p align="center">
+  <img alt="Tech Stack" src="https://skillicons.dev/icons?i=ts,react,css,materialui,graphql,apollo,docker,aws&perline=8" />
+</p>
 
-In the project directory, you can run:
+## Core Features
 
-### `npm start`
+Instaplus Client offers a range of core features designed to provide a seamless and engaging user experience:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **State Management with Apollo Client:** Efficiently manages application state using [Apollo Client](https://www.apollographql.com/docs/react/) to seamlessly handle data fetching, caching, and updates.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **Component Library Integration:** Enhances UI development by integrating both [Material UI](https://mui.com/) and [Instaplus UI Toolkit](https://github.com/davidcoderistov/instaplus-ui-toolkit) components.
 
-### `npm test`
+- **JWT Authentication:** Utilizes [access and refresh tokens](https://jwt.io/) for secure user authentication.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Recommendation Engine:** Suggests users and posts through a [collaborative filtering algorithm](https://en.wikipedia.org/wiki/Collaborative_filtering), enhancing content discovery.
 
-### `npm run build`
+- **Real-time Messaging:** Provides instant messaging capabilities using [GraphQL subscriptions](https://graphql.org/) for real-time updates and interactive communication.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Cloudinary Integration:** Leverages [Cloudinary](https://cloudinary.com/) cloud storage for media management and storage.
+  
+- **Docker Containerization:** Streamlines deployment and ensures consistent environments across various stages of development and production using [Docker](https://www.docker.com/).
+  
+- **AWS EC2 Deployment:** Hosted on [Amazon Web Services (AWS) Elastic Compute Cloud (EC2)](https://aws.amazon.com/ec2/) instances for scalability and reliability.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Apollo Client Configuration
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The client is configured using multiple links to handle various aspects of communication:
 
-### `npm run eject`
+- **HTTP Link:** Standard HTTP link for executing queries and mutations.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- **Auth Link:** Manages user authentication and sets authorization headers.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Upload Link:** Handles file uploads with preflight checks.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- **WebSocket Link:** Enables real-time messaging and subscriptions via WebSockets.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```javascript
+const apiUri = process.env.REACT_APP_API_URL as string
+const wsUrl = process.env.REACT_APP_WS_URL as string
 
-## Learn More
+const httpLink = createHttpLink({
+    uri: apiUri,
+    credentials: 'include',
+})
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+const uploadLink = createUploadLink({
+    uri: apiUri,
+    headers: {
+        'Apollo-Require-Preflight': 'true',
+    },
+}) as unknown as ApolloLink
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+const authLink = new ApolloLink((operation, forward) => {
+    const user = getStorageLoggedInUser()
+
+    operation.setContext({
+        headers: {
+            authorization: user?.accessToken ? `Bearer ${user.accessToken}` : '',
+        },
+    })
+
+    return forward(operation)
+})
+
+const wsLink = new GraphQLWsLink(createClient({
+    url: wsUrl,
+    connectionParams: () => ({
+        accessToken: getStorageLoggedInUser()?.accessToken,
+    }),
+}))
+
+const splitLink = split(
+    operation => operation.getContext().hasUpload,
+    authLink.concat(uploadLink),
+    split(
+        ({ query }) => {
+            const definition = getMainDefinition(query)
+            return (
+                definition.kind === 'OperationDefinition' &&
+                definition.operation === 'subscription'
+            )
+        },
+        wsLink,
+        authLink.concat(httpLink),
+    ),
+)
+```
+
+## Contact
+
+If you want to contact me you can reach me at [davidcoderistov@gmail.com](mailto:davidcoderistov@gmail.com).
