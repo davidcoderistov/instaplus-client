@@ -1,4 +1,4 @@
-### [ec2-16-171-240-55.eu-north-1.compute.amazonaws.com:3000](http://ec2-16-171-240-55.eu-north-1.compute.amazonaws.com:3000/)
+### [ec2-16-171-240-55.eu-north-1.compute.amazonaws.com:3000](http://ec2-51-20-77-48.eu-north-1.compute.amazonaws.com:3000/)
 
 [Instaplus Demo](https://github.com/davidcoderistov/instaplus-client/assets/85624034/d7e07724-21d3-461b-b3a5-e39580840a21)
 
